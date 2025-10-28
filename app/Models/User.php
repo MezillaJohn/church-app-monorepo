@@ -207,4 +207,16 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->reset_code_sent_at = null;
         $this->save();
     }
+
+    /**
+     * Check if user profile is complete
+     */
+    public function getProfileCompleteAttribute(): bool
+    {
+        return !empty($this->church_centre)
+            && !empty($this->country)
+            && !empty($this->phone)
+            && !empty($this->gender)
+            && $this->church_member !== null;
+    }
 }

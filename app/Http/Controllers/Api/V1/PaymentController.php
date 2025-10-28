@@ -21,9 +21,7 @@ class PaymentController extends BaseController
      */
     public function purchaseBook(Request $request, int $bookId)
     {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
+        $email = $request->user()->email;
 
         try {
             $book = \App\Models\Book::findOrFail($bookId);
@@ -35,7 +33,7 @@ class PaymentController extends BaseController
             // Check if already purchased
             $alreadyPurchased = BookPurchase::where('user_id', $request->user()->id)
                 ->where('book_id', $bookId)
-                ->where('payment_status', 'completed')
+                ->where('status', 'completed')
                 ->exists();
 
             if ($alreadyPurchased) {
@@ -45,7 +43,7 @@ class PaymentController extends BaseController
             $reference = $this->paystackService->generateReference();
 
             $paymentData = $this->paystackService->initializeTransaction([
-                'email' => $request->email,
+                'email' => $email,
                 'amount' => $book->price,
                 'reference' => $reference,
                 'metadata' => [
@@ -59,9 +57,10 @@ class PaymentController extends BaseController
             BookPurchase::create([
                 'user_id' => $request->user()->id,
                 'book_id' => $book->id,
-                'payment_reference' => $reference,
-                'amount' => $book->price,
-                'payment_status' => 'pending',
+                'transaction_reference' => $reference,
+                'price_paid' => $book->price,
+                'status' => 'pending',
+                'payment_method' => 'paystack',
             ]);
 
             return $this->ok('Payment initialized successfully', [
@@ -97,12 +96,13 @@ class PaymentController extends BaseController
             } elseif ($metadata['type'] === 'donation') {
                 $this->completeDonation($metadata, $transaction);
             }
+            return redirect()->away('https://godhouse.org');
 
-            return $this->ok('Payment verified successfully', [
-                'status' => $transaction['status'],
-                'amount' => $transaction['amount'] / 100,
-                'reference' => $transaction['reference'],
-            ]);
+            // return $this->ok('Payment verified successfully', [
+            //     'status' => $transaction['status'],
+            //     'amount' => $transaction['amount'] / 100,
+            //     'reference' => $transaction['reference'],
+            // ]);
         } catch (\Exception $e) {
             return $this->error('Failed to verify payment', ['exception' => $e->getMessage()], 500);
         }
@@ -145,9 +145,9 @@ class PaymentController extends BaseController
         DB::transaction(function () use ($metadata, $transaction) {
             BookPurchase::where('user_id', $metadata['user_id'])
                 ->where('book_id', $metadata['book_id'])
-                ->where('payment_reference', $transaction['reference'])
+                ->where('transaction_reference', $transaction['reference'])
                 ->update([
-                    'payment_status' => 'completed',
+                    'status' => 'completed',
                     'updated_at' => now(),
                 ]);
 
@@ -165,7 +165,7 @@ class PaymentController extends BaseController
     {
         DB::transaction(function () use ($metadata, $transaction) {
             Donation::where('user_id', $metadata['user_id'])
-                ->where('payment_reference', $transaction['reference'])
+                ->where('transaction_reference', $transaction['reference'])
                 ->update([
                     'status' => 'completed',
                     'updated_at' => now(),

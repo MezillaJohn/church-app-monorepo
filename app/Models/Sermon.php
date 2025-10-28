@@ -7,9 +7,9 @@ use App\Http\Filters\QueryFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Sermon extends Model
 {
@@ -68,5 +68,35 @@ class Sermon extends Model
     {
         return $this->belongsToMany(User::class, 'sermon_progress')
             ->withPivot(['progress', 'is_completed', 'updated_at']);
+    }
+
+    /**
+     * Get the users who favorited this sermon
+     */
+    public function favoritedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'favorites')
+            ->wherePivot('favoritable_type', self::class)
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if the sermon is favorited by a specific user
+     */
+    public function isFavoritedBy(User $user): bool
+    {
+        return $this->favorites()
+            ->where('user_id', $user->id)
+            ->exists();
+    }
+
+    /**
+     * Generate YouTube embed URL from video ID
+     */
+    public function getEmbedUrlAttribute(): ?string
+    {
+        return $this->youtube_video_id
+            ? "https://www.youtube.com/embed/{$this->youtube_video_id}"
+            : null;
     }
 }

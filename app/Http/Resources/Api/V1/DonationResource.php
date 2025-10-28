@@ -21,8 +21,11 @@ class DonationResource extends JsonResource
                 'amount' => $this->amount,
                 'donation_type' => $this->donation_type,
                 'payment_method' => $this->payment_method,
-                'payment_reference' => $this->payment_reference,
+                'payment_gateway' => $this->payment_gateway,
+                'transaction_reference' => $this->transaction_reference,
                 'status' => $this->status,
+                'note' => $this->note,
+                'is_anonymous' => $this->is_anonymous,
             ],
             'relationships' => [
                 'user' => $this->when(

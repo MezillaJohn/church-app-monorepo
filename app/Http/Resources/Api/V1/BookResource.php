@@ -22,8 +22,12 @@ class BookResource extends JsonResource
                 'author' => $this->author,
                 'description' => $this->description,
                 'price' => $this->price,
-                'cover_image' => $this->cover_image,
-                'file_url' => $this->file_url,
+                'cover_image' => $this->cover_image ? env('APP_URL') . '/storage/' . $this->cover_image : null,
+                'file_url' => $this->when(
+                    isset($this->hasPurchased) && $this->hasPurchased,
+                    fn() => $this->file_url ? env('APP_URL') . '/storage/' . $this->file_url : null
+                ),
+                'preview_pages' => $this->preview_pages,
                 'purchases_count' => $this->purchases_count ?? 0,
                 'average_rating' => $this->average_rating ?? 0,
                 'is_featured' => $this->is_featured,

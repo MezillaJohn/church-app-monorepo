@@ -36,7 +36,24 @@ class DonationController extends BaseController
             ]);
 
             $donation = $this->donationService->createDonation($request->user(), $request->all());
-            return $this->ok('Donation created successfully', new DonationResource($donation));
+            $user = $request->user();
+
+            // Handle payment based on payment method
+            $responseData = [
+                'donation' => new DonationResource($donation),
+            ];
+
+            if ($request->payment_method === 'paystack') {
+                // Generate Paystack payment URL
+                $paymentUrl = $this->donationService->initiatePayment($donation, $user);
+                $responseData['payment_url'] = $paymentUrl;
+            } elseif ($request->payment_method === 'manual') {
+                // Return bank account details for manual payment
+                $bankAccounts = $this->donationService->getBankAccounts();
+                $responseData['bank_accounts'] = BankAccountResource::collection($bankAccounts);
+            }
+
+            return $this->ok('Donation created successfully', $responseData);
         } catch (\Exception $e) {
             return $this->error('Failed to create donation', ['exception' => $e->getMessage()], 500);
         }

@@ -18,13 +18,13 @@ class FavoriteResource extends JsonResource
             'id' => $this->id,
             'type' => 'favorite',
             'attributes' => [
-                'favoriteable_type' => $this->favoriteable_type,
-                'favoriteable_id' => $this->favoriteable_id,
+                'favoritable_type' => $this->favoritable_type,
+                'favoritable_id' => $this->favoritable_id,
             ],
             'relationships' => [
                 'sermon' => $this->when(
-                    $this->relationLoaded('favoriteable') && $this->favoriteable instanceof \App\Models\Sermon,
-                    fn() => new SermonResource($this->favoriteable)
+                    $this->relationLoaded('favoritable') && $this->favoritable instanceof \App\Models\Sermon,
+                    fn() => new SermonResource($this->favoritable)
                 ),
             ],
             'meta' => [

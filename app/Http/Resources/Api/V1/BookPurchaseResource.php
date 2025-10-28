@@ -19,8 +19,10 @@ class BookPurchaseResource extends JsonResource
             'type' => 'book_purchase',
             'attributes' => [
                 'payment_reference' => $this->payment_reference,
-                'amount' => $this->amount,
-                'payment_status' => $this->payment_status,
+                'price_paid' => $this->price_paid,
+                'status' => $this->status,
+                'payment_method' => $this->payment_method,
+                'transaction_reference' => $this->transaction_reference,
             ],
             'relationships' => [
                 'user' => $this->when(
@@ -36,6 +38,8 @@ class BookPurchaseResource extends JsonResource
                         'id' => $this->book->id,
                         'title' => $this->book->title,
                         'cover_image' => $this->book->cover_image,
+                        'price' => $this->book->price,
+                        'average_rating' => $this->book->average_rating,
                     ]
                 ),
             ],

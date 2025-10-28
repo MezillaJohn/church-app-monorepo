@@ -24,7 +24,7 @@ class BookController extends BaseController
         }
     }
 
-    public function show(int $id)
+    public function show(Request $request, int $id)
     {
         try {
             $book = $this->bookService->getById($id);
@@ -33,7 +33,17 @@ class BookController extends BaseController
                 return $this->error('Book not found', [], 404);
             }
 
-            return $this->ok('Book retrieved successfully', new BookResource($book));
+            // Check if user has purchased the book
+            $hasPurchased = false;
+            if ($request->user()) {
+                $hasPurchased = $this->bookService->checkIfPurchased($request->user(), $id);
+            }
+
+            // Pass purchase status to resource
+            $resource = new BookResource($book);
+            $resource->hasPurchased = $hasPurchased;
+
+            return $this->ok('Book retrieved successfully', $resource);
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve book', ['exception' => $e->getMessage()], 500);
         }
@@ -66,6 +76,35 @@ class BookController extends BaseController
             return $this->ok('Purchase status retrieved', ['purchased' => $hasPurchased]);
         } catch (\Exception $e) {
             return $this->error('Failed to check purchase status', ['exception' => $e->getMessage()], 500);
+        }
+    }
+
+    public function rateBook(Request $request, int $id)
+    {
+        try {
+            $request->validate([
+                'rating' => 'required|integer|min:1|max:5',
+                'review' => 'sometimes|string|max:1000',
+            ]);
+
+            $user = $request->user();
+            $book = $this->bookService->getById($id);
+
+            if (!$book) {
+                return $this->error('Book not found', [], 404);
+            }
+
+            // Check if user has purchased the book
+            $hasPurchased = $this->bookService->checkIfPurchased($user, $id);
+            if (!$hasPurchased) {
+                return $this->error('You must purchase this book before rating it', [], 403);
+            }
+
+            $rating = $this->bookService->rateBook($user, $id, $request->rating, $request->review ?? null);
+
+            return $this->ok('Book rated successfully', ['rating_id' => $rating->id]);
+        } catch (\Exception $e) {
+            return $this->error('Failed to rate book', ['exception' => $e->getMessage()], 500);
         }
     }
 }

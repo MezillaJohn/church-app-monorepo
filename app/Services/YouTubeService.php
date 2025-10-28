@@ -153,7 +153,7 @@ class YouTubeService
                 Sermon::create([
                     'title' => $details['title'],
                     'description' => $details['description'],
-                    'type' => \App\Enums\SermonType::VIDEO,
+                    'type' => \App\Enums\SermonType::Video,
                     'youtube_video_id' => $details['video_id'],
                     'thumbnail_url' => $details['thumbnail'],
                     'duration' => $details['duration'],

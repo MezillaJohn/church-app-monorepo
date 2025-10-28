@@ -9,6 +9,7 @@ use App\Models\SermonProgress;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class SermonService
 {
@@ -38,8 +39,13 @@ class SermonService
                     ->orWhere('description', 'like', '%' . $filters['search'] . '%');
             });
         }
+        if (isset($filters['sort'])) {
+            $query->orderBy('created_at', $filters['sort']);
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
 
-        return $query->orderBy('created_at', 'desc')->paginate(15);
+        return $query->paginate(15);
     }
 
     public function getById(int $id): ?Sermon
@@ -49,28 +55,36 @@ class SermonService
 
     public function toggleFavorite(User $user, int $sermonId): bool
     {
-        $favorite = Favorite::where('user_id', $user->id)
-            ->where('favoritable_type', Sermon::class)
-            ->where('favoritable_id', $sermonId)
-            ->first();
+        try {
+            return DB::transaction(function () use ($user, $sermonId) {
+                $favorite = Favorite::where('user_id', $user->id)
+                    ->where('favoritable_type', Sermon::class)
+                    ->where('favoritable_id', $sermonId)
+                    ->first();
 
-        if ($favorite) {
-            $favorite->delete();
+                if ($favorite) {
+                    $favorite->delete();
+                    Sermon::where('id', $sermonId)->decrement('favorites_count');
+                    return false;
+                }
 
-            DB::table('sermons')->where('id', $sermonId)->decrement('favorites_count');
+                Favorite::create([
+                    'user_id' => $user->id,
+                    'favoritable_type' => Sermon::class,
+                    'favoritable_id' => $sermonId,
+                ]);
 
-            return false;
+                Sermon::where('id', $sermonId)->increment('favorites_count');
+
+                return true;
+            });
+        } catch (QueryException $e) {
+            // Handle unique constraint violation (duplicate favorite)
+            if ($e->getCode() === '23000') {
+                throw new \Exception('Favorite already exists');
+            }
+            throw $e;
         }
-
-        Favorite::create([
-            'user_id' => $user->id,
-            'favoritable_type' => Sermon::class,
-            'favoritable_id' => $sermonId,
-        ]);
-
-        DB::table('sermons')->where('id', $sermonId)->increment('favorites_count');
-
-        return true;
     }
 
     public function getUserFavorites(User $user): LengthAwarePaginator

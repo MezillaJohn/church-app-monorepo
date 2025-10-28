@@ -25,17 +25,23 @@ class SermonResource extends JsonResource
                 'date' => $this->date?->toDateString(),
                 'audio_file_url' => $this->audio_file_url,
                 'youtube_video_id' => $this->youtube_video_id,
+                'youtube_video_url' => $this->youtube_video_url,
+                'embed_url' => $this->embed_url,
                 'thumbnail_url' => $this->thumbnail_url,
                 'duration' => $this->duration,
                 'series' => $this->series,
                 'views' => $this->views,
+                'favorites_count' => $this->favorites_count ?? 0,
                 'is_featured' => $this->is_featured,
                 'is_published' => $this->is_published,
+                'is_favorited' => $this->when(
+                    $request->user() && $this->relationLoaded('favorites'),
+                    fn() => $this->favorites->contains('user_id', $request->user()->id),
+                    false
+                ),
             ],
             'relationships' => [
-                'category' => new CategoryResource($this->whenLoaded('category')),
-                'favorites_count' => $this->when(isset($this->favorites_count), $this->favorites_count),
-                'watch_later_count' => $this->when(isset($this->watch_later_count), $this->watch_later_count),
+                'category' => $this->whenLoaded('category', fn() => new CategoryResource($this->category)),
             ],
             'meta' => [
                 'created_at' => $this->created_at?->toISOString(),

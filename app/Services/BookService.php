@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Book;
+use App\Models\BookRating;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class BookService
 {
@@ -46,7 +48,7 @@ class BookService
 
     public function checkIfPurchased(User $user, int $bookId): bool
     {
-        return $user->bookPurchases()->where('book_id', $bookId)->exists();
+        return $user->bookPurchases()->where('book_id', $bookId)->where('status', 'completed')->exists();
     }
 
     public function getPurchasedBooks(User $user): LengthAwarePaginator
@@ -57,6 +59,58 @@ class BookService
             ->paginate(15);
 
         return $purchases;
+    }
+
+    /**
+     * Rate a book
+     */
+    public function rateBook(User $user, int $bookId, int $rating, ?string $review = null): BookRating
+    {
+        return DB::transaction(function () use ($user, $bookId, $rating, $review) {
+            // Check if user already rated this book
+            $existingRating = BookRating::where('user_id', $user->id)
+                ->where('book_id', $bookId)
+                ->first();
+
+            if ($existingRating) {
+                // Update existing rating
+                $existingRating->update([
+                    'rating' => $rating,
+                    'review' => $review,
+                ]);
+                $bookRating = $existingRating;
+            } else {
+                // Create new rating
+                $bookRating = BookRating::create([
+                    'user_id' => $user->id,
+                    'book_id' => $bookId,
+                    'rating' => $rating,
+                    'review' => $review,
+                ]);
+            }
+
+            // Recalculate book's average rating
+            $this->updateBookRating($bookId);
+
+            return $bookRating;
+        });
+    }
+
+    /**
+     * Update book's average rating and count
+     */
+    protected function updateBookRating(int $bookId): void
+    {
+        $book = Book::findOrFail($bookId);
+        $ratings = BookRating::where('book_id', $bookId)->get();
+
+        $averageRating = $ratings->avg('rating');
+        $ratingsCount = $ratings->count();
+
+        $book->update([
+            'average_rating' => round($averageRating ?? 0, 2),
+            'ratings_count' => $ratingsCount,
+        ]);
     }
 }
 

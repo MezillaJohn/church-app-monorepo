@@ -38,6 +38,8 @@ Route::prefix('v1')->group(function () {
         //Books
         Route::get('/library/my-books', [BookController::class, 'myBooks']);
         Route::get('/books/{id}/check-purchase', [BookController::class, 'checkPurchase']);
+        Route::post('/books/{id}/rate', [BookController::class, 'rateBook']);
+        Route::get('/books/{id}', [BookController::class, 'show']);
 
         //Events
         Route::post('/events/{id}/rsvp', [EventController::class, 'rsvp']);
@@ -50,17 +52,20 @@ Route::prefix('v1')->group(function () {
         Route::post('/giving/donate', [DonationController::class, 'donate']);
         Route::get('/giving/history', [DonationController::class, 'history']);
         Route::get('/giving/total', [DonationController::class, 'totalDonations']);
+
+        //Payment
+        Route::post('/books/{id}/purchase', [PaymentController::class, 'purchaseBook']);
+        Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']);
     });
 
-    // Sermon routes (public)
+    // Sermon routes 
     Route::get('/sermons', [SermonController::class, 'index']);
     Route::get('/sermons/{id}', [SermonController::class, 'show']);
 
 
-    // Book routes (public)
+    // Book routes
     Route::get('/books', [BookController::class, 'index']);
     Route::get('/books/featured', [BookController::class, 'featured']);
-    Route::get('/books/{id}', [BookController::class, 'show']);
 
 
     // Event routes (public)
@@ -69,17 +74,12 @@ Route::prefix('v1')->group(function () {
 
 
 
-    // Giving routes (public)
+    // Giving routes 
     Route::get('/giving/methods', [DonationController::class, 'getPaymentMethods']);
 
-
-    // Payment routes (protected)
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/books/{id}/purchase', [PaymentController::class, 'purchaseBook']);
-        Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']);
-    });
 });
 
 // Webhook routes (public - no authentication)
 Route::post('/v1/webhooks/paystack', [PaymentController::class, 'handleWebhook']);
+Route::get('/v1/verify-payment', [PaymentController::class, 'verifyPayment']);
 

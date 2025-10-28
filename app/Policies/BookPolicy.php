@@ -57,5 +57,17 @@ class BookPolicy
     {
         return $user->isAdmin();
     }
+
+    /**
+     * Determine if the user can rate the book.
+     */
+    public function rate(User $user, Book $book): bool
+    {
+        // User must have purchased the book
+        return $book->purchases()
+            ->where('user_id', $user->id)
+            ->where('payment_status', 'completed')
+            ->exists() || $user->isAdmin();
+    }
 }
 
