@@ -30,7 +30,6 @@ class AuthController extends BaseController
 
             return $this->ok('User registered successfully. Please verify your email.', [
                 'user' => new UserResource($user),
-                'verification_code' => $user->email_verification_code, // For testing/development
             ]);
         } catch (\Exception $e) {
             return $this->error('Registration failed', ['exception' => $e->getMessage()], 500);
