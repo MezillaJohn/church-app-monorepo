@@ -26,7 +26,7 @@ class AuthController extends BaseController
             $user = $this->authService->register($request->validated());
 
             // Send verification email with code
-            \Illuminate\Support\Facades\Mail::to($user)->send(new VerifyEmail($user, $user->email_verification_code));
+            Mail::to($user)->send(new VerifyEmail($user, $user->email_verification_code));
 
             return $this->ok('User registered successfully. Please verify your email.', [
                 'user' => new UserResource($user),

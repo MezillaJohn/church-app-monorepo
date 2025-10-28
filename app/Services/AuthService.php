@@ -4,8 +4,6 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Auth\Events\Registered;
 
 class AuthService
 {
@@ -19,8 +17,6 @@ class AuthService
 
         // Generate verification code
         $verificationCode = $user->generateVerificationCode();
-
-        event(new Registered($user));
 
         return $user;
     }
