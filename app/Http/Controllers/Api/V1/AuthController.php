@@ -142,7 +142,7 @@ class AuthController extends BaseController
             // Send verification email
             Mail::to($user)->send(new VerifyEmail($user, $code));
 
-            return $this->ok('Verification email sent', ['verification_code' => $code]); // For testing/development
+            return $this->ok('Verification email sent'); // For testing/development
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), [], 429);
         }
@@ -166,7 +166,7 @@ class AuthController extends BaseController
             $code = $result['code'];
 
             // Send email with code
-            \Illuminate\Support\Facades\Mail::to($user)->send(new ResetPasswordMail($user, $code));
+            Mail::to($user)->send(new ResetPasswordMail($user, $code));
 
             // Always return success message (don't reveal if email exists)
             return $this->ok('If the email exists, a password reset code has been sent', [
