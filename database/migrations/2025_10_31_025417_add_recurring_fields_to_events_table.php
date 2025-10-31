@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::table('events', function (Blueprint $table) {
             $table->boolean('is_recurring')->default(false)->after('is_published');
             $table->string('recurrence_pattern')->nullable()->after('is_recurring'); // daily, weekly, monthly, yearly
-            $table->integer('recurrence_interval')->default(1)->after('recurrence_pattern'); // every N days/weeks/months
+            $table->integer('recurrence_interval')->nullable()->after('recurrence_pattern'); // every N days/weeks/months
             $table->date('recurrence_end_date')->nullable()->after('recurrence_interval');
             $table->integer('recurrence_count')->nullable()->after('recurrence_end_date'); // number of occurrences
             $table->foreignId('parent_event_id')->nullable()->constrained('events')->nullOnDelete()->after('recurrence_count');
