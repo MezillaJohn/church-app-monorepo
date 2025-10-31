@@ -219,8 +219,9 @@ class EventService
 
         while ($currentDate->lte($endDate) && ($occurrenceNumber + $instanceCount) < $maxCount) {
             // Create a virtual instance
-            $instance = new Event([
-                'id' => $event->id . '_' . ($occurrenceNumber + $instanceCount), // Virtual ID to avoid conflicts
+            $instance = new Event();
+            $instance->setRawAttributes([
+                'id' => $event->id, // Use parent event ID for virtual instances
                 'title' => $event->title,
                 'description' => $event->description,
                 'event_date' => $currentDate->toDateString(),
@@ -233,10 +234,17 @@ class EventService
                 'is_published' => $event->is_published,
                 'is_recurring' => false,
                 'parent_event_id' => $event->id,
-            ]);
+                'recurrence_pattern' => null,
+                'recurrence_interval' => null,
+                'recurrence_end_date' => null,
+                'recurrence_count' => null,
+                'created_at' => $event->created_at,
+                'updated_at' => $event->updated_at,
+            ], true); // true = sync
 
-            // Set virtual instance flag
+            // Set virtual instance flag and occurrence identifier
             $instance->setAttribute('is_recurring_instance', true);
+            $instance->setAttribute('virtual_occurrence_id', $event->id . '_' . ($occurrenceNumber + $instanceCount));
 
             $instances->push($instance);
 

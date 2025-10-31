@@ -14,8 +14,11 @@ class EventResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // For virtual instances, use parent_event_id if available, otherwise use id
+        $displayId = $this->parent_event_id ?? $this->id;
+
         return [
-            'id' => $this->id,
+            'id' => $displayId,
             'type' => 'event',
             'attributes' => [
                 'title' => $this->title,
