@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\Event;
 use App\Models\Favorite;
 use App\Models\Sermon;
+use App\Observers\SermonObserver;
 use App\Policies\BookPolicy;
 use App\Policies\DonationPolicy;
 use App\Policies\EventPolicy;
@@ -36,5 +37,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Event::class, EventPolicy::class);
         Gate::policy(Donation::class, DonationPolicy::class);
         Gate::policy(Favorite::class, FavoritePolicy::class);
+
+        // Register observers
+        Sermon::observe(SermonObserver::class);
     }
 }

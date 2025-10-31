@@ -9,6 +9,7 @@ use App\Http\Requests\Api\V1\UpdateProfileRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Mail\ResetPasswordMail;
 use App\Mail\VerifyEmail;
+use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -28,7 +29,10 @@ class AuthController extends BaseController
             // Send verification email with code
             Mail::to($user)->send(new VerifyEmail($user, $user->email_verification_code));
 
+            $token = $user->createToken('api-token')->plainTextToken;
+
             return $this->ok('User registered successfully. Please verify your email.', [
+                'token' => $token,
                 'user' => new UserResource($user),
             ]);
         } catch (\Exception $e) {
@@ -49,6 +53,18 @@ class AuthController extends BaseController
             'token' => $result['token'] ?? null,
             'user' => new UserResource($result['user'] ?? $result),
         ]);
+    }
+    public function validateEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $emailExists = User::where('email', $request->email)->exists();
+        if ($emailExists) {
+            return $this->error('Email already exists', [], 400);
+        }
+        return $this->ok('Email is available');
     }
 
     public function logout(Request $request)

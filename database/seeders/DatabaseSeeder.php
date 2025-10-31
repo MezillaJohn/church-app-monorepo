@@ -30,11 +30,12 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
         ]);
 
-        // Seed sermons, books, and events
+        // Seed sermons, books, events, and hero sliders
         $this->call([
             SermonSeeder::class,
             BookSeeder::class,
             EventSeeder::class,
+            HeroSliderSeeder::class,
         ]);
     }
 }

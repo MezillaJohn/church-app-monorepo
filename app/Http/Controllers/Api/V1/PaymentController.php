@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\V1\Controller as BaseController;
 use App\Models\BookPurchase;
 use App\Models\Donation;
+use App\Models\User;
 use App\Services\PaystackService;
+use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends BaseController
 {
-    public function __construct(private PaystackService $paystackService)
-    {
+    public function __construct(
+        private PaystackService $paystackService,
+        private ?PushNotificationService $pushNotificationService = null
+    ) {
     }
 
     /**
@@ -143,16 +147,43 @@ class PaymentController extends BaseController
     protected function completePurchase(array $metadata, array $transaction): void
     {
         DB::transaction(function () use ($metadata, $transaction) {
-            BookPurchase::where('user_id', $metadata['user_id'])
+            $purchase = BookPurchase::where('user_id', $metadata['user_id'])
                 ->where('book_id', $metadata['book_id'])
                 ->where('transaction_reference', $transaction['reference'])
-                ->update([
+                ->first();
+
+            if ($purchase) {
+                $purchase->update([
                     'status' => 'completed',
                     'updated_at' => now(),
                 ]);
 
-            // TODO: Dispatch job to send purchase receipt email
-            // dispatch(new SendPurchaseReceipt($metadata['user_id'], $metadata['book_id']));
+                // Send payment confirmation notification
+                if ($this->pushNotificationService) {
+                    try {
+                        $user = User::find($metadata['user_id']);
+                        $book = \App\Models\Book::find($metadata['book_id']);
+                        if ($user && $book) {
+                            $this->pushNotificationService->sendToUser(
+                                $user,
+                                'Payment Confirmed',
+                                "Your purchase of '{$book->title}' has been confirmed",
+                                [
+                                    'type' => 'payment',
+                                    'id' => $purchase->id,
+                                    'book_id' => $book->id,
+                                ]
+                            );
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send purchase notification', [
+                            'error' => $e->getMessage(),
+                            'user_id' => $metadata['user_id'],
+                            'book_id' => $metadata['book_id'],
+                        ]);
+                    }
+                }
+            }
 
             Log::info("Book purchase completed: User {$metadata['user_id']}, Book {$metadata['book_id']}");
         });
@@ -164,15 +195,43 @@ class PaymentController extends BaseController
     protected function completeDonation(array $metadata, array $transaction): void
     {
         DB::transaction(function () use ($metadata, $transaction) {
-            Donation::where('user_id', $metadata['user_id'])
+            $donation = Donation::where('user_id', $metadata['user_id'])
                 ->where('transaction_reference', $transaction['reference'])
-                ->update([
+                ->first();
+
+            if ($donation) {
+                $donation->update([
                     'status' => 'completed',
                     'updated_at' => now(),
                 ]);
 
-            // TODO: Dispatch job to send donation receipt email
-            // dispatch(new SendDonationReceipt($metadata['user_id'], $transaction['reference']));
+                // Send payment confirmation notification
+                if ($this->pushNotificationService) {
+                    try {
+                        $user = User::find($metadata['user_id']);
+                        if ($user) {
+                            $amount = number_format($transaction['amount'] / 100, 2);
+                            $donationType = $donation->donation_type->value ?? 'donation';
+                            $this->pushNotificationService->sendToUser(
+                                $user,
+                                'Payment Confirmed',
+                                "Your {$donationType} of ₦{$amount} has been processed successfully",
+                                [
+                                    'type' => 'payment',
+                                    'id' => $donation->id,
+                                    'donation_type' => $donationType,
+                                ]
+                            );
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send donation notification', [
+                            'error' => $e->getMessage(),
+                            'user_id' => $metadata['user_id'],
+                            'donation_id' => $donation->id ?? null,
+                        ]);
+                    }
+                }
+            }
 
             Log::info("Donation completed: User {$metadata['user_id']}, Amount {$transaction['amount']}");
         });

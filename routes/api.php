@@ -5,14 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\SermonController;
 use App\Http\Controllers\Api\V1\BookController;
-use App\Http\Controllers\Api\V1\EventController;
+use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\DonationController;
+use App\Http\Controllers\Api\V1\EventController;
+use App\Http\Controllers\Api\V1\HeroSliderController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\PushTokenController;
 
 Route::prefix('v1')->group(function () {
     // Public Authentication routes
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::post('/auth/validate-email', [AuthController::class, 'validateEmail']);
     Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
@@ -56,6 +60,11 @@ Route::prefix('v1')->group(function () {
         //Payment
         Route::post('/books/{id}/purchase', [PaymentController::class, 'purchaseBook']);
         Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']);
+
+        //Push Tokens
+        Route::get('/push-tokens', [PushTokenController::class, 'index']);
+        Route::post('/push-tokens', [PushTokenController::class, 'store']);
+        Route::delete('/push-tokens/{id}', [PushTokenController::class, 'destroy']);
     });
 
     // Sermon routes 
@@ -76,6 +85,13 @@ Route::prefix('v1')->group(function () {
 
     // Giving routes 
     Route::get('/giving/methods', [DonationController::class, 'getPaymentMethods']);
+
+    // Hero Slider routes (public)
+    Route::get('/hero-sliders', [HeroSliderController::class, 'index']);
+
+    // Category routes (public)
+    Route::get('/categories/sermons', [CategoryController::class, 'getSermonCategories']);
+    Route::get('/categories/books', [CategoryController::class, 'getBookCategories']);
 
 });
 

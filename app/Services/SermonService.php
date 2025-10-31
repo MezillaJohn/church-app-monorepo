@@ -132,5 +132,42 @@ class SermonService
             ->where('sermon_id', $sermonId)
             ->first();
     }
+
+    /**
+     * Get related sermons based on category, series, and speaker
+     */
+    public function getRelatedSermons(Sermon $sermon, int $limit = 6): \Illuminate\Database\Eloquent\Collection
+    {
+        $query = Sermon::where('id', '!=', $sermon->id)
+            ->where('is_published', true)
+            ->where('category_id', $sermon->category_id)
+            ->with(['category']);
+
+        // Build priority conditions: series > speaker > category (already filtered)
+        $priorityConditions = [];
+
+        if ($sermon->series) {
+            $priorityConditions[] = ['series', '=', $sermon->series];
+        }
+
+        if ($sermon->speaker) {
+            $priorityConditions[] = ['speaker', '=', $sermon->speaker];
+        }
+
+        // Order by priority: series matches first, then speaker, then category
+        if (!empty($priorityConditions)) {
+            $query->where(function ($q) use ($priorityConditions, $sermon) {
+                foreach ($priorityConditions as $condition) {
+                    $q->orWhere($condition[0], $condition[1], $condition[2]);
+                }
+            });
+        }
+
+        // Order by views (most viewed) then by date (most recent)
+        return $query->orderBy('views', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
 }
 

@@ -35,7 +35,14 @@ class SermonController extends BaseController
                 return $this->error('Sermon not found', [], 404);
             }
 
-            return $this->ok('Sermon retrieved successfully', new SermonResource($sermon));
+            // Get related sermons
+            $relatedSermons = $this->sermonService->getRelatedSermons($sermon);
+
+            // Pass related sermons to resource
+            $resource = new SermonResource($sermon);
+            $resource->relatedSermons = $relatedSermons;
+
+            return $this->ok('Sermon retrieved successfully', $resource);
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve sermon', ['exception' => $e->getMessage()], 500);
         }

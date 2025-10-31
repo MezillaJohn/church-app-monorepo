@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Event;
 use App\Enums\EventType;
+use App\Enums\RecurrencePattern;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class EventSeeder extends Seeder
@@ -83,6 +85,10 @@ class EventSeeder extends Seeder
                 'event_time' => '07:00:00',
                 'max_attendees' => 80,
                 'requires_rsvp' => false,
+                'is_recurring' => true,
+                'recurrence_pattern' => RecurrencePattern::Monthly,
+                'recurrence_interval' => 1,
+                'recurrence_end_date' => now()->addYear(),
             ],
             [
                 'title' => 'Women\'s Day Conference',
@@ -93,6 +99,10 @@ class EventSeeder extends Seeder
                 'event_time' => '09:00:00',
                 'max_attendees' => 300,
                 'requires_rsvp' => true,
+                'is_recurring' => true,
+                'recurrence_pattern' => RecurrencePattern::Monthly,
+                'recurrence_interval' => 1,
+                'recurrence_count' => 12,
             ],
             [
                 'title' => 'Financial Stewardship Seminar',
@@ -134,6 +144,34 @@ class EventSeeder extends Seeder
                 'max_attendees' => 600,
                 'requires_rsvp' => false,
             ],
+            [
+                'title' => 'Sunday Service',
+                'description' => 'Join us every Sunday for powerful worship, inspiring teaching from God\'s Word, and fellowship with the church family.',
+                'event_type' => EventType::Service,
+                'location' => 'Main Church Auditorium, 123 Church Street, City, State',
+                'event_date' => now()->next(Carbon::SUNDAY),
+                'event_time' => '09:00:00',
+                'max_attendees' => 500,
+                'requires_rsvp' => false,
+                'is_recurring' => true,
+                'recurrence_pattern' => RecurrencePattern::Weekly,
+                'recurrence_interval' => 1,
+                'recurrence_end_date' => null,
+            ],
+            [
+                'title' => 'Prayer Meeting',
+                'description' => 'Weekly prayer gathering where we come together to intercede for our church, community, and nation.',
+                'event_type' => EventType::Prayer,
+                'location' => 'Church Prayer Room, 123 Church Street, City, State',
+                'event_date' => now()->next(Carbon::WEDNESDAY),
+                'event_time' => '19:00:00',
+                'max_attendees' => 100,
+                'requires_rsvp' => false,
+                'is_recurring' => true,
+                'recurrence_pattern' => RecurrencePattern::Weekly,
+                'recurrence_interval' => 1,
+                'recurrence_end_date' => now()->addYear(),
+            ],
         ];
 
         foreach ($events as $eventData) {
@@ -148,6 +186,11 @@ class EventSeeder extends Seeder
                 'max_attendees' => $eventData['max_attendees'],
                 'requires_rsvp' => $eventData['requires_rsvp'],
                 'is_published' => true,
+                'is_recurring' => $eventData['is_recurring'] ?? false,
+                'recurrence_pattern' => $eventData['recurrence_pattern'] ?? null,
+                'recurrence_interval' => $eventData['recurrence_interval'] ?? null,
+                'recurrence_end_date' => $eventData['recurrence_end_date'] ?? null,
+                'recurrence_count' => $eventData['recurrence_count'] ?? null,
             ]);
         }
     }

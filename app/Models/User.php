@@ -107,6 +107,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(EventReminder::class);
     }
 
+    public function pushTokens(): HasMany
+    {
+        return $this->hasMany(PushToken::class);
+    }
+
     public function sermonProgress(): HasMany
     {
         return $this->hasMany(SermonProgress::class);

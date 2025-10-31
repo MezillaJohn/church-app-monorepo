@@ -42,6 +42,44 @@ class EventResource extends Resource
                     ->numeric(),
                 Forms\Components\Toggle::make('requires_rsvp'),
                 Forms\Components\Toggle::make('is_published'),
+                Forms\Components\Toggle::make('is_recurring')
+                    ->label('Is Recurring Event')
+                    ->live()
+                    ->default(false),
+                Forms\Components\Select::make('recurrence_pattern')
+                    ->label('Recurrence Pattern')
+                    ->options([
+                        'daily' => 'Daily',
+                        'weekly' => 'Weekly',
+                        'monthly' => 'Monthly',
+                        'yearly' => 'Yearly',
+                    ])
+                    ->visible(fn($get) => $get('is_recurring'))
+                    ->required(fn($get) => $get('is_recurring')),
+                Forms\Components\TextInput::make('recurrence_interval')
+                    ->label('Repeat Every')
+                    ->numeric()
+                    ->default(1)
+                    ->minValue(1)
+                    ->suffix(fn($get) => match ($get('recurrence_pattern')) {
+                        'daily' => 'day(s)',
+                        'weekly' => 'week(s)',
+                        'monthly' => 'month(s)',
+                        'yearly' => 'year(s)',
+                        default => '',
+                    })
+                    ->visible(fn($get) => $get('is_recurring'))
+                    ->required(fn($get) => $get('is_recurring')),
+                Forms\Components\DatePicker::make('recurrence_end_date')
+                    ->label('Recurrence End Date')
+                    ->visible(fn($get) => $get('is_recurring'))
+                    ->helperText('Optional: Leave empty for no end date'),
+                Forms\Components\TextInput::make('recurrence_count')
+                    ->label('Number of Occurrences')
+                    ->numeric()
+                    ->minValue(1)
+                    ->visible(fn($get) => $get('is_recurring'))
+                    ->helperText('Optional: Alternative to end date'),
             ]);
     }
 
@@ -60,6 +98,13 @@ class EventResource extends Resource
                     ->boolean(),
                 Tables\Columns\IconColumn::make('is_published')
                     ->boolean(),
+                Tables\Columns\IconColumn::make('is_recurring')
+                    ->label('Recurring')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('recurrence_pattern')
+                    ->label('Recurrence')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => $state ? ucfirst($state) : ''),
             ])
             ->filters([
                 //

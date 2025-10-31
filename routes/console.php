@@ -13,3 +13,7 @@ Schedule::command('sermons:sync-youtube')
     ->daily()
     ->at('02:00')
     ->timezone('UTC');
+
+// Schedule event reminders to send every minute
+Schedule::command('notifications:send-event-reminders')
+    ->everyMinute();

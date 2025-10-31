@@ -42,6 +42,10 @@ class SermonResource extends JsonResource
             ],
             'relationships' => [
                 'category' => $this->whenLoaded('category', fn() => new CategoryResource($this->category)),
+                'related_sermons' => $this->when(
+                    isset($this->relatedSermons) && $this->relatedSermons->isNotEmpty(),
+                    fn() => SermonResource::collection($this->relatedSermons)
+                ),
             ],
             'meta' => [
                 'created_at' => $this->created_at?->toISOString(),

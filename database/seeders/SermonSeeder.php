@@ -177,7 +177,7 @@ class SermonSeeder extends Seeder
                 'date' => now()->subDays(rand(1, 180)),
                 'duration' => $sermonData['duration'],
                 'category_id' => $category->id,
-                'thumbnail_url' => 'https://via.placeholder.com/640x360?text=' . urlencode($sermonData['title']),
+                'thumbnail_url' => 'https://placehold.co/640x360?text=' . urlencode($sermonData['title']),
                 'is_published' => true,
                 'is_featured' => $index < 3, // First 3 as featured
                 'views' => rand(100, 5000),
