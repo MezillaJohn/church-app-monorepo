@@ -15,7 +15,7 @@ class SetPasswordRequest extends FormRequest
     {
         return [
             'email' => ['required', 'email', 'max:255'],
-            'password' => ['required','confirmed', 'string', 'min:8'],
+            'password' => ['required', 'confirmed', 'string', 'min:8'],
             'proceed_token' => ['required', 'string'],
         ];
     }
