@@ -33,8 +33,19 @@ class RegistrationController extends BaseController
 
         $cooldown = (int) config('verification.resend_cooldown_seconds');
         $existing = VerificationCode::where('email', $email)->latest()->first();
-        if ($existing && $existing->last_sent_at && now()->diffInSeconds($existing->last_sent_at) < $cooldown) {
-            return $this->error('Please wait before requesting another code', [], 429);
+        if ($existing && $existing->last_sent_at) {
+            $nextAllowedAt = $existing->last_sent_at->copy()->addSeconds($cooldown);
+            if ($nextAllowedAt->isFuture()) {
+                $secondsRemaining = now()->diffInSeconds($nextAllowedAt);
+                return $this->error(
+                    'Please wait before requesting another code',
+                    [
+                        'wait_seconds' => $secondsRemaining,
+                        'available_at' => $nextAllowedAt->toIso8601String(),
+                    ],
+                    429
+                );
+            }
         }
 
         $codeLength = (int) config('verification.code_length', 4);
@@ -62,8 +73,19 @@ class RegistrationController extends BaseController
         }
 
         $cooldown = (int) config('verification.resend_cooldown_seconds');
-        if ($existing->last_sent_at && now()->diffInSeconds($existing->last_sent_at) < $cooldown) {
-            return $this->error('Please wait before requesting another code', [], 429);
+        if ($existing->last_sent_at) {
+            $nextAllowedAt = $existing->last_sent_at->copy()->addSeconds($cooldown);
+            if ($nextAllowedAt->isFuture()) {
+                $secondsRemaining = now()->diffInSeconds($nextAllowedAt);
+                return $this->error(
+                    'Please wait before requesting another code',
+                    [
+                        'wait_seconds' => $secondsRemaining,
+                        'available_at' => $nextAllowedAt->toIso8601String(),
+                    ],
+                    429
+                );
+            }
         }
 
         $existing->update(['last_sent_at' => now()]);
