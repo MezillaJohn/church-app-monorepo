@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\DonationController;
 use App\Http\Controllers\Api\V1\EventController;
 use App\Http\Controllers\Api\V1\HeroSliderController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\RegistrationController;
 use App\Http\Controllers\Api\V1\PushTokenController;
 
 Route::prefix('v1')->group(function () {
@@ -92,6 +93,12 @@ Route::prefix('v1')->group(function () {
     // Category routes (public)
     Route::get('/categories/sermons', [CategoryController::class, 'getSermonCategories']);
     Route::get('/categories/books', [CategoryController::class, 'getBookCategories']);
+
+    // Registration (public)
+    Route::post('/auth/register/request-code', [RegistrationController::class, 'requestCode']);
+    Route::post('/auth/register/resend-code', [RegistrationController::class, 'resendCode']);
+    Route::post('/auth/register/verify-code', [RegistrationController::class, 'verifyCode']);
+    Route::post('/auth/register/set-password', [RegistrationController::class, 'setPassword']);
 
 });
 
