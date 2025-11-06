@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Event;
+use App\Models\EventReminderSetting;
 use App\Models\EventRsvp;
 use App\Models\EventReminder;
 use App\Models\User;
@@ -133,16 +134,27 @@ class EventService
             ->paginate(15);
     }
 
-    public function setReminder(User $user, int $eventId, \DateTime $reminderTime): EventReminder
+    public function setReminder(User $user, int $eventId, int $reminderSettingId): EventReminder
     {
+        $event = Event::findOrFail($eventId);
+        $reminderSetting = \App\Models\EventReminderSetting::findOrFail($reminderSettingId);
+
+        // Calculate reminder time based on event datetime and reminder setting
+        // Format both date and time as strings to avoid Carbon concatenation issues
+        $eventDateTime = Carbon::parse($event->event_date->toDateString() . ' ' . $event->event_time->format('H:i:s'));
+        $reminderTime = $eventDateTime->copy()->subMinutes($reminderSetting->minutes_before);
+
         return EventReminder::updateOrCreate(
             [
                 'user_id' => $user->id,
                 'event_id' => $eventId,
             ],
             [
+                'reminder_setting_id' => $reminderSettingId,
                 'reminder_time' => $reminderTime,
                 'is_sent' => false,
+                'notification_sent_at' => null,
+                'email_sent_at' => null,
             ]
         );
     }

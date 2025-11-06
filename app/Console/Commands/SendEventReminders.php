@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\EventReminder;
+use App\Notifications\EventReminderNotification;
 use App\Services\PushNotificationService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SendEventReminders extends Command
 {
@@ -57,33 +59,65 @@ class SendEventReminders extends Command
                 $eventDate = \Carbon\Carbon::parse($reminder->event->event_date)->format('M d, Y');
                 $eventTime = \Carbon\Carbon::parse($reminder->event->event_time)->format('g:i A');
 
-                $title = 'Event Reminder';
-                $body = "{$eventTitle} is coming up on {$eventDate} at {$eventTime}";
-                $data = [
-                    'type' => 'event_reminder',
-                    'event_id' => $reminder->event->id,
-                    'reminder_id' => $reminder->id,
-                ];
+                // Get reminder setting for text
+                $reminderTimeText = 'at event time';
+                if ($reminder->reminderSetting) {
+                    $reminderTimeText = $reminder->reminderSetting->name;
+                }
 
-                $result = $pushNotificationService->sendToUser(
-                    $reminder->user,
-                    $title,
-                    $body,
-                    $data
-                );
+                $pushSent = false;
+                $emailSent = false;
 
-                if (!empty($result) && isset($result[0]['success']) && $result[0]['success']) {
+                // Send push notification
+                try {
+                    $title = 'Event Reminder';
+                    $body = "{$eventTitle} is coming up on {$eventDate} at {$eventTime}";
+                    $data = [
+                        'type' => 'event_reminder',
+                        'event_id' => $reminder->event->id,
+                        'reminder_id' => $reminder->id,
+                    ];
+
+                    $result = $pushNotificationService->sendToUser(
+                        $reminder->user,
+                        $title,
+                        $body,
+                        $data
+                    );
+
+                    if (!empty($result) && isset($result[0]['success']) && $result[0]['success']) {
+                        $pushSent = true;
+                        $reminder->update(['notification_sent_at' => now()]);
+                        $this->info("Sent push notification for reminder {$reminder->id}");
+                    }
+                } catch (\Exception $e) {
+                    Log::warning("Failed to send push notification for reminder {$reminder->id}", [
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+
+                // Send email notification
+                try {
+                    $reminder->user->notify(new EventReminderNotification(
+                        $reminder->event,
+                        $reminderTimeText
+                    ));
+                    $emailSent = true;
+                    $reminder->update(['email_sent_at' => now()]);
+                    $this->info("Sent email notification for reminder {$reminder->id}");
+                } catch (\Exception $e) {
+                    Log::warning("Failed to send email notification for reminder {$reminder->id}", [
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+
+                // Mark as sent if at least one notification was successful
+                if ($pushSent || $emailSent) {
                     $reminder->update(['is_sent' => true]);
                     $sent++;
-                    $this->info("Sent reminder {$reminder->id} to user {$reminder->user->id}");
                 } else {
                     $failed++;
                     $this->error("Failed to send reminder {$reminder->id}");
-                    Log::warning("Failed to send event reminder", [
-                        'reminder_id' => $reminder->id,
-                        'user_id' => $reminder->user_id,
-                        'result' => $result,
-                    ]);
                 }
             } catch (\Exception $e) {
                 $failed++;

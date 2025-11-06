@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\V1\Controller as BaseController;
+use App\Http\Requests\Api\V1\StoreDonationRequest;
 use App\Http\Resources\Api\V1\BankAccountResource;
 use App\Http\Resources\Api\V1\DonationResource;
+use App\Http\Resources\Api\V1\DonationTypeResource;
+use App\Models\DonationType;
 use App\Services\DonationService;
 use Illuminate\Http\Request;
 
@@ -12,6 +15,16 @@ class DonationController extends BaseController
 {
     public function __construct(private DonationService $donationService)
     {
+    }
+
+    public function getDonationTypes()
+    {
+        try {
+            $types = DonationType::where('is_active', true)->get();
+            return $this->ok('Donation types retrieved successfully', DonationTypeResource::collection($types));
+        } catch (\Exception $e) {
+            return $this->error('Failed to retrieve donation types', ['exception' => $e->getMessage()], 500);
+        }
     }
 
     public function getPaymentMethods()
@@ -24,23 +37,15 @@ class DonationController extends BaseController
         }
     }
 
-    public function donate(Request $request)
+    public function donate(StoreDonationRequest $request)
     {
         try {
-            $request->validate([
-                'amount' => 'required|numeric|min:1',
-                'donation_type' => 'required|in:tithe,offering,special,missions',
-                'payment_method' => 'required|in:paystack,manual',
-                'note' => 'sometimes|string|max:500',
-                'is_anonymous' => 'sometimes|boolean',
-            ]);
-
-            $donation = $this->donationService->createDonation($request->user(), $request->all());
+            $donation = $this->donationService->createDonation($request->user(), $request->validated());
             $user = $request->user();
 
             // Handle payment based on payment method
             $responseData = [
-                'donation' => new DonationResource($donation),
+                'donation' => new DonationResource($donation->load('donationType')),
             ];
 
             if ($request->payment_method === 'paystack') {

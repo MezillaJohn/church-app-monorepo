@@ -78,18 +78,31 @@ class EventController extends BaseController
     {
         try {
             $request->validate([
-                'reminder_time' => 'required|date',
+                'reminder_setting_id' => 'sometimes|exists:event_reminder_settings,id',
             ]);
 
             $reminder = $this->eventService->setReminder(
                 $request->user(),
                 $id,
-                new \DateTime($request->reminder_time)
+                $request?->reminder_setting_id
             );
 
             return $this->ok('Reminder set successfully', $reminder);
         } catch (\Exception $e) {
             return $this->error('Failed to set reminder', ['exception' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getReminderSettings()
+    {
+        try {
+            $settings = \App\Models\EventReminderSetting::where('is_active', true)
+                ->orderBy('minutes_before')
+                ->get();
+
+            return $this->ok('Reminder settings retrieved successfully', $settings);
+        } catch (\Exception $e) {
+            return $this->error('Failed to retrieve reminder settings', ['exception' => $e->getMessage()], 500);
         }
     }
 

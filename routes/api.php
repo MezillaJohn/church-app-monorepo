@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\HeroSliderController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RegistrationController;
 use App\Http\Controllers\Api\V1\PushTokenController;
+use App\Http\Controllers\Api\V1\ChurchCentreController;
 
 Route::prefix('v1')->group(function () {
     // Public Authentication routes
@@ -52,6 +53,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/events/my-rsvps', [EventController::class, 'myRsvps']);
         Route::post('/events/{id}/reminder', [EventController::class, 'setReminder']);
         Route::delete('/events/{id}/reminder', [EventController::class, 'removeReminder']);
+        Route::get('/events/reminder-settings', [EventController::class, 'getReminderSettings']);
 
         //Giving
         Route::post('/giving/donate', [DonationController::class, 'donate']);
@@ -85,10 +87,14 @@ Route::prefix('v1')->group(function () {
 
 
     // Giving routes 
+    Route::get('/giving/types', [DonationController::class, 'getDonationTypes']);
     Route::get('/giving/methods', [DonationController::class, 'getPaymentMethods']);
 
     // Hero Slider routes (public)
     Route::get('/hero-sliders', [HeroSliderController::class, 'index']);
+
+    // Church Centre routes (public)
+    Route::get('/church-centres', [ChurchCentreController::class, 'index']);
 
     // Category routes (public)
     Route::get('/categories/sermons', [CategoryController::class, 'getSermonCategories']);

@@ -2,5 +2,5 @@
 alwaysApply: true
 ---
 ### Rules:
-- **cd into project dir before running php ...**
-- **combining 2 commands with && doesn't not work instead use ";"**
+- cd into project dir before running php ...
+- combining 2 commands with && doesn't not work instead use ";"

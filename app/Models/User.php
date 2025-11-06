@@ -6,6 +6,7 @@ use App\Http\Filters\QueryFilter;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -27,7 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'church_centre',
+        'church_centre_id',
         'country',
         'phone',
         'gender',
@@ -75,6 +76,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function donations(): HasMany
     {
         return $this->hasMany(Donation::class);
+    }
+
+    public function churchCentre(): BelongsTo
+    {
+        return $this->belongsTo(ChurchCentre::class);
     }
 
     public function favorites(): HasMany

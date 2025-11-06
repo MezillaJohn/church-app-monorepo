@@ -22,16 +22,25 @@ class PaystackService
     public function initializeTransaction(array $data): array
     {
         try {
+            $currency = $data['currency'] ?? 'NGN';
+            $amount = $data['amount'];
+
+            // Convert amount to smallest unit (kobo for NGN, cents for USD, etc.)
+            $amountInSmallestUnit = $this->convertToSmallestUnit($amount, $currency);
+
+            $payload = [
+                'email' => $data['email'],
+                'amount' => $amountInSmallestUnit,
+                'currency' => $currency,
+                'reference' => $data['reference'] ?? $this->generateReference(),
+                'callback_url' => $data['callback_url'] ?? config('paystack.callback_url'),
+                'metadata' => $data['metadata'] ?? [],
+            ];
+
             $response = Http::withHeaders([
                 'Authorization' => "Bearer {$this->secretKey}",
                 'Content-Type' => 'application/json',
-            ])->post('https://api.paystack.co/transaction/initialize', [
-                        'email' => $data['email'],
-                        'amount' => $data['amount'] * 100, // Convert to kobo
-                        'reference' => $data['reference'] ?? $this->generateReference(),
-                        'callback_url' => $data['callback_url'] ?? config('paystack.callback_url'),
-                        'metadata' => $data['metadata'] ?? [],
-                    ]);
+            ])->post('https://api.paystack.co/transaction/initialize', $payload);
 
             if ($response->successful()) {
                 return $response->json('data');
@@ -42,6 +51,27 @@ class PaystackService
             Log::error('Paystack initialization error: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    /**
+     * Convert amount to smallest currency unit
+     */
+    private function convertToSmallestUnit(float $amount, string $currency): int
+    {
+        // Most currencies use 100 as multiplier (e.g., kobo, cents)
+        // Some currencies like JPY don't have decimal units
+        $multipliers = [
+            'NGN' => 100, // Kobo
+            'USD' => 100, // Cents
+            'EUR' => 100, // Cents
+            'GBP' => 100, // Pence
+            'CAD' => 100, // Cents
+            'AUD' => 100, // Cents
+            'JPY' => 1,   // No sub-unit
+        ];
+
+        $multiplier = $multipliers[$currency] ?? 100;
+        return (int) ($amount * $multiplier);
     }
 
     /**

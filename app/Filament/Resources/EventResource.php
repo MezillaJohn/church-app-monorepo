@@ -89,7 +89,8 @@ class EventResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('event_type'),
+                Tables\Columns\TextColumn::make('event_type')
+                    ->formatStateUsing(fn($state) => $state ? ucfirst($state->value) : ''),
                 Tables\Columns\TextColumn::make('event_date')
                     ->date(),
                 Tables\Columns\TextColumn::make('location')
@@ -104,7 +105,7 @@ class EventResource extends Resource
                 Tables\Columns\TextColumn::make('recurrence_pattern')
                     ->label('Recurrence')
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state ? ucfirst($state) : ''),
+                    ->formatStateUsing(fn($state) => $state ? ucfirst($state->value) : ''),
             ])
             ->filters([
                 //
