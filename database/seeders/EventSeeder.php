@@ -175,23 +175,25 @@ class EventSeeder extends Seeder
         ];
 
         foreach ($events as $eventData) {
-            Event::create([
-                'title' => $eventData['title'],
-                'description' => $eventData['description'],
-                'event_type' => $eventData['event_type'],
-                'location' => $eventData['location'],
-                'event_date' => $eventData['event_date'],
-                'event_time' => $eventData['event_time'],
-                'image_url' => 'events/' . str_replace(' ', '-', strtolower($eventData['title'])) . '.jpg',
-                'max_attendees' => $eventData['max_attendees'],
-                'requires_rsvp' => $eventData['requires_rsvp'],
-                'is_published' => true,
-                'is_recurring' => $eventData['is_recurring'] ?? false,
-                'recurrence_pattern' => $eventData['recurrence_pattern'] ?? null,
-                'recurrence_interval' => $eventData['recurrence_interval'] ?? null,
-                'recurrence_end_date' => $eventData['recurrence_end_date'] ?? null,
-                'recurrence_count' => $eventData['recurrence_count'] ?? null,
-            ]);
+            Event::updateOrCreate(
+                ['title' => $eventData['title']], // Match by title
+                [
+                    'description' => $eventData['description'],
+                    'event_type' => $eventData['event_type'],
+                    'location' => $eventData['location'],
+                    'event_date' => $eventData['event_date'],
+                    'event_time' => $eventData['event_time'],
+                    'image_url' => 'events/' . str_replace(' ', '-', strtolower($eventData['title'])) . '.jpg',
+                    'max_attendees' => $eventData['max_attendees'],
+                    'requires_rsvp' => $eventData['requires_rsvp'],
+                    'is_published' => true,
+                    'is_recurring' => $eventData['is_recurring'] ?? false,
+                    'recurrence_pattern' => $eventData['recurrence_pattern'] ?? null,
+                    'recurrence_interval' => $eventData['recurrence_interval'] ?? null,
+                    'recurrence_end_date' => $eventData['recurrence_end_date'] ?? null,
+                    'recurrence_count' => $eventData['recurrence_count'] ?? null,
+                ]
+            );
         }
     }
 }

@@ -44,13 +44,15 @@ class HeroSliderSeeder extends Seeder
         ];
 
         foreach ($sliders as $slider) {
-            HeroSlider::create([
-                'title' => $slider['title'],
-                'image_path' => $slider['image_path'],
-                'link_url' => $slider['link_url'],
-                'order' => $slider['order'],
-                'is_active' => $slider['is_active'],
-            ]);
+            HeroSlider::updateOrCreate(
+                ['title' => $slider['title']], // Match by title
+                [
+                    'image_path' => $slider['image_path'],
+                    'link_url' => $slider['link_url'],
+                    'order' => $slider['order'],
+                    'is_active' => $slider['is_active'],
+                ]
+            );
         }
 
         // Create placeholder images using placehold.co URLs

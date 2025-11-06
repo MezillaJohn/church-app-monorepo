@@ -89,24 +89,28 @@ class CategorySeeder extends Seeder
 
         // Create sermon categories
         foreach ($sermonCategories as $category) {
-            Category::create([
-                'name' => $category['name'],
-                'slug' => $category['slug'],
-                'description' => $category['description'],
-                'type' => $category['type'],
-                'is_active' => true,
-            ]);
+            Category::firstOrCreate(
+                ['slug' => $category['slug']], // Match by slug
+                [
+                    'name' => $category['name'],
+                    'description' => $category['description'],
+                    'type' => $category['type'],
+                    'is_active' => true,
+                ]
+            );
         }
 
         // Create book categories
         foreach ($bookCategories as $category) {
-            Category::create([
-                'name' => $category['name'],
-                'slug' => $category['slug'],
-                'description' => $category['description'],
-                'type' => $category['type'],
-                'is_active' => true,
-            ]);
+            Category::firstOrCreate(
+                ['slug' => $category['slug']], // Match by slug
+                [
+                    'name' => $category['name'],
+                    'description' => $category['description'],
+                    'type' => $category['type'],
+                    'is_active' => true,
+                ]
+            );
         }
     }
 }

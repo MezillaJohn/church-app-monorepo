@@ -169,20 +169,22 @@ class SermonSeeder extends Seeder
                 continue;
             }
 
-            $sermon = Sermon::create([
-                'title' => $sermonData['title'],
-                'description' => $sermonData['description'],
-                'type' => $sermonData['type'],
-                'speaker' => $sermonData['speaker'],
-                'date' => now()->subDays(rand(1, 180)),
-                'duration' => $sermonData['duration'],
-                'category_id' => $category->id,
-                'thumbnail_url' => 'https://placehold.co/640x360?text=' . urlencode($sermonData['title']),
-                'is_published' => true,
-                'is_featured' => $index < 3, // First 3 as featured
-                'views' => rand(100, 5000),
-                'favorites_count' => rand(0, 100),
-            ]);
+            $sermon = Sermon::updateOrCreate(
+                ['title' => $sermonData['title']], // Match by title
+                [
+                    'description' => $sermonData['description'],
+                    'type' => $sermonData['type'],
+                    'speaker' => $sermonData['speaker'],
+                    'date' => now()->subDays(rand(1, 180)),
+                    'duration' => $sermonData['duration'],
+                    'category_id' => $category->id,
+                    'thumbnail_url' => 'https://placehold.co/640x360?text=' . urlencode($sermonData['title']),
+                    'is_published' => true,
+                    'is_featured' => $index < 3, // First 3 as featured
+                    'views' => rand(100, 5000),
+                    'favorites_count' => rand(0, 100),
+                ]
+            );
 
             // Add video/audio specific fields
             if ($sermonData['type'] === SermonType::Video && isset($sermonData['youtube_video_id'])) {

@@ -168,21 +168,23 @@ class BookSeeder extends Seeder
                 continue;
             }
 
-            $book = Book::create([
-                'title' => $bookData['title'],
-                'author' => $bookData['author'],
-                'description' => $bookData['description'],
-                'price' => $bookData['price'],
-                'category_id' => $category->id,
-                'cover_image' => 'books/covers/' . Str::slug($bookData['title']) . '.jpg',
-                'file_url' => 'books/pdfs/' . Str::slug($bookData['title']) . '.pdf',
-                'preview_pages' => $bookData['preview_pages'],
-                'average_rating' => $bookData['average_rating'],
-                'ratings_count' => $bookData['ratings_count'],
-                'purchases_count' => $bookData['purchases_count'],
-                'is_featured' => $bookData['is_featured'],
-                'is_published' => true,
-            ]);
+            $book = Book::updateOrCreate(
+                ['title' => $bookData['title']], // Match by title
+                [
+                    'author' => $bookData['author'],
+                    'description' => $bookData['description'],
+                    'price' => $bookData['price'],
+                    'category_id' => $category->id,
+                    'cover_image' => 'books/covers/' . Str::slug($bookData['title']) . '.jpg',
+                    'file_url' => 'books/pdfs/' . Str::slug($bookData['title']) . '.pdf',
+                    'preview_pages' => $bookData['preview_pages'],
+                    'average_rating' => $bookData['average_rating'],
+                    'ratings_count' => $bookData['ratings_count'],
+                    'purchases_count' => $bookData['purchases_count'],
+                    'is_featured' => $bookData['is_featured'],
+                    'is_published' => true,
+                ]
+            );
         }
     }
 }
