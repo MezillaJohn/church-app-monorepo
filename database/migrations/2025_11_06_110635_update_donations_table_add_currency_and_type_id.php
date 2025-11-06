@@ -75,6 +75,17 @@ return new class extends Migration
                     ]);
             }
         }
+
+        // Handle any remaining NULL donation_type_id values by assigning them to "Offering"
+        $defaultType = \App\Models\DonationType::where('name', 'Offering')->first();
+        if ($defaultType) {
+            \DB::table('donations')
+                ->whereNull('donation_type_id')
+                ->update([
+                    'donation_type_id' => $defaultType->id,
+                    'amount_in_ngn' => \DB::raw('IFNULL(amount_in_ngn, amount)'), // Use existing amount if amount_in_ngn is null
+                ]);
+        }
     }
 
     /**
