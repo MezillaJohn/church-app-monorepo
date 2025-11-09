@@ -20,7 +20,7 @@ class UserResource extends JsonResource
             'attributes' => [
                 'name' => $this->name,
                 'email' => $this->email,
-                'church_centre' => $this->church_centre,
+                'church_centre_id' => $this->church_centre_id,
                 'country' => $this->country,
                 'phone' => $this->phone,
                 'gender' => $this->gender,
@@ -29,6 +29,7 @@ class UserResource extends JsonResource
                 'email_verified_at' => $this->email_verified_at?->toISOString(),
             ],
             'relationships' => [
+                'church_centre' => new ChurchCentreResource($this->whenLoaded('churchCentre')),
                 'donations' => [
                     'count' => $this->whenLoaded('donations', fn() => $this->donations->count()),
                 ],

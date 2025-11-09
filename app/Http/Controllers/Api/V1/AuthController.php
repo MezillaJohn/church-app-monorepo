@@ -75,7 +75,7 @@ class AuthController extends BaseController
 
     public function profile(Request $request)
     {
-        return $this->ok('Profile retrieved successfully', new UserResource($request->user()));
+        return $this->ok('Profile retrieved successfully', new UserResource($request->user()->load('churchCentre')));
     }
 
     public function updateProfile(UpdateProfileRequest $request)

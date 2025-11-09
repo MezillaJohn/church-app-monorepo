@@ -224,7 +224,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getProfileCompleteAttribute(): bool
     {
-        return !empty($this->church_centre)
+        return !empty($this->church_centre_id)
             && !empty($this->country)
             && !empty($this->phone)
             && !empty($this->gender)

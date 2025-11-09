@@ -22,7 +22,7 @@ class UpdateProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'church_centre' => 'sometimes|string|max:255',
+            'church_centre' => 'sometimes|integer|exists:church_centres,id',
             'country' => 'sometimes|string|max:255',
             'phone' => 'sometimes|string|max:20',
             'gender' => 'sometimes|in:male,female,other',

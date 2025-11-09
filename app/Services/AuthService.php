@@ -43,15 +43,20 @@ class AuthService
 
     public function updateProfile(User $user, array $data): User
     {
-        $user->update([
-            'church_centre' => $data['church_centre'] ?? $user->church_centre,
+        $payload = [
             'country' => $data['country'] ?? $user->country,
             'phone' => $data['phone'] ?? $user->phone,
             'gender' => $data['gender'] ?? $user->gender,
             'church_member' => $data['church_member'] ?? $user->church_member,
-        ]);
+        ];
 
-        return $user->fresh();
+        if (array_key_exists('church_centre', $data)) {
+            $payload['church_centre_id'] = $data['church_centre'];
+        }
+
+        $user->update($payload);
+
+        return $user->fresh('churchCentre');
     }
 
     public function changePassword(User $user, string $currentPassword, string $newPassword): bool
