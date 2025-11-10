@@ -26,6 +26,8 @@ Route::prefix('v1')->group(function () {
     Route::post('/auth/email/verify', [AuthController::class, 'verifyEmail'])->middleware('auth:sanctum');
     Route::post('/auth/email/resend', [AuthController::class, 'resendVerification'])->middleware('auth:sanctum');
 
+    Route::get('/books/featured', [BookController::class, 'featured']);
+
     // Authentication routes (protected - requires email verification)
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -77,7 +79,7 @@ Route::prefix('v1')->group(function () {
 
     // Book routes
     Route::get('/books', [BookController::class, 'index']);
-    Route::get('/books/featured', [BookController::class, 'featured']);
+    
 
 
     // Event routes (public)
