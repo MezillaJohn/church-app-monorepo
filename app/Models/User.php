@@ -33,6 +33,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
         'gender',
         'church_member',
+        'is_admin',
         'email_verification_code',
         'code_expires_at',
         'code_sent_at',
@@ -62,6 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'church_member' => 'boolean',
+            'is_admin' => 'boolean',
             'code_expires_at' => 'datetime',
             'code_sent_at' => 'datetime',
             'reset_code_expires_at' => 'datetime',
@@ -128,9 +130,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isAdmin(): bool
     {
-        // TODO: Implement proper role check using Spatie Permission
-        // return $this->hasRole('admin');
-        return true; // Placeholder - configure roles in Filament
+        return $this->is_admin ?? false;
     }
 
     /**
