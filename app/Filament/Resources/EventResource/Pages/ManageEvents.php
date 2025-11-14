@@ -5,6 +5,7 @@ namespace App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
+use Filament\Widgets\StatsOverviewWidget;
 
 class ManageEvents extends ManageRecords
 {
@@ -14,6 +15,13 @@ class ManageEvents extends ManageRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\EventStatsWidget::class,
         ];
     }
 }

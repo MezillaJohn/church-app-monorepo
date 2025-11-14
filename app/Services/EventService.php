@@ -55,6 +55,12 @@ class EventService
             });
         }
 
+        if (isset($filters['is_live']) && $filters['is_live']) {
+            $expandedEvents = $expandedEvents->filter(function ($event) {
+                return $event->isLive();
+            });
+        }
+
         // Sort by event_date
         $expandedEvents = $expandedEvents->sortBy('event_date')->values();
 
@@ -241,6 +247,7 @@ class EventService
                 'location' => $event->location,
                 'event_type' => $event->event_type,
                 'image_url' => $event->image_url,
+                'broadcast_url' => $event->broadcast_url,
                 'max_attendees' => $event->max_attendees,
                 'requires_rsvp' => $event->requires_rsvp,
                 'is_published' => $event->is_published,

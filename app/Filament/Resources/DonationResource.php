@@ -10,10 +10,14 @@ use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
+use BackedEnum;
 
 class DonationResource extends Resource
 {
     protected static ?string $model = Donation::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;
 
     public static function form(Schema $schema): Schema
     {
@@ -24,7 +28,8 @@ class DonationResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('amount')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->prefix('₦'),
                 Forms\Components\Select::make('donation_type')
                     ->options([
                         'tithe' => 'Tithe',
@@ -56,7 +61,7 @@ class DonationResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('amount')
-                    ->money(),
+                    ->money('NGN'),
                 Tables\Columns\TextColumn::make('donation_type'),
                 Tables\Columns\TextColumn::make('payment_method'),
                 Tables\Columns\TextColumn::make('status'),

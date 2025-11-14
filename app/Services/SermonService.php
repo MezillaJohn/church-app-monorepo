@@ -15,7 +15,7 @@ class SermonService
 {
     public function getAll(array $filters = []): LengthAwarePaginator
     {
-        $query = Sermon::query()->with(['category']);
+        $query = Sermon::query()->with(['category', 'series']);
 
         if (isset($filters['type'])) {
             $query->where('type', $filters['type']);
@@ -29,8 +29,14 @@ class SermonService
             $query->where('speaker', 'like', '%' . $filters['speaker'] . '%');
         }
 
+        if (isset($filters['series_id'])) {
+            $query->where('series_id', $filters['series_id']);
+        }
+
         if (isset($filters['series'])) {
-            $query->where('series', 'like', '%' . $filters['series'] . '%');
+            $query->whereHas('series', function ($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['series'] . '%');
+            });
         }
 
         if (isset($filters['search'])) {
@@ -39,6 +45,7 @@ class SermonService
                     ->orWhere('description', 'like', '%' . $filters['search'] . '%');
             });
         }
+        
         if (isset($filters['sort'])) {
             $query->orderBy('created_at', $filters['sort']);
         } else {
@@ -50,7 +57,7 @@ class SermonService
 
     public function getById(int $id): ?Sermon
     {
-        return Sermon::with(['category'])->find($id);
+        return Sermon::with(['category', 'series'])->find($id);
     }
 
     public function toggleFavorite(User $user, int $sermonId): bool
@@ -141,13 +148,13 @@ class SermonService
         $query = Sermon::where('id', '!=', $sermon->id)
             ->where('is_published', true)
             ->where('category_id', $sermon->category_id)
-            ->with(['category']);
+            ->with(['category', 'series']);
 
         // Build priority conditions: series > speaker > category (already filtered)
         $priorityConditions = [];
 
-        if ($sermon->series) {
-            $priorityConditions[] = ['series', '=', $sermon->series];
+        if ($sermon->series_id) {
+            $priorityConditions[] = ['series_id', '=', $sermon->series_id];
         }
 
         if ($sermon->speaker) {

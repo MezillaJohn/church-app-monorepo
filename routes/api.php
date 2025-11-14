@@ -13,6 +13,8 @@ use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RegistrationController;
 use App\Http\Controllers\Api\V1\PushTokenController;
 use App\Http\Controllers\Api\V1\ChurchCentreController;
+use App\Http\Controllers\Api\V1\SeriesController;
+use App\Http\Controllers\Api\V1\PartnershipController;
 
 Route::prefix('v1')->group(function () {
     // Public Authentication routes
@@ -62,6 +64,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/giving/history', [DonationController::class, 'history']);
         Route::get('/giving/total', [DonationController::class, 'totalDonations']);
 
+        //Partnerships
+        Route::post('/partnerships', [PartnershipController::class, 'store']);
+
         //Payment
         Route::post('/books/{id}/purchase', [PaymentController::class, 'purchaseBook']);
         Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']);
@@ -79,7 +84,7 @@ Route::prefix('v1')->group(function () {
 
     // Book routes
     Route::get('/books', [BookController::class, 'index']);
-    
+
 
 
     // Event routes (public)
@@ -92,6 +97,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/giving/types', [DonationController::class, 'getDonationTypes']);
     Route::get('/giving/methods', [DonationController::class, 'getPaymentMethods']);
 
+    // Partnership routes (public)
+    Route::get('/partnerships/types', [PartnershipController::class, 'getPartnershipTypes']);
+
     // Hero Slider routes (public)
     Route::get('/hero-sliders', [HeroSliderController::class, 'index']);
 
@@ -101,6 +109,10 @@ Route::prefix('v1')->group(function () {
     // Category routes (public)
     Route::get('/categories/sermons', [CategoryController::class, 'getSermonCategories']);
     Route::get('/categories/books', [CategoryController::class, 'getBookCategories']);
+
+    // Series routes (public)
+    Route::get('/series', [SeriesController::class, 'index']);
+    Route::get('/series/{id}', [SeriesController::class, 'show']);
 
     // Registration (public)
     Route::post('/auth/register/request-code', [RegistrationController::class, 'requestCode']);

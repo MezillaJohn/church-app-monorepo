@@ -29,7 +29,7 @@ class SermonResource extends JsonResource
                 'embed_url' => $this->embed_url,
                 'thumbnail_url' => $this->thumbnail_url,
                 'duration' => $this->duration,
-                'series' => $this->series,
+                'series' => $this->when($this->series, fn() => $this->series->name, null),
                 'views' => $this->views,
                 'favorites_count' => $this->favorites_count ?? 0,
                 'is_featured' => $this->is_featured,
@@ -42,6 +42,7 @@ class SermonResource extends JsonResource
             ],
             'relationships' => [
                 'category' => $this->whenLoaded('category', fn() => new CategoryResource($this->category)),
+                'series' => $this->whenLoaded('series', fn() => new SeriesResource($this->series)),
                 'related_sermons' => $this->when(
                     isset($this->relatedSermons) && $this->relatedSermons->isNotEmpty(),
                     fn() => SermonResource::collection($this->relatedSermons)

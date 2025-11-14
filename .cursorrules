@@ -1,0 +1,134 @@
+# Filament 4.1 Development Rules
+
+## Filament Version
+- Project uses Filament 4.1.10
+- Always verify Filament version compatibility before implementing features
+
+## Key Differences in Filament 4
+
+### Forms
+- Use `Filament\Schemas\Schema` for form definitions
+- Form method signature: `public static function form(Schema $schema): Schema`
+- Use `Forms\Components\*` components for form fields (TextInput, Select, DatePicker, etc.)
+- **CRITICAL**: Sections come from `Filament\Schemas\Components\Section`, NOT `Filament\Forms\Components\Section`
+- Example:
+```php
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+
+public static function form(Schema $schema): Schema
+{
+    return $schema->schema([
+        Section::make('Details')  // From Schemas\Components, NOT Forms\Components
+            ->schema([
+                TextInput::make('name'),  // From Forms\Components
+            ]),
+    ]);
+}
+```
+
+### ViewRecord Pages
+- ViewRecord uses `Schema` not `Infolist` for the infolist method
+- Method signature: `public function infolist(Schema $schema): Schema`
+- **CRITICAL**: Sections come from `Filament\Schemas\Components\Section`, NOT `Filament\Infolists\Components\Section`
+- Infolist entries (TextEntry, IconEntry, ImageEntry) come from `Filament\Infolists\Components\*`
+- **CRITICAL**: TextSize enum is `Filament\Support\Enums\TextSize`, NOT `Filament\Infolists\Components\TextEntry\TextEntrySize`
+- TextSize values: `TextSize::ExtraSmall`, `TextSize::Small`, `TextSize::Medium`, `TextSize::Large`
+- Example:
+```php
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\TextSize;
+
+public function infolist(Schema $schema): Schema
+{
+    return $schema->schema([
+        Section::make('Title')  // From Schemas\Components, NOT Infolists\Components
+            ->schema([
+                TextEntry::make('field')
+                    ->size(TextSize::Large),  // Use Filament\Support\Enums\TextSize
+            ]),
+    ]);
+}
+```
+
+### Tables
+- Use `Filament\Tables\Table` for table definitions
+- Table method signature: `public static function table(Table $table): Table`
+- Actions use `Actions\*` namespace, not `Tables\Actions\*`
+- Filters use `Tables\Filters\*`
+
+### Navigation Icons
+- Use `Filament\Support\Icons\Heroicon`
+- Property type: `protected static string|BackedEnum|null $navigationIcon`
+- Example: `protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;`
+
+### Resource Pages
+- ManageRecords: `Filament\Resources\Pages\ManageRecords`
+- CreateRecord: `Filament\Resources\Pages\CreateRecord`
+- EditRecord: `Filament\Resources\Pages\EditRecord`
+- ViewRecord: `Filament\Resources\Pages\ViewRecord`
+- All pages must have `protected static string $resource = ResourceClass::class;`
+
+### Actions
+- Table row actions: Use `->actions([Actions\EditAction::make()])`
+- Header actions: Use `protected function getHeaderActions(): array`
+- Bulk actions: Use `->bulkActions([Actions\BulkActionGroup::make([...])])`
+
+### Filters
+- Use `Tables\Filters\Filter::make()` for custom filters
+- Toggle filters: `->toggle()`
+- No `FiltersLayout::Tabs` enum exists - use toggle filters instead
+- Filter queries should use database queries, not collection filtering
+
+### Table Tabs
+- Table tabs are implemented using `getTabs()` method in ManageRecords pages
+- **CRITICAL**: Tab class is `Filament\Schemas\Components\Tabs\Tab`, NOT `Filament\Tables\Tabs\Tab`
+- Method signature: `public function getTabs(): array`
+- Use `modifyQueryUsing()` to filter queries for each tab
+- Example:
+```php
+use Filament\Schemas\Components\Tabs\Tab;
+use Illuminate\Database\Eloquent\Builder;
+
+public function getTabs(): array
+{
+    return [
+        'all' => Tab::make('All')
+            ->icon('heroicon-o-microphone')
+            ->badge(Model::count()),
+        'filtered' => Tab::make('Filtered')
+            ->modifyQueryUsing(fn(Builder $query) => $query->where('field', 'value')),
+    ];
+}
+```
+
+### Widgets
+- Stats widgets: `Filament\Widgets\StatsOverviewWidget`
+- Use `Stat::make()` for individual stats
+- Widgets go in `app/Filament/Widgets/`
+
+## Common Mistakes to Avoid
+1. ❌ Don't use `Tables\Actions\*` - use `Actions\*` instead
+2. ❌ Don't use `FiltersLayout::Tabs` - it doesn't exist
+3. ❌ Don't use `Filament\Infolists\Infolist` in ViewRecord - use `Schema`
+4. ❌ **CRITICAL**: Don't use `Filament\Forms\Components\Section` - Sections in forms come from `Filament\Schemas\Components\Section`
+5. ❌ **CRITICAL**: Don't use `Filament\Infolists\Components\Section` - Sections in ViewRecord come from `Filament\Schemas\Components\Section`
+6. ❌ **CRITICAL**: Don't use `Filament\Infolists\Components\TextEntry\TextEntrySize` - Use `Filament\Support\Enums\TextSize` instead
+7. ❌ **CRITICAL**: Don't use `Filament\Tables\Tabs\Tab` - Table tabs use `Filament\Schemas\Components\Tabs\Tab`
+8. ❌ Don't use `Filament\Resources\Pages\Page` for resource pages - use specific page types
+9. ❌ Don't filter collections in table filters - use database queries
+10. ❌ Don't forget to check if record is null before accessing properties
+
+## Best Practices
+- Always check existing resource implementations before creating new ones
+- Use sections to organize forms logically
+- Use collapsible sections for optional/advanced settings
+- Add helper text to form fields for better UX
+- Use proper column spans (`columnSpanFull()`, `columns(2)`)
+- Always add null checks when accessing record properties in closures
+- Use proper date/time formatting in infolists
+- Add icons to entries for better visual hierarchy
+

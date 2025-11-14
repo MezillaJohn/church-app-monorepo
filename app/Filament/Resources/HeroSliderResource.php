@@ -10,10 +10,14 @@ use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
+use BackedEnum;
 
 class HeroSliderResource extends Resource
 {
     protected static ?string $model = HeroSlider::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
     protected static ?string $navigationLabel = 'Hero Sliders';
 
@@ -22,7 +26,8 @@ class HeroSliderResource extends Resource
         return $schema
             ->schema([
                 Forms\Components\TextInput::make('title')
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image_path')
                     ->label('Image')
                     ->image()
@@ -30,7 +35,8 @@ class HeroSliderResource extends Resource
                     ->directory('hero-sliders')
                     ->disk('public')
                     ->imagePreviewHeight('250')
-                    ->helperText('Upload image in 16:9 ratio (recommended: 1920x1080 or 1280x720)'),
+                    ->helperText('Upload image in 16:9 ratio (recommended: 1920x1080 or 1280x720)')
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('link_url')
                     ->label('Link URL')
                     ->url()

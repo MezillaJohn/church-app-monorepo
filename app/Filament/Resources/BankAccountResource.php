@@ -6,33 +6,65 @@ use App\Filament\Resources\BankAccountResource\Pages;
 use App\Models\BankAccount;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
+use BackedEnum;
 
 class BankAccountResource extends Resource
 {
     protected static ?string $model = BankAccount::class;
 
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
+
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->schema([
-                Forms\Components\TextInput::make('bank_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('account_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('account_number')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('sort_code'),
-                Forms\Components\TextInput::make('currency')
-                    ->default('NGN'),
-                Forms\Components\Toggle::make('is_active')
-                    ->default(true),
+                SchemaSection::make('Bank Information')
+                    ->schema([
+                        Forms\Components\TextInput::make('bank_name')
+                            ->label('Bank Name')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('account_name')
+                            ->label('Account Name')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('account_number')
+                            ->label('Account Number')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('sort_code')
+                            ->label('Sort Code')
+                            ->maxLength(255)
+                            ->helperText('Bank sort code or routing number')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(1),
+
+                SchemaSection::make('Settings')
+                    ->schema([
+                        Forms\Components\TextInput::make('currency')
+                            ->label('Currency')
+                            ->default('NGN')
+                            ->maxLength(3)
+                            ->helperText('Currency code (e.g., NGN, USD)')
+                            ->columnSpanFull(),
+                        Forms\Components\Toggle::make('is_active')
+                            ->label('Active')
+                            ->helperText('Enable to make this account available for use')
+                            ->default(true)
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(1)
+                    ->collapsible(),
             ]);
     }
 

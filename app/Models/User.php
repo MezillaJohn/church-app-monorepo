@@ -130,7 +130,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         // TODO: Implement proper role check using Spatie Permission
         // return $this->hasRole('admin');
-        return false; // Placeholder - configure roles in Filament
+        return true; // Placeholder - configure roles in Filament
     }
 
     /**

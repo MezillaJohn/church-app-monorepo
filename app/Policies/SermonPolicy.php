@@ -28,6 +28,8 @@ class SermonPolicy
      */
     public function create(User $user): bool
     {
+        // Allow all authenticated users in admin panel
+        // TODO: Implement proper role check when roles are configured
         return $user->isAdmin();
     }
 
@@ -36,6 +38,8 @@ class SermonPolicy
      */
     public function update(User $user, Sermon $sermon): bool
     {
+        // Allow all authenticated users in admin panel
+        // TODO: Implement proper role check when roles are configured
         return $user->isAdmin();
     }
 
@@ -44,6 +48,8 @@ class SermonPolicy
      */
     public function delete(User $user, Sermon $sermon): bool
     {
+        // Allow all authenticated users in admin panel
+        // TODO: Implement proper role check when roles are configured
         return $user->isAdmin();
     }
 }

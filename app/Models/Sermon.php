@@ -25,7 +25,7 @@ class Sermon extends Model
         'thumbnail_url',
         'duration',
         'category_id',
-        'series',
+        'series_id',
         'views',
         'favorites_count',
         'is_featured',
@@ -47,6 +47,11 @@ class Sermon extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function series(): BelongsTo
+    {
+        return $this->belongsTo(SermonSeries::class);
     }
 
     public function favorites(): MorphMany
