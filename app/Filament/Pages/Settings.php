@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
+use Filament\Schemas\Components\Section as SchemaSection;
 use BackedEnum;
 
 class Settings extends Page implements HasForms
@@ -33,6 +34,11 @@ class Settings extends Page implements HasForms
             'youtube_api_key' => \App\Models\Setting::get('youtube.api_key', env('YOUTUBE_API_KEY')),
             'youtube_channel_id' => \App\Models\Setting::get('youtube.channel_id', env('YOUTUBE_CHANNEL_ID')),
             'youtube_max_results' => \App\Models\Setting::get('youtube.max_results', env('YOUTUBE_MAX_RESULTS', 50)),
+            'social_facebook' => \App\Models\Setting::get('social.facebook', ''),
+            'social_twitter' => \App\Models\Setting::get('social.twitter', ''),
+            'social_instagram' => \App\Models\Setting::get('social.instagram', ''),
+            'social_linkedin' => \App\Models\Setting::get('social.linkedin', ''),
+            'social_youtube' => \App\Models\Setting::get('social.youtube', ''),
         ]);
     }
 
@@ -44,19 +50,52 @@ class Settings extends Page implements HasForms
     public function getFormSchema(): array
     {
         return [
-            Forms\Components\TextInput::make('youtube_api_key')
-                ->label('API Key')
-                ->helperText('Your YouTube Data API v3 key')
+            SchemaSection::make('YouTube Settings')
+                ->schema([
+                    Forms\Components\TextInput::make('youtube_api_key')
+                        ->label('API Key')
+                        ->helperText('Your YouTube Data API v3 key')
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('youtube_channel_id')
+                        ->label('Channel ID')
+                        ->helperText('Your YouTube channel ID')
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('youtube_max_results')
+                        ->label('Max Results')
+                        ->helperText('Maximum number of videos to fetch per sync')
+                        ->numeric()
+                        ->default(50)
+                        ->columnSpanFull(),
+                ])
                 ->columnSpanFull(),
-            Forms\Components\TextInput::make('youtube_channel_id')
-                ->label('Channel ID')
-                ->helperText('Your YouTube channel ID')
-                ->columnSpanFull(),
-            Forms\Components\TextInput::make('youtube_max_results')
-                ->label('Max Results')
-                ->helperText('Maximum number of videos to fetch per sync')
-                ->numeric()
-                ->default(50)
+            SchemaSection::make('Social Media Links')
+                ->schema([
+                    Forms\Components\TextInput::make('social_facebook')
+                        ->label('Facebook URL')
+                        ->url()
+                        ->helperText('Your Facebook page/profile URL')
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('social_twitter')
+                        ->label('Twitter/X URL')
+                        ->url()
+                        ->helperText('Your Twitter/X profile URL')
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('social_instagram')
+                        ->label('Instagram URL')
+                        ->url()
+                        ->helperText('Your Instagram profile URL')
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('social_linkedin')
+                        ->label('LinkedIn URL')
+                        ->url()
+                        ->helperText('Your LinkedIn page/profile URL')
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('social_youtube')
+                        ->label('YouTube Channel URL')
+                        ->url()
+                        ->helperText('Your YouTube channel URL')
+                        ->columnSpanFull(),
+                ])
                 ->columnSpanFull(),
         ];
     }
@@ -88,6 +127,46 @@ class Settings extends Page implements HasForms
             'integer',
             'youtube',
             'Maximum number of videos to fetch per sync'
+        );
+
+        $settingsService->set(
+            'social.facebook',
+            $data['social_facebook'] ?? '',
+            'string',
+            'social',
+            'Facebook page/profile URL'
+        );
+
+        $settingsService->set(
+            'social.twitter',
+            $data['social_twitter'] ?? '',
+            'string',
+            'social',
+            'Twitter/X profile URL'
+        );
+
+        $settingsService->set(
+            'social.instagram',
+            $data['social_instagram'] ?? '',
+            'string',
+            'social',
+            'Instagram profile URL'
+        );
+
+        $settingsService->set(
+            'social.linkedin',
+            $data['social_linkedin'] ?? '',
+            'string',
+            'social',
+            'LinkedIn page/profile URL'
+        );
+
+        $settingsService->set(
+            'social.youtube',
+            $data['social_youtube'] ?? '',
+            'string',
+            'social',
+            'YouTube channel URL'
         );
 
         $settingsService->clearCache();

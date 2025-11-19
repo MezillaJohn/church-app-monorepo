@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\PushTokenController;
 use App\Http\Controllers\Api\V1\ChurchCentreController;
 use App\Http\Controllers\Api\V1\SeriesController;
 use App\Http\Controllers\Api\V1\PartnershipController;
+use App\Http\Controllers\Api\V1\SiteInfoController;
 
 Route::prefix('v1')->group(function () {
     // Public Authentication routes
@@ -113,6 +114,9 @@ Route::prefix('v1')->group(function () {
     // Series routes (public)
     Route::get('/series', [SeriesController::class, 'index']);
     Route::get('/series/{id}', [SeriesController::class, 'show']);
+
+    // Site Info routes (public)
+    Route::get('/site-info', [SiteInfoController::class, 'index']);
 
     // Registration (public)
     Route::post('/auth/register/request-code', [RegistrationController::class, 'requestCode']);
