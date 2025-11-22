@@ -51,6 +51,7 @@ class SermonResource extends Resource
                     ->schema([
                         Forms\Components\FileUpload::make('audio_file_url')
                             ->label('Audio File')
+                            ->disk('public')
                             ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'])
                             ->directory('sermons/audio')
                             ->visibility('public')
@@ -72,6 +73,7 @@ class SermonResource extends Resource
                         Forms\Components\FileUpload::make('thumbnail_url')
                             ->label('Thumbnail Image')
                             ->image()
+                            ->disk('public')
                             ->directory('sermons/thumbnails')
                             ->visibility('public')
                             ->imageEditor()

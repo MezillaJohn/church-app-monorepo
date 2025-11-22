@@ -60,6 +60,7 @@ class BookResource extends Resource
                         Forms\Components\FileUpload::make('cover_image')
                             ->label('Cover Image')
                             ->image()
+                            ->disk('public')
                             ->directory('books/covers')
                             ->visibility('public')
                             ->imageEditor()
@@ -67,6 +68,7 @@ class BookResource extends Resource
                             ->columnSpanFull(),
                         Forms\Components\FileUpload::make('file_url')
                             ->label('Book File')
+                            ->disk('public')
                             ->directory('books/files')
                             ->visibility('public')
                             ->acceptedFileTypes(['application/pdf'])

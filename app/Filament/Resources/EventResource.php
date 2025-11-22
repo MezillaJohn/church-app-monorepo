@@ -84,6 +84,7 @@ class EventResource extends Resource
                             ->label('Event Image')
                             ->image()
                             ->directory('events')
+                            ->disk('public')
                             ->visibility('public')
                             ->imageEditor()
                             ->columnSpanFull(),

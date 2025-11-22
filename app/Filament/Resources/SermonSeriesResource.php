@@ -60,6 +60,7 @@ class SermonSeriesResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->label('Series Image')
                             ->image()
+                            ->disk('public')
                             ->directory('sermon-series')
                             ->visibility('public')
                             ->imageEditor()

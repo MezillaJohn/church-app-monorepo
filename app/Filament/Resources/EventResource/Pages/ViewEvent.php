@@ -70,6 +70,7 @@ class ViewEvent extends ViewRecord
                     ->schema([
                         ImageEntry::make('image_url')
                             ->label('Event Image')
+                            ->disk('public')
                             ->defaultImageUrl(fn() => null)
                             ->height(300)
                             ->columnSpanFull(),
