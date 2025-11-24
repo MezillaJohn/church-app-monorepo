@@ -27,7 +27,7 @@ class SermonResource extends JsonResource
                 'youtube_video_id' => $this->youtube_video_id,
                 'youtube_video_url' => $this->youtube_video_url,
                 'embed_url' => $this->embed_url,
-                'thumbnail_url' => $this->thumbnail_url,
+                'thumbnail_url' => $this->thumbnail_url ? env('APP_URL') . '/storage/' . $this->thumbnail_url : null,
                 'duration' => $this->duration,
                 'series' => $this->when($this->series, fn() => $this->series->name, null),
                 'views' => $this->views,
