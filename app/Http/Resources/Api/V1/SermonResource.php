@@ -23,7 +23,7 @@ class SermonResource extends JsonResource
                 'type' => $this->type,
                 'speaker' => $this->speaker,
                 'date' => $this->date?->toDateString(),
-                'audio_file_url' => $this->audio_file_url,
+                'audio_file_url' => $this->audio_file_url ? env('APP_URL') . '/storage/' . $this->audio_file_url : null,
                 'youtube_video_id' => $this->youtube_video_id,
                 'youtube_video_url' => $this->youtube_video_url,
                 'embed_url' => $this->embed_url,
