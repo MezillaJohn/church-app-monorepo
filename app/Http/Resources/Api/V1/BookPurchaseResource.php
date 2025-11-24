@@ -37,7 +37,7 @@ class BookPurchaseResource extends JsonResource
                     fn() => [
                         'id' => $this->book->id,
                         'title' => $this->book->title,
-                        'cover_image' => $this->book->cover_image,
+                        'cover_image' => $this->book->cover_image ? env('APP_URL') . '/storage/' . $this->book->cover_image : null,
                         'price' => $this->book->price,
                         'average_rating' => $this->book->average_rating,
                     ]
