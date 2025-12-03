@@ -74,6 +74,11 @@ class ViewPartnership extends ViewRecord
                             ->size(TextSize::Large)
                             ->weight('bold')
                             ->columnSpanFull(),
+                        TextEntry::make('currency')
+                            ->label('Currency')
+                            ->badge()
+                            ->icon('heroicon-o-banknotes')
+                            ->columnSpanFull(),
                     ])
                     ->columns(1)
                     ->columnSpanFull(),

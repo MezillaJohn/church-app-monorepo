@@ -18,6 +18,7 @@ class BankAccountResource extends JsonResource
             'id' => $this->id,
             'type' => 'bank_account',
             'attributes' => [
+                'title' => $this->title,
                 'bank_name' => $this->bank_name,
                 'account_name' => $this->account_name,
                 'account_number' => $this->account_number,

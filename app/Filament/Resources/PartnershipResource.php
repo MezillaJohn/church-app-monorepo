@@ -81,6 +81,12 @@ class PartnershipResource extends Resource
                             ->prefix('₦')
                             ->step(0.01)
                             ->columnSpanFull(),
+                        Forms\Components\TextInput::make('currency')
+                            ->label('Currency')
+                            ->default('NGN')
+                            ->maxLength(3)
+                            ->helperText('Currency code (e.g., NGN, USD, EUR)')
+                            ->columnSpanFull(),
                     ])
                     ->columns(1)
                     ->columnSpanFull(),
@@ -123,6 +129,9 @@ class PartnershipResource extends Resource
                 Tables\Columns\TextColumn::make('amount')
                     ->money('NGN')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('currency')
+                    ->badge()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

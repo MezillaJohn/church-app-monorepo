@@ -26,6 +26,11 @@ class BankAccountResource extends Resource
             ->schema([
                 SchemaSection::make('Bank Information')
                     ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->label('Title')
+                            ->maxLength(255)
+                            ->helperText('Optional title for this bank account')
+                            ->columnSpanFull(),
                         Forms\Components\TextInput::make('bank_name')
                             ->label('Bank Name')
                             ->required()
@@ -72,6 +77,9 @@ class BankAccountResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable()
+                    ->placeholder('No title'),
                 Tables\Columns\TextColumn::make('bank_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('account_name')

@@ -30,6 +30,7 @@ class StorePartnershipRequest extends FormRequest
             'partnership_type_id' => 'required|exists:partnership_types,id',
             'interval' => ['required', Rule::enum(PartnershipInterval::class)],
             'amount' => 'required|numeric|min:0.01',
+            'currency' => 'sometimes|string|size:3',
             'user_id' => 'sometimes|nullable|exists:users,id',
         ];
     }
@@ -53,6 +54,7 @@ class StorePartnershipRequest extends FormRequest
             'amount.required' => 'Please provide the partnership amount.',
             'amount.numeric' => 'The amount must be a valid number.',
             'amount.min' => 'The amount must be at least 0.01.',
+            'currency.size' => 'The currency code must be exactly 3 characters.',
             'user_id.exists' => 'The selected user is invalid.',
         ];
     }

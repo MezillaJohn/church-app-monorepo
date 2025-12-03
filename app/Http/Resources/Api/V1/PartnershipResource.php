@@ -23,6 +23,7 @@ class PartnershipResource extends JsonResource
                 'email' => $this->email,
                 'interval' => $this->interval->value ?? $this->interval,
                 'amount' => (float) $this->amount,
+                'currency' => $this->currency,
             ],
             'relationships' => [
                 'partnership_type' => $this->whenLoaded('partnershipType', function () {

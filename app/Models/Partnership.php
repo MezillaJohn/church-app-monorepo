@@ -16,6 +16,7 @@ class Partnership extends Model
         'user_id',
         'interval',
         'amount',
+        'currency',
     ];
 
     protected $casts = [
