@@ -20,6 +20,16 @@ class SiteInfoResource extends JsonResource
                     'linkedin' => $this->resource['social_links']['linkedin'] ?? '',
                     'youtube' => $this->resource['social_links']['youtube'] ?? '',
                 ],
+                'app_info' => [
+                    'android' => [
+                        'version' => $this->resource['app_info']['android']['version'] ?? '1.0.0',
+                        'download_url' => $this->resource['app_info']['android']['download_url'] ?? '',
+                    ],
+                    'ios' => [
+                        'version' => $this->resource['app_info']['ios']['version'] ?? '1.0.0',
+                        'download_url' => $this->resource['app_info']['ios']['download_url'] ?? '',
+                    ],
+                ],
             ],
         ];
     }

@@ -185,7 +185,7 @@ class AuthController extends BaseController
 
             // Always return success message (don't reveal if email exists)
             return $this->ok('If the email exists, a password reset code has been sent', [
-                'reset_code' => $code, // For testing/development
+                // 'reset_code' => $code, // For testing/development
             ]);
         } catch (\Exception $e) {
             // Always return success for security

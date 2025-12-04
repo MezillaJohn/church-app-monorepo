@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             DonationTypeSeeder::class,
             ChurchCentreSeeder::class,
             EventReminderSettingSeeder::class,
+            AppSettingsSeeder::class,
         ]);
 
         // Seed sermons, books, events, and hero sliders

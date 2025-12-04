@@ -16,6 +16,7 @@ class SiteInfoController extends BaseController
     {
         try {
             $socialLinks = $this->settingsService->getGroup('social');
+            $appSettings = $this->settingsService->getGroup('app');
             
             $siteInfo = [
                 'social_links' => [
@@ -24,6 +25,16 @@ class SiteInfoController extends BaseController
                     'instagram' => $socialLinks['social.instagram'] ?? '',
                     'linkedin' => $socialLinks['social.linkedin'] ?? '',
                     'youtube' => $socialLinks['social.youtube'] ?? '',
+                ],
+                'app_info' => [
+                    'android' => [
+                        'version' => $appSettings['app.android_version'] ?? '1.0.0',
+                        'download_url' => $appSettings['app.android_download_url'] ?? '',
+                    ],
+                    'ios' => [
+                        'version' => $appSettings['app.ios_version'] ?? '1.0.0',
+                        'download_url' => $appSettings['app.ios_download_url'] ?? '',
+                    ],
                 ],
             ];
 
