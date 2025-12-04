@@ -53,9 +53,11 @@ class SermonResource extends Resource
                             ->label('Audio File')
                             ->disk('public')
                             ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'])
+                            ->maxSize(204800)
                             ->directory('sermons/audio')
                             ->visibility('public')
                             ->visible(fn($get) => $get('type') === 'audio')
+                            ->helperText('Maximum file size: 200MB')
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('youtube_video_id')
                             ->label('YouTube Video ID')
