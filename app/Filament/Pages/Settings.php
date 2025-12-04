@@ -34,6 +34,10 @@ class Settings extends Page implements HasForms
             'youtube_api_key' => \App\Models\Setting::get('youtube.api_key', env('YOUTUBE_API_KEY')),
             'youtube_channel_id' => \App\Models\Setting::get('youtube.channel_id', env('YOUTUBE_CHANNEL_ID')),
             'youtube_max_results' => \App\Models\Setting::get('youtube.max_results', env('YOUTUBE_MAX_RESULTS', 50)),
+            'paystack_public_key' => \App\Models\Setting::get('paystack.public_key', env('PAYSTACK_PUBLIC_KEY')),
+            'paystack_secret_key' => \App\Models\Setting::get('paystack.secret_key', env('PAYSTACK_SECRET_KEY')),
+            'paystack_merchant_email' => \App\Models\Setting::get('paystack.merchant_email', env('PAYSTACK_MERCHANT_EMAIL')),
+            'paystack_callback_url' => \App\Models\Setting::get('paystack.callback_url', env('PAYSTACK_CALLBACK_URL', env('APP_URL') . '/api/v1/verify-payment')),
             'social_facebook' => \App\Models\Setting::get('social.facebook', ''),
             'social_twitter' => \App\Models\Setting::get('social.twitter', ''),
             'social_instagram' => \App\Models\Setting::get('social.instagram', ''),
@@ -65,6 +69,29 @@ class Settings extends Page implements HasForms
                         ->helperText('Maximum number of videos to fetch per sync')
                         ->numeric()
                         ->default(50)
+                        ->columnSpanFull(),
+                ])
+                ->columnSpanFull(),
+            SchemaSection::make('Paystack Settings')
+                ->schema([
+                    Forms\Components\TextInput::make('paystack_public_key')
+                        ->label('Public Key')
+                        ->helperText('Your Paystack public key')
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('paystack_secret_key')
+                        ->label('Secret Key')
+                        ->helperText('Your Paystack secret key')
+                        ->password()
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('paystack_merchant_email')
+                        ->label('Merchant Email')
+                        ->helperText('Your Paystack merchant email')
+                        ->email()
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('paystack_callback_url')
+                        ->label('Callback URL')
+                        ->helperText('Payment verification callback URL')
+                        ->url()
                         ->columnSpanFull(),
                 ])
                 ->columnSpanFull(),
@@ -127,6 +154,38 @@ class Settings extends Page implements HasForms
             'integer',
             'youtube',
             'Maximum number of videos to fetch per sync'
+        );
+
+        $settingsService->set(
+            'paystack.public_key',
+            $data['paystack_public_key'] ?? '',
+            'string',
+            'paystack',
+            'Paystack public key'
+        );
+
+        $settingsService->set(
+            'paystack.secret_key',
+            $data['paystack_secret_key'] ?? '',
+            'string',
+            'paystack',
+            'Paystack secret key'
+        );
+
+        $settingsService->set(
+            'paystack.merchant_email',
+            $data['paystack_merchant_email'] ?? '',
+            'string',
+            'paystack',
+            'Paystack merchant email'
+        );
+
+        $settingsService->set(
+            'paystack.callback_url',
+            $data['paystack_callback_url'] ?? '',
+            'string',
+            'paystack',
+            'Payment verification callback URL'
         );
 
         $settingsService->set(

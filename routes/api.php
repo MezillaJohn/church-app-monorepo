@@ -76,11 +76,12 @@ Route::prefix('v1')->group(function () {
         Route::get('/push-tokens', [PushTokenController::class, 'index']);
         Route::post('/push-tokens', [PushTokenController::class, 'store']);
         Route::delete('/push-tokens/{id}', [PushTokenController::class, 'destroy']);
+        
+        // Sermon routes 
+        Route::get('/sermons', [SermonController::class, 'index']);
+        Route::get('/sermons/{id}', [SermonController::class, 'show']);
     });
 
-    // Sermon routes 
-    Route::get('/sermons', [SermonController::class, 'index']);
-    Route::get('/sermons/{id}', [SermonController::class, 'show']);
 
 
     // Book routes

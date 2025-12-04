@@ -34,11 +34,7 @@ class SermonResource extends JsonResource
                 'favorites_count' => $this->favorites_count ?? 0,
                 'is_featured' => $this->is_featured,
                 'is_published' => $this->is_published,
-                'is_favorited' => $this->when(
-                    $request->user() && $this->relationLoaded('favorites'),
-                    fn() => $this->favorites->contains('user_id', $request->user()->id),
-                    false
-                ),
+                'is_favorited' => $this->is_favorited_by_user ? true : false,
             ],
             'relationships' => [
                 'category' => $this->whenLoaded('category', fn() => new CategoryResource($this->category)),

@@ -19,26 +19,24 @@ class SermonController extends BaseController
     public function index(Request $request)
     {
         try {
-            $sermons = $this->sermonService->getAll($request->all());
+            $sermons = $this->sermonService->getAll($request->all(), $request->user());
             return $this->ok('Sermons retrieved successfully', SermonResource::collection($sermons));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve sermons', ['exception' => $e->getMessage()], 500);
         }
     }
 
-    public function show(int $id)
+    public function show(Request $request, int $id)
     {
         try {
-            $sermon = $this->sermonService->getById($id);
+            $sermon = $this->sermonService->getById($id, $request->user());
 
             if (!$sermon) {
                 return $this->error('Sermon not found', [], 404);
             }
 
-            // Get related sermons
-            $relatedSermons = $this->sermonService->getRelatedSermons($sermon);
+            $relatedSermons = $this->sermonService->getRelatedSermons($sermon, 6, $request->user());
 
-            // Pass related sermons to resource
             $resource = new SermonResource($sermon);
             $resource->relatedSermons = $relatedSermons;
 

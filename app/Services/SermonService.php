@@ -13,9 +13,20 @@ use Illuminate\Database\QueryException;
 
 class SermonService
 {
-    public function getAll(array $filters = []): LengthAwarePaginator
+    public function getAll(array $filters = [], ?User $user = null): LengthAwarePaginator
     {
         $query = Sermon::query()->with(['category', 'series']);
+
+        if ($user) {
+            $query->addSelect([
+                '*',
+                'is_favorited_by_user' => Favorite::select(DB::raw(1))
+                    ->whereColumn('favoritable_id', 'sermons.id')
+                    ->where('favoritable_type', Sermon::class)
+                    ->where('user_id', $user->id)
+                    ->limit(1)
+            ]);
+        }
 
         if (isset($filters['type'])) {
             $query->where('type', $filters['type']);
@@ -45,7 +56,7 @@ class SermonService
                     ->orWhere('description', 'like', '%' . $filters['search'] . '%');
             });
         }
-        
+
         if (isset($filters['sort'])) {
             $query->orderBy('created_at', $filters['sort']);
         } else {
@@ -55,9 +66,22 @@ class SermonService
         return $query->paginate(15);
     }
 
-    public function getById(int $id): ?Sermon
+    public function getById(int $id, ?User $user = null): ?Sermon
     {
-        return Sermon::with(['category', 'series'])->find($id);
+        $query = Sermon::with(['category', 'series']);
+
+        if ($user) {
+            $query->addSelect([
+                '*',
+                'is_favorited_by_user' => Favorite::select(DB::raw(1))
+                    ->whereColumn('favoritable_id', 'sermons.id')
+                    ->where('favoritable_type', Sermon::class)
+                    ->where('user_id', $user->id)
+                    ->limit(1)
+            ]);
+        }
+
+        return $query->find($id);
     }
 
     public function toggleFavorite(User $user, int $sermonId): bool
@@ -143,12 +167,23 @@ class SermonService
     /**
      * Get related sermons based on category, series, and speaker
      */
-    public function getRelatedSermons(Sermon $sermon, int $limit = 6): \Illuminate\Database\Eloquent\Collection
+    public function getRelatedSermons(Sermon $sermon, int $limit = 6, ?User $user = null): \Illuminate\Database\Eloquent\Collection
     {
         $query = Sermon::where('id', '!=', $sermon->id)
             ->where('is_published', true)
             ->where('category_id', $sermon->category_id)
             ->with(['category', 'series']);
+
+        if ($user) {
+            $query->addSelect([
+                '*',
+                'is_favorited_by_user' => Favorite::select(DB::raw(1))
+                    ->whereColumn('favoritable_id', 'sermons.id')
+                    ->where('favoritable_type', Sermon::class)
+                    ->where('user_id', $user->id)
+                    ->limit(1)
+            ]);
+        }
 
         // Build priority conditions: series > speaker > category (already filtered)
         $priorityConditions = [];
