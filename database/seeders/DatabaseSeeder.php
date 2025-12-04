@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,16 +16,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test user if it doesn't exist
-        User::firstOrCreate(
-            ['email' => 'omolekessiena@gmail.com'],
-            [
-                'name' => 'Test User',
-                'email_verified_at' => now(),
-                'password' => \Illuminate\Support\Facades\Hash::make('password'),
-            ]
-        );
-
         // Seed categories first (required by other seeders)
         $this->call([
             CategorySeeder::class,
@@ -40,5 +31,16 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             HeroSliderSeeder::class,
         ]);
+
+        // Create admin user if it doesn't exist
+        User::firstOrCreate(
+            ['email' => 'omolekessiena@gmail.com'],
+            [
+                'name' => 'Omole Kessiena',
+                'email_verified_at' => now(),
+                'password' => Hash::make('password'),
+                'is_admin' => true,
+            ]
+        );
     }
 }
