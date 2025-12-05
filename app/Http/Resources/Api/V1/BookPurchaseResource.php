@@ -40,6 +40,10 @@ class BookPurchaseResource extends JsonResource
                         'cover_image' => $this->book->cover_image ? env('APP_URL') . '/storage/' . $this->book->cover_image : null,
                         'price' => $this->book->price,
                         'average_rating' => $this->book->average_rating,
+                        'file_url' => $this->when(
+                            isset($this->hasPurchased) && $this->hasPurchased,
+                            fn() => $this->file_url ? env('APP_URL') . '/storage/' . $this->file_url : null
+                        ),
                     ]
                 ),
             ],
