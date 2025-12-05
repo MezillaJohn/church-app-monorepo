@@ -54,6 +54,7 @@ class SermonResource extends Resource
                             ->disk('public')
                             ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'])
                             ->maxSize(204800)
+                            ->rules(['file', 'max:204800'])
                             ->directory('sermons/audio')
                             ->visibility('public')
                             ->visible(fn($get) => $get('type') === 'audio')

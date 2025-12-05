@@ -44,5 +44,19 @@ class AppServiceProvider extends ServiceProvider
 
         // Register observers
         Sermon::observe(SermonObserver::class);
+
+        // Load Paystack settings from DB
+        try {
+            if (Schema::hasTable('settings')) {
+                config([
+                    'paystack.public_key' => \App\Models\Setting::get('paystack.public_key', config('paystack.public_key')),
+                    'paystack.secret_key' => \App\Models\Setting::get('paystack.secret_key', config('paystack.secret_key')),
+                    'paystack.merchant_email' => \App\Models\Setting::get('paystack.merchant_email', config('paystack.merchant_email')),
+                    'paystack.callback_url' => \App\Models\Setting::get('paystack.callback_url', config('paystack.callback_url')),
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Log or ignore if DB connection fails (e.g. during install)
+        }
     }
 }

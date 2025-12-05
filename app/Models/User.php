@@ -104,7 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
     public function bookPurchases(): HasMany
     {
-        return $this->hasMany(BookPurchase::class);
+        return $this->hasMany(BookPurchase::class)->where('status', 'completed');
     }
 
     public function bookRatings(): HasMany

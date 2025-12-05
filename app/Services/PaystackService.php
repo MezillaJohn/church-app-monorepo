@@ -21,6 +21,7 @@ class PaystackService
      */
     public function initializeTransaction(array $data): array
     {
+        Log::info('secret key and public key: ' . $this->secretKey . ' ' . $this->publicKey);
         try {
             $currency = $data['currency'] ?? 'NGN';
             $amount = $data['amount'];
