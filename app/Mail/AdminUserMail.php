@@ -16,9 +16,10 @@ class AdminUserMail extends Mailable implements ShouldQueue
 
     public function __construct(
         public User $user,
-        public string $subject,
+        string $subject,
         public string $body
     ) {
+        $this->subject = $subject;
     }
 
     public function envelope(): Envelope
