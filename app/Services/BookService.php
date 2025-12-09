@@ -47,8 +47,8 @@ class BookService
             ->with(['category'])
             ->orderBy('purchases_count', 'desc')
             ->limit($limit)
-            ->get();
-    }
+        ->get();
+}
 
     public function checkIfPurchased(User $user, int $bookId): bool
     {
