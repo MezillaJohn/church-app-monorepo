@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class BookService
 {
+    public function __construct(private SettingsService $settingsService)
+    {
+    }
+
     public function getAll(array $filters = []): LengthAwarePaginator
     {
         $query = Book::query()->with(['category']);
@@ -48,8 +52,17 @@ class BookService
 
     public function checkIfPurchased(User $user, int $bookId): bool
     {
+        // Check if temporary paid access mode is enabled
+        $temporaryAccessMode = $this->settingsService->get('books.temporary_paid_access_mode', false);
+
+        if ($temporaryAccessMode) {
+            return true; // Grant access to all users when temporary mode is ON
+        }
+
+        // Normal purchase verification
         return $user->bookPurchases()->where('book_id', $bookId)->where('status', 'completed')->exists();
     }
+
 
     public function getPurchasedBooks(User $user): LengthAwarePaginator
     {

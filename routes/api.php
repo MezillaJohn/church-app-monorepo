@@ -37,6 +37,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/auth/profile', [AuthController::class, 'profile']);
         Route::put('/auth/profile', [AuthController::class, 'updateProfile']);
         Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
+        Route::delete('/auth/account', [AuthController::class, 'deleteAccount']);
 
         //Sermons
         Route::post('/sermons/{id}/favorite', [SermonController::class, 'toggleFavorite']);
@@ -76,16 +77,17 @@ Route::prefix('v1')->group(function () {
         Route::get('/push-tokens', [PushTokenController::class, 'index']);
         Route::post('/push-tokens', [PushTokenController::class, 'store']);
         Route::delete('/push-tokens/{id}', [PushTokenController::class, 'destroy']);
-        
+
         // Sermon routes 
         Route::get('/sermons', [SermonController::class, 'index']);
         Route::get('/sermons/{id}', [SermonController::class, 'show']);
+        
+        // Book routes
+        Route::get('/books', [BookController::class, 'index']);
     });
 
 
 
-    // Book routes
-    Route::get('/books', [BookController::class, 'index']);
 
 
 

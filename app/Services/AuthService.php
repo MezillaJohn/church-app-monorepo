@@ -135,5 +135,28 @@ class AuthService
 
         return true;
     }
+
+    /**
+     * Delete user account
+     * 
+     * @param User $user
+     * @param string $password
+     * @return bool
+     */
+    public function deleteAccount(User $user, string $password): bool
+    {
+        // Verify password before deletion
+        if (!Hash::check($password, $user->password)) {
+            return false;
+        }
+
+        // Delete all user tokens
+        $user->tokens()->delete();
+
+        // Delete the user account (related data will be handled by cascade or model events)
+        $user->delete();
+
+        return true;
+    }
 }
 

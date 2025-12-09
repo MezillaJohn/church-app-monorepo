@@ -213,4 +213,21 @@ class AuthController extends BaseController
 
         return $this->ok('Password reset successfully');
     }
+
+    public function deleteAccount(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        $user = $request->user();
+
+        $deleted = $this->authService->deleteAccount($user, $request->password);
+
+        if (!$deleted) {
+            return $this->error('Invalid password. Please try again.', [], 422);
+        }
+
+        return $this->ok('Account deleted successfully');
+    }
 }

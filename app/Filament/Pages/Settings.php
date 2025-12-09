@@ -43,6 +43,7 @@ class Settings extends Page implements HasForms
             'social_instagram' => \App\Models\Setting::get('social.instagram', ''),
             'social_linkedin' => \App\Models\Setting::get('social.linkedin', ''),
             'social_youtube' => \App\Models\Setting::get('social.youtube', ''),
+            'temporary_paid_access_mode' => \App\Models\Setting::get('books.temporary_paid_access_mode', false),
         ]);
     }
 
@@ -121,6 +122,15 @@ class Settings extends Page implements HasForms
                         ->label('YouTube Channel URL')
                         ->url()
                         ->helperText('Your YouTube channel URL')
+                        ->columnSpanFull(),
+                ])
+                ->columnSpanFull(),
+            SchemaSection::make('Books & Library')
+                ->schema([
+                    Forms\Components\Toggle::make('temporary_paid_access_mode')
+                        ->label('Temporary Paid Access Mode')
+                        ->helperText('⚠️ When enabled, ALL books become accessible to ALL users without purchase verification. Use for promotions, testing, or emergency access.')
+                        ->inline(false)
                         ->columnSpanFull(),
                 ])
                 ->columnSpanFull(),
@@ -226,6 +236,14 @@ class Settings extends Page implements HasForms
             'string',
             'social',
             'YouTube channel URL'
+        );
+
+        $settingsService->set(
+            'books.temporary_paid_access_mode',
+            $data['temporary_paid_access_mode'] ?? false,
+            'boolean',
+            'books',
+            'Temporary mode to make all books accessible without purchase verification'
         );
 
         $settingsService->clearCache();

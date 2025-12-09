@@ -24,7 +24,7 @@ class BookResource extends JsonResource
                 'price' => $this->price,
                 'cover_image' => $this->cover_image ? env('APP_URL') . '/storage/' . $this->cover_image : null,
                 'file_url' => $this->when(
-                    isset($this->hasPurchased) && $this->hasPurchased,
+                    $this->shouldShowFileUrl(),
                     fn() => $this->file_url ? env('APP_URL') . '/storage/' . $this->file_url : null
                 ),
                 'preview_pages' => $this->preview_pages,
@@ -43,6 +43,22 @@ class BookResource extends JsonResource
                 'updated_at' => $this->updated_at?->toISOString(),
             ],
         ];
+    }
+
+    /**
+     * Determine if file URL should be shown
+     */
+    protected function shouldShowFileUrl(): bool
+    {
+        // Check if temporary paid access mode is enabled
+        $temporaryAccessMode = \App\Models\Setting::get('books.temporary_paid_access_mode', false);
+
+        if ($temporaryAccessMode) {
+            return true; // Show file URL to everyone when temporary mode is ON
+        }
+
+        // Otherwise, only show if user has purchased
+        return isset($this->hasPurchased) && $this->hasPurchased;
     }
 }
 

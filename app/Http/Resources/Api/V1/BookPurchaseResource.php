@@ -41,8 +41,8 @@ class BookPurchaseResource extends JsonResource
                         'price' => $this->book->price,
                         'average_rating' => $this->book->average_rating,
                         'file_url' => $this->when(
-                            isset($this->hasPurchased) && $this->hasPurchased,
-                            fn() => $this->file_url ? env('APP_URL') . '/storage/' . $this->file_url : null
+                            $this->shouldShowFileUrl(),
+                            fn() => $this->book->file_url ? env('APP_URL') . '/storage/' . $this->book->file_url : null
                         ),
                     ]
                 ),
@@ -51,6 +51,22 @@ class BookPurchaseResource extends JsonResource
                 'purchased_at' => $this->created_at?->toISOString(),
             ],
         ];
+    }
+
+    /**
+     * Determine if file URL should be shown
+     */
+    protected function shouldShowFileUrl(): bool
+    {
+        // Check if temporary paid access mode is enabled
+        $temporaryAccessMode = \App\Models\Setting::get('books.temporary_paid_access_mode', false);
+
+        if ($temporaryAccessMode) {
+            return true; // Show file URL to everyone when temporary mode is ON
+        }
+
+        // For purchases, always show file URL (user has already purchased)
+        return true;
     }
 }
 
