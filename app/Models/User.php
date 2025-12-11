@@ -231,10 +231,8 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
      */
     public function getProfileCompleteAttribute(): bool
     {
-        return !empty($this->church_centre_id)
-            && !empty($this->country)
+        return  !empty($this->country)
             && !empty($this->phone)
-            && !empty($this->gender)
-            && $this->church_member !== null;
+            && !empty($this->gender);
     }
 }
