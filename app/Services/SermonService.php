@@ -63,7 +63,7 @@ class SermonService
             $query->orderBy('created_at', 'desc');
         }
 
-        return $query->paginate(15);
+        return $query->paginate(100);
     }
 
     public function getById(int $id, ?User $user = null): ?Sermon
