@@ -30,13 +30,8 @@ class DonationResource extends Resource
                     ->required()
                     ->numeric()
                     ->prefix('₦'),
-                Forms\Components\Select::make('donation_type')
-                    ->options([
-                        'tithe' => 'Tithe',
-                        'offering' => 'Offering',
-                        'special' => 'Special',
-                        'missions' => 'Missions',
-                    ])
+                Forms\Components\Select::make('donation_type_id')
+                    ->relationship('donationType', 'name')
                     ->required(),
                 Forms\Components\Select::make('payment_method')
                     ->options([
@@ -62,7 +57,8 @@ class DonationResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('amount')
                     ->money('NGN'),
-                Tables\Columns\TextColumn::make('donation_type'),
+                Tables\Columns\TextColumn::make('donationType.name')
+                    ->label('Type'),
                 Tables\Columns\TextColumn::make('payment_method'),
                 Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('created_at')
