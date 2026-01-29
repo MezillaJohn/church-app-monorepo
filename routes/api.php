@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\ChurchCentreController;
 use App\Http\Controllers\Api\V1\SeriesController;
 use App\Http\Controllers\Api\V1\PartnershipController;
 use App\Http\Controllers\Api\V1\SiteInfoController;
+use App\Http\Controllers\Api\V1\NotificationController;
 
 Route::prefix('v1')->group(function () {
     // Public Authentication routes
@@ -29,7 +30,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/auth/email/verify', [AuthController::class, 'verifyEmail'])->middleware('auth:sanctum');
     Route::post('/auth/email/resend', [AuthController::class, 'resendVerification'])->middleware('auth:sanctum');
 
-    
+
     // Authentication routes (protected - requires email verification)
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -37,7 +38,7 @@ Route::prefix('v1')->group(function () {
         Route::put('/auth/profile', [AuthController::class, 'updateProfile']);
         Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
         Route::delete('/auth/account', [AuthController::class, 'deleteAccount']);
-        
+
         //Sermons
         Route::post('/sermons/{id}/favorite', [SermonController::class, 'toggleFavorite']);
         Route::get('/sermons/favorites', [SermonController::class, 'favorites']);
@@ -45,7 +46,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/sermons/watch-later', [SermonController::class, 'watchLater']);
         Route::post('/sermons/{id}/progress', [SermonController::class, 'updateProgress']);
         Route::get('/sermons/{id}/progress', [SermonController::class, 'getProgress']);
-        
+
         //Books
         Route::get('/books/featured', [BookController::class, 'featured']);
         Route::get('/library/my-books', [BookController::class, 'myBooks']);
@@ -81,9 +82,14 @@ Route::prefix('v1')->group(function () {
         // Sermon routes 
         Route::get('/sermons', [SermonController::class, 'index']);
         Route::get('/sermons/{id}', [SermonController::class, 'show']);
-        
+
         // Book routes
         Route::get('/books', [BookController::class, 'index']);
+
+        // Notifications
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     });
 
 

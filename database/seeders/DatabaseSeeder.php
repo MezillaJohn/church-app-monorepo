@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             BookSeeder::class,
             EventSeeder::class,
             HeroSliderSeeder::class,
+            NotificationSeeder::class,
         ]);
 
         // Create admin user if it doesn't exist

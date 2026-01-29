@@ -18,52 +18,33 @@ class SermonObserver
      */
     public function created(Sermon $sermon): void
     {
-        // Only send notification if sermon is published
-        if ($sermon->is_published && $this->pushNotificationService) {
-            $this->sendNewSermonNotification($sermon);
-        }
+        $this->checkAndNotify($sermon);
     }
 
-    /**
-     * Handle the Sermon "updated" event.
-     */
     public function updated(Sermon $sermon): void
     {
-        // Send notification if sermon was just published
-        if ($sermon->is_published && $sermon->wasChanged('is_published') && $this->pushNotificationService) {
-            $this->sendNewSermonNotification($sermon);
+        // If audio or video was just added/changed
+        if ($sermon->wasChanged(['audio_file_url', 'youtube_video_id', 'youtube_video_url'])) {
+            $this->checkAndNotify($sermon);
         }
     }
 
-    /**
-     * Send notification to all users about new sermon
-     */
-    protected function sendNewSermonNotification(Sermon $sermon): void
+    protected function checkAndNotify(Sermon $sermon): void
     {
-        try {
-            // Get all users who have push tokens
-            $users = User::whereHas('pushTokens', function ($query) {
-                $query->where('is_active', true);
-            })->get();
+        // Check if media exists
+        $hasMedia = !empty($sermon->audio_file_url) || !empty($sermon->youtube_video_id) || !empty($sermon->youtube_video_url);
 
-            if ($users->isEmpty()) {
-                return;
-            }
+        if ($hasMedia && $sermon->is_published) {
+            // We need to notify all users. BATCHING this is important for performance.
+            // For now, we'll implement a chunked loop. In production, this should be a Job.
+            // I will dispatch a job here.
 
-            $this->pushNotificationService->sendToUsers(
-                $users,
-                'New Sermon Available',
-                $sermon->title,
-                [
-                    'type' => 'sermon',
-                    'id' => $sermon->id,
-                ]
-            );
-        } catch (\Exception $e) {
-            Log::error('Failed to send new sermon notification', [
-                'error' => $e->getMessage(),
-                'sermon_id' => $sermon->id,
-            ]);
+            // First, let's just create the code to create notifications.
+            // Since we have custom columns (event_type, event_id), standard Notification::send() won't fill them easily.
+            // We will manually insert or use a custom method.
+            // Manual insertion is most performant for bulk.
+
+            \App\Jobs\ProcessNewSermonNotifications::dispatch($sermon);
         }
     }
 }

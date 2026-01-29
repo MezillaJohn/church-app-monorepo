@@ -231,8 +231,12 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
      */
     public function getProfileCompleteAttribute(): bool
     {
-        return  !empty($this->country)
+        return !empty($this->country)
             && !empty($this->phone)
             && !empty($this->gender);
+    }
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(Notification::class, 'notifiable')->latest();
     }
 }
