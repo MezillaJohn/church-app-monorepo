@@ -38,6 +38,7 @@ class AuthService
 
     public function logout(User $user): void
     {
+        $user->pushTokens()->delete();
         $user->tokens()->delete();
     }
 

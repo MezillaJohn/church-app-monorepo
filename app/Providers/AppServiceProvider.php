@@ -43,7 +43,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Favorite::class, FavoritePolicy::class);
 
         // Register observers
+        // Register observers
         Sermon::observe(SermonObserver::class);
+        Book::observe(\App\Observers\BookObserver::class);
 
         // Load Paystack settings from DB
         try {

@@ -39,6 +39,11 @@ class NotificationResource extends JsonResource
                 return $this->event->type->value ?? 'sermon';
             }
             return 'sermon';
+            return 'sermon';
+        }
+
+        if ($this->event_type === \App\Models\Book::class) {
+            return 'book';
         }
 
         return 'unknown';

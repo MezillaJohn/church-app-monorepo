@@ -211,5 +211,29 @@ class SermonService
             ->limit($limit)
             ->get();
     }
+
+    public function getFeatured(array $filters = [], ?User $user = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $query = Sermon::where('is_featured', true)
+            ->where('is_published', true)
+            ->with(['category', 'series']);
+
+        if ($user) {
+            $query->addSelect([
+                '*',
+                'is_favorited_by_user' => Favorite::select(DB::raw(1))
+                    ->whereColumn('favoritable_id', 'sermons.id')
+                    ->where('favoritable_type', Sermon::class)
+                    ->where('user_id', $user->id)
+                    ->limit(1)
+            ]);
+        }
+
+        if (isset($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+
+        return $query->latest()->paginate(15);
+    }
 }
 

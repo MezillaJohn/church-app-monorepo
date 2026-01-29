@@ -81,6 +81,7 @@ Route::prefix('v1')->group(function () {
 
         // Sermon routes 
         Route::get('/sermons', [SermonController::class, 'index']);
+        Route::get('/sermons/featured', [SermonController::class, 'featured']);
         Route::get('/sermons/{id}', [SermonController::class, 'show']);
 
         // Book routes

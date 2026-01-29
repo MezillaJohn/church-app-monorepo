@@ -26,6 +26,21 @@ class SermonController extends BaseController
         }
     }
 
+    public function featured(Request $request)
+    {
+        try {
+            $sermons = $this->sermonService->getFeatured($request->all(), $request->user());
+
+            if ($sermons->isEmpty()) {
+                return $this->ok('No featured sermon found', []);
+            }
+
+            return $this->ok('Featured sermons retrieved successfully', SermonResource::collection($sermons));
+        } catch (\Exception $e) {
+            return $this->error('Failed to retrieve featured sermon', ['exception' => $e->getMessage()], 500);
+        }
+    }
+
     public function show(Request $request, int $id)
     {
         try {
