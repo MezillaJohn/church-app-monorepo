@@ -4,19 +4,21 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Models\Category;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Content';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
@@ -87,7 +89,7 @@ class CategoryResource extends Resource
                     ->color('gray'),
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'sermon' => 'info',
                         'book' => 'success',
                         default => 'gray',
@@ -132,4 +134,3 @@ class CategoryResource extends Resource
         ];
     }
 }
-

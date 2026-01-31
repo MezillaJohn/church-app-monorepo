@@ -19,4 +19,3 @@ class CreateSermonSeries extends CreateRecord
         return 'Series created successfully';
     }
 }
-

@@ -4,11 +4,11 @@ namespace App\Models;
 
 use App\Enums\EventType;
 use App\Enums\RecurrencePattern;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
-use Carbon\Carbon;
 
 class Event extends Model
 {
@@ -93,7 +93,7 @@ class Event extends Model
      */
     public function isLive(): bool
     {
-        if (!$this->event_date || !$this->event_time) {
+        if (! $this->event_date || ! $this->event_time) {
             return false;
         }
 
@@ -126,7 +126,7 @@ class Event extends Model
             ->whereNull('parent_event_id')
             ->get()
             ->filter(function ($event) use ($now) {
-                if (!$event->event_date || !$event->event_time) {
+                if (! $event->event_date || ! $event->event_time) {
                     return false;
                 }
 
@@ -154,6 +154,7 @@ class Event extends Model
                     $eventTime->minute,
                     0
                 );
+
                 return $eventDateTime->timestamp;
             })
             ->first();

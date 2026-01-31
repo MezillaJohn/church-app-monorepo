@@ -18,8 +18,7 @@ class EventReminderNotification extends Notification implements ShouldQueue
     public function __construct(
         public Event $event,
         public string $reminderTimeText
-    ) {
-    }
+    ) {}
 
     /**
      * Get the notification's delivery channels.
@@ -37,14 +36,14 @@ class EventReminderNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Event Reminder: ' . $this->event->title)
-            ->greeting('Hello ' . $notifiable->name . '!')
-            ->line('This is a reminder for the upcoming event: ' . $this->event->title)
-            ->line('Event Date: ' . $this->event->event_date->format('l, F d, Y'))
-            ->line('Event Time: ' . \Carbon\Carbon::parse($this->event->event_time)->format('g:i A'))
-            ->line('Location: ' . $this->event->location)
-            ->line('Reminder: ' . $this->reminderTimeText)
-            ->action('View Event Details', url('/events/' . $this->event->id))
+            ->subject('Event Reminder: '.$this->event->title)
+            ->greeting('Hello '.$notifiable->name.'!')
+            ->line('This is a reminder for the upcoming event: '.$this->event->title)
+            ->line('Event Date: '.$this->event->event_date->format('l, F d, Y'))
+            ->line('Event Time: '.\Carbon\Carbon::parse($this->event->event_time)->format('g:i A'))
+            ->line('Location: '.$this->event->location)
+            ->line('Reminder: '.$this->reminderTimeText)
+            ->action('View Event Details', url('/events/'.$this->event->id))
             ->line('We look forward to seeing you there!');
     }
 

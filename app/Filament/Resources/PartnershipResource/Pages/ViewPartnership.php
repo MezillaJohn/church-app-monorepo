@@ -4,14 +4,12 @@ namespace App\Filament\Resources\PartnershipResource\Pages;
 
 use App\Enums\PartnershipInterval;
 use App\Filament\Resources\PartnershipResource;
-use App\Models\Partnership;
 use Filament\Actions;
-use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
-use Filament\Resources\Pages\ViewRecord;
 
 class ViewPartnership extends ViewRecord
 {
@@ -57,8 +55,8 @@ class ViewPartnership extends ViewRecord
                         TextEntry::make('interval')
                             ->label('Interval')
                             ->badge()
-                            ->formatStateUsing(fn($state) => ucfirst($state->value ?? $state))
-                            ->color(fn($state) => match($state?->value ?? $state) {
+                            ->formatStateUsing(fn ($state) => ucfirst($state->value ?? $state))
+                            ->color(fn ($state) => match ($state?->value ?? $state) {
                                 PartnershipInterval::Daily->value => 'info',
                                 PartnershipInterval::Weekly->value => 'success',
                                 PartnershipInterval::Monthly->value => 'warning',
@@ -106,7 +104,7 @@ class ViewPartnership extends ViewRecord
                 ->label('Edit Partnership')
                 ->icon('heroicon-o-pencil')
                 ->color('primary')
-                ->url(fn() => PartnershipResource::getUrl('edit', ['record' => $this->record])),
+                ->url(fn () => PartnershipResource::getUrl('edit', ['record' => $this->record])),
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Partnership')
@@ -116,4 +114,3 @@ class ViewPartnership extends ViewRecord
         ];
     }
 }
-

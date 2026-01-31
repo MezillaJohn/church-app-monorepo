@@ -11,7 +11,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentDonationsWidget extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
@@ -53,11 +53,10 @@ class RecentDonationsWidget extends BaseWidget
                 Actions\Action::make('view')
                     ->label('View')
                     ->icon('heroicon-o-eye')
-                    ->url(fn (Donation $record): string => DonationResource::getUrl('index') . '?tableSearch=' . urlencode($record->id)),
+                    ->url(fn (Donation $record): string => DonationResource::getUrl('index').'?tableSearch='.urlencode($record->id)),
             ])
             ->defaultSort('created_at', 'desc')
             ->heading('Recent Donations')
             ->description('Last 10 donations');
     }
 }
-

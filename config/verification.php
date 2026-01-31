@@ -7,5 +7,3 @@ return [
     'resend_cooldown_seconds' => env('VERIFICATION_RESEND_COOLDOWN_SECONDS', 60),
     'proceed_token_ttl_minutes' => env('VERIFICATION_PROCEED_TOKEN_TTL_MINUTES', 15),
 ];
-
-

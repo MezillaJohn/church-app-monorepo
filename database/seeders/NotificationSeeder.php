@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\User;
 use App\Models\Event;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class NotificationSeeder extends Seeder
 {
@@ -33,8 +31,8 @@ class NotificationSeeder extends Seeder
                 // Randomly distribute: 40% Sermon, 30% Event, 30% Book
                 $rand = rand(0, 100);
                 $isSermon = $rand > 60 && $sermons->isNotEmpty();
-                $isBook = !$isSermon && $rand > 30 && $books->isNotEmpty();
-                $isEvent = !$isSermon && !$isBook && $events->isNotEmpty();
+                $isBook = ! $isSermon && $rand > 30 && $books->isNotEmpty();
+                $isEvent = ! $isSermon && ! $isBook && $events->isNotEmpty();
 
                 // Fallbacks
                 if ($isSermon && $sermons->isEmpty()) {
@@ -62,7 +60,7 @@ class NotificationSeeder extends Seeder
                         'event_id' => $book->id,
                         'data' => json_encode([
                             'message' => "New Book: {$book->title}",
-                            'action_url' => "/books/{$book->id}"
+                            'action_url' => "/books/{$book->id}",
                         ]),
                         'read_at' => rand(0, 1) ? now() : null,
                         'created_at' => $createdAt,
@@ -80,7 +78,7 @@ class NotificationSeeder extends Seeder
                         'event_id' => $sermon->id,
                         'data' => json_encode([
                             'message' => "New {$type} available: {$sermon->title}",
-                            'action_url' => "/sermons/{$sermon->id}"
+                            'action_url' => "/sermons/{$sermon->id}",
                         ]),
                         'read_at' => rand(0, 1) ? now() : null,
                         'created_at' => $createdAt,
@@ -97,7 +95,7 @@ class NotificationSeeder extends Seeder
                         'event_id' => $event->id,
                         'data' => json_encode([
                             'message' => "Reminder: {$event->title} is coming up soon!",
-                            'action_url' => "/events/{$event->id}"
+                            'action_url' => "/events/{$event->id}",
                         ]),
                         'read_at' => rand(0, 1) ? now() : null,
                         'created_at' => $createdAt,

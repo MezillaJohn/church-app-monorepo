@@ -58,6 +58,7 @@ class PushNotificationService
 
         if (empty($tokens)) {
             Log::info("No active push tokens found for user {$user->id}");
+
             return ['success' => false, 'message' => 'No active tokens found'];
         }
 
@@ -75,7 +76,8 @@ class PushNotificationService
             ->toArray();
 
         if (empty($tokens)) {
-            Log::info("No active push tokens found for users");
+            Log::info('No active push tokens found for users');
+
             return ['success' => false, 'message' => 'No active tokens found'];
         }
 
@@ -96,7 +98,7 @@ class PushNotificationService
                     'Accept' => 'application/json',
                     'Accept-encoding' => 'gzip, deflate',
                     'Content-Type' => 'application/json',
-                ])->post($this->expoApiUrl . '?useFcmV1=true', $chunk);
+                ])->post($this->expoApiUrl.'?useFcmV1=true', $chunk);
 
                 $responseData = $response->json();
 
@@ -160,4 +162,3 @@ class PushNotificationService
         }
     }
 }
-

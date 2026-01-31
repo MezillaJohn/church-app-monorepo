@@ -22,7 +22,7 @@ class SeriesResource extends JsonResource
                 'slug' => $this->slug,
                 'description' => $this->description,
                 'preacher' => $this->preacher,
-                'image' => $this->image ? asset('storage/' . $this->image) : null,
+                'image' => $this->image ? asset('storage/'.$this->image) : null,
                 'is_active' => $this->is_active,
             ],
             'relationships' => [
@@ -38,4 +38,3 @@ class SeriesResource extends JsonResource
         ];
     }
 }
-

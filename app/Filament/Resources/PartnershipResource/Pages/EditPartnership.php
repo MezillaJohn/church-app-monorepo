@@ -38,4 +38,3 @@ class EditPartnership extends EditRecord
         return 'Partnership updated successfully';
     }
 }
-

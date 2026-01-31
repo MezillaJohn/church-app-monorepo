@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\AppSettings\Pages;
 
 use App\Filament\Resources\AppSettings\AppSettingsResource;
-use App\Models\Setting;
 use App\Services\SettingsService;
 use Filament\Actions\Action;
 use Filament\Forms;
@@ -35,7 +34,7 @@ class ManageAppSettings extends Page implements HasForms
             $formData['android_version'] = '1.0.0';
         }
 
-        if (isset($appSettings['app.android_download_url']) && !empty($appSettings['app.android_download_url'])) {
+        if (isset($appSettings['app.android_download_url']) && ! empty($appSettings['app.android_download_url'])) {
             $formData['android_download_url'] = $appSettings['app.android_download_url'];
         }
 
@@ -45,7 +44,7 @@ class ManageAppSettings extends Page implements HasForms
             $formData['ios_version'] = '1.0.0';
         }
 
-        if (isset($appSettings['app.ios_download_url']) && !empty($appSettings['app.ios_download_url'])) {
+        if (isset($appSettings['app.ios_download_url']) && ! empty($appSettings['app.ios_download_url'])) {
             $formData['ios_download_url'] = $appSettings['app.ios_download_url'];
         }
 

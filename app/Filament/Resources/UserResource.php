@@ -4,19 +4,21 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Administration';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
@@ -38,10 +40,10 @@ class UserResource extends Resource
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('password')
                             ->password()
-                            ->required(fn (string $operation): bool => $operation === 'create')
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->dehydrateStateUsing(fn ($state) => \Hash::make($state))
-                            ->helperText(fn (string $operation): string => $operation === 'create' 
+                            ->required(fn(string $operation): bool => $operation === 'create')
+                            ->dehydrated(fn($state) => filled($state))
+                            ->dehydrateStateUsing(fn($state) => \Hash::make($state))
+                            ->helperText(fn(string $operation): string => $operation === 'create'
                                 ? 'Enter a password for the user'
                                 : 'Leave blank to keep current password')
                             ->columnSpanFull(),
@@ -122,7 +124,7 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('gender')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'male' => 'info',
                         'female' => 'success',
                         default => 'gray',
@@ -197,4 +199,3 @@ class UserResource extends Resource
         ];
     }
 }
-

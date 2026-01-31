@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -164,7 +164,7 @@ class BookSeeder extends Seeder
         foreach ($books as $bookData) {
             $category = Category::where('slug', $bookData['category'])->first();
 
-            if (!$category) {
+            if (! $category) {
                 continue;
             }
 
@@ -175,8 +175,8 @@ class BookSeeder extends Seeder
                     'description' => $bookData['description'],
                     'price' => $bookData['price'],
                     'category_id' => $category->id,
-                    'cover_image' => 'books/covers/' . Str::slug($bookData['title']) . '.jpg',
-                    'file_url' => 'books/pdfs/' . Str::slug($bookData['title']) . '.pdf',
+                    'cover_image' => 'books/covers/'.Str::slug($bookData['title']).'.jpg',
+                    'file_url' => 'books/pdfs/'.Str::slug($bookData['title']).'.pdf',
                     'preview_pages' => $bookData['preview_pages'],
                     'average_rating' => $bookData['average_rating'],
                     'ratings_count' => $bookData['ratings_count'],

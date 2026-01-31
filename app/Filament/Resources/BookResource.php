@@ -4,19 +4,21 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BookResource\Pages;
 use App\Models\Book;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class BookResource extends Resource
 {
     protected static ?string $model = Book::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Bookstore';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
 
@@ -135,7 +137,7 @@ class BookResource extends Resource
                         ->color(fn(Book $record) => $record->is_featured ? 'warning' : 'success')
                         ->requiresConfirmation()
                         ->modalHeading(fn(Book $record) => $record->is_featured ? 'Unmark as Featured' : 'Mark as Featured')
-                        ->modalDescription(fn(Book $record) => $record->is_featured 
+                        ->modalDescription(fn(Book $record) => $record->is_featured
                             ? 'Are you sure you want to unmark this book as featured?'
                             : 'Are you sure you want to mark this book as featured?')
                         ->action(function (Book $record) {
@@ -152,9 +154,9 @@ class BookResource extends Resource
                         ->modalSubmitActionLabel('Yes, delete')
                         ->successNotificationTitle('Book deleted successfully'),
                 ])
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->button()
-                ->label('Actions'),
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->button()
+                    ->label('Actions'),
             ])
             ->bulkActions([
                 Actions\BulkActionGroup::make([
@@ -173,4 +175,3 @@ class BookResource extends Resource
         ];
     }
 }
-

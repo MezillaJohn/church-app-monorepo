@@ -2,18 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Donation;
-use App\Models\BankAccount;
-use App\Models\User;
 use App\Enums\PaymentMethod;
+use App\Models\BankAccount;
+use App\Models\Donation;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class DonationService
 {
-    public function __construct(private PaystackService $paystackService)
-    {
-    }
+    public function __construct(private PaystackService $paystackService) {}
 
     public function getPaymentMethods(): array
     {
@@ -29,7 +27,7 @@ class DonationService
     {
         $currency = $data['currency'] ?? 'NGN';
         $amount = $data['amount'];
-        
+
         // Calculate amount in NGN for reporting purposes
         $amountInNgn = $this->convertToNGN($amount, $currency);
 
@@ -128,7 +126,7 @@ class DonationService
         ];
 
         $rate = $rates[$currency] ?? 1;
+
         return $amount * $rate;
     }
 }
-

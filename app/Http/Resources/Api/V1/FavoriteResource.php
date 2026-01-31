@@ -24,7 +24,7 @@ class FavoriteResource extends JsonResource
             'relationships' => [
                 'sermon' => $this->when(
                     $this->relationLoaded('favoritable') && $this->favoritable instanceof \App\Models\Sermon,
-                    fn() => new SermonResource($this->favoritable)
+                    fn () => new SermonResource($this->favoritable)
                 ),
             ],
             'meta' => [
@@ -33,4 +33,3 @@ class FavoriteResource extends JsonResource
         ];
     }
 }
-

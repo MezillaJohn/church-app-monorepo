@@ -17,8 +17,7 @@ class PaymentController extends BaseController
     public function __construct(
         private PaystackService $paystackService,
         private ?PushNotificationService $pushNotificationService = null
-    ) {
-    }
+    ) {}
 
     /**
      * Initialize book purchase payment
@@ -30,7 +29,7 @@ class PaymentController extends BaseController
         try {
             $book = \App\Models\Book::findOrFail($bookId);
 
-            if (!$book->is_published) {
+            if (! $book->is_published) {
                 return $this->error('Book is not available for purchase', [], 404);
             }
 
@@ -100,6 +99,7 @@ class PaymentController extends BaseController
             } elseif ($metadata['type'] === 'donation') {
                 $this->completeDonation($metadata, $transaction);
             }
+
             return redirect()->away('https://godhouse.org');
 
             // return $this->ok('Payment verified successfully', [
@@ -237,4 +237,3 @@ class PaymentController extends BaseController
         });
     }
 }
-

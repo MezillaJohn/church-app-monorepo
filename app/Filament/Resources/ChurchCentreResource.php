@@ -4,19 +4,21 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ChurchCentreResource\Pages;
 use App\Models\ChurchCentre;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class ChurchCentreResource extends Resource
 {
     protected static ?string $model = ChurchCentre::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Administration';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
@@ -153,4 +155,3 @@ class ChurchCentreResource extends Resource
         ];
     }
 }
-

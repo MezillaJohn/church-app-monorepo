@@ -9,4 +9,3 @@ enum DonationType: string
     case Special = 'special';
     case Missions = 'missions';
 }
-

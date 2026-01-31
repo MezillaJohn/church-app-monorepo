@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\Sermon;
 use App\Models\Category;
+use App\Models\Sermon;
 use App\Models\User;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
@@ -164,6 +164,6 @@ test('it returns pagination metadata for featured sermons', function () {
             'message',
             'data',
             'links' => ['first', 'last', 'prev', 'next'],
-            'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total']
+            'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total'],
         ]);
 });

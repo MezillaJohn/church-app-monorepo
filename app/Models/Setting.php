@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
 class Setting extends Model
@@ -26,11 +26,11 @@ class Setting extends Model
     public static function get(string $key, $default = null)
     {
         $cacheKey = "setting.{$key}";
-        
+
         return Cache::remember($cacheKey, 3600, function () use ($key, $default) {
             $setting = static::where('key', $key)->first();
-            
-            if (!$setting) {
+
+            if (! $setting) {
                 return $default;
             }
 

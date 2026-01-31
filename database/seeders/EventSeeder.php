@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Event;
 use App\Enums\EventType;
 use App\Enums\RecurrencePattern;
+use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -183,7 +183,7 @@ class EventSeeder extends Seeder
                     'location' => $eventData['location'],
                     'event_date' => $eventData['event_date'],
                     'event_time' => $eventData['event_time'],
-                    'image_url' => 'events/' . str_replace(' ', '-', strtolower($eventData['title'])) . '.jpg',
+                    'image_url' => 'events/'.str_replace(' ', '-', strtolower($eventData['title'])).'.jpg',
                     'max_attendees' => $eventData['max_attendees'],
                     'requires_rsvp' => $eventData['requires_rsvp'],
                     'is_published' => true,

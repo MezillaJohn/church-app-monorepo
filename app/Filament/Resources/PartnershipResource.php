@@ -5,19 +5,21 @@ namespace App\Filament\Resources;
 use App\Enums\PartnershipInterval;
 use App\Filament\Resources\PartnershipResource\Pages;
 use App\Models\Partnership;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class PartnershipResource extends Resource
 {
     protected static ?string $model = Partnership::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Partnership';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
@@ -118,7 +120,7 @@ class PartnershipResource extends Resource
                 Tables\Columns\TextColumn::make('interval')
                     ->badge()
                     ->formatStateUsing(fn($state) => ucfirst($state->value ?? $state))
-                    ->color(fn($state) => match($state?->value ?? $state) {
+                    ->color(fn($state) => match ($state?->value ?? $state) {
                         PartnershipInterval::Daily->value => 'info',
                         PartnershipInterval::Weekly->value => 'success',
                         PartnershipInterval::Monthly->value => 'warning',
@@ -182,4 +184,3 @@ class PartnershipResource extends Resource
         ];
     }
 }
-

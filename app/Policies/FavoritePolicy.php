@@ -31,4 +31,3 @@ class FavoritePolicy
         return true; // Any authenticated user can create favorites
     }
 }
-

@@ -12,14 +12,11 @@ use App\Mail\VerifyEmail;
 use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Mail;
 
 class AuthController extends BaseController
 {
-    public function __construct(private AuthService $authService)
-    {
-    }
+    public function __construct(private AuthService $authService) {}
 
     public function register(RegisterRequest $request)
     {
@@ -44,7 +41,7 @@ class AuthController extends BaseController
     {
         $result = $this->authService->login($request->validated());
 
-        if (!$result) {
+        if (! $result) {
             return $this->error('Invalid credentials', [], 401);
         }
 
@@ -54,6 +51,7 @@ class AuthController extends BaseController
             'user' => new UserResource($result['user'] ?? $result),
         ]);
     }
+
     public function validateEmail(Request $request)
     {
         $request->validate([
@@ -64,12 +62,14 @@ class AuthController extends BaseController
         if ($emailExists) {
             return $this->error('Email already exists', [], 400);
         }
+
         return $this->ok('Email is available');
     }
 
     public function logout(Request $request)
     {
         $this->authService->logout($request->user());
+
         return $this->ok('Logged out successfully');
     }
 
@@ -82,6 +82,7 @@ class AuthController extends BaseController
     {
         try {
             $user = $this->authService->updateProfile($request->user(), $request->validated());
+
             return $this->ok('Profile updated successfully', new UserResource($user));
         } catch (\Exception $e) {
             return $this->error('Failed to update profile', ['exception' => $e->getMessage()], 500);
@@ -101,7 +102,7 @@ class AuthController extends BaseController
             $request->new_password
         );
 
-        if (!$changed) {
+        if (! $changed) {
             return $this->error('Current password is incorrect', [], 422);
         }
 
@@ -172,7 +173,7 @@ class AuthController extends BaseController
         try {
             $result = $this->authService->initiatePasswordReset($request->email);
 
-            if (!$result) {
+            if (! $result) {
                 // Always return success message for security (don't reveal if email exists)
                 return $this->ok('If the email exists, a password reset code has been sent');
             }
@@ -207,7 +208,7 @@ class AuthController extends BaseController
             $request->password
         );
 
-        if (!$success) {
+        if (! $success) {
             return $this->error('Invalid or expired reset code. Please request a new one.', [], 400);
         }
 
@@ -224,7 +225,7 @@ class AuthController extends BaseController
 
         $deleted = $this->authService->deleteAccount($user, $request->password);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return $this->error('Invalid password. Please try again.', [], 422);
         }
 

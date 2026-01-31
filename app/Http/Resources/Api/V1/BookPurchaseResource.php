@@ -27,22 +27,22 @@ class BookPurchaseResource extends JsonResource
             'relationships' => [
                 'user' => $this->when(
                     $this->relationLoaded('user'),
-                    fn() => [
+                    fn () => [
                         'id' => $this->user->id,
                         'name' => $this->user->name,
                     ]
                 ),
                 'book' => $this->when(
                     $this->relationLoaded('book'),
-                    fn() => [
+                    fn () => [
                         'id' => $this->book->id,
                         'title' => $this->book->title,
-                        'cover_image' => $this->book->cover_image ? env('APP_URL') . '/storage/' . $this->book->cover_image : null,
+                        'cover_image' => $this->book->cover_image ? env('APP_URL').'/storage/'.$this->book->cover_image : null,
                         'price' => $this->book->price,
                         'average_rating' => $this->book->average_rating,
                         'file_url' => $this->when(
                             $this->shouldShowFileUrl(),
-                            fn() => $this->book->file_url ? env('APP_URL') . '/storage/' . $this->book->file_url : null
+                            fn () => $this->book->file_url ? env('APP_URL').'/storage/'.$this->book->file_url : null
                         ),
                     ]
                 ),
@@ -69,4 +69,3 @@ class BookPurchaseResource extends JsonResource
         return true;
     }
 }
-

@@ -41,12 +41,11 @@ class ManageSermons extends ManageRecords
             'audio' => Tab::make('Audio')
                 ->icon('heroicon-o-speaker-wave')
                 ->badge(Sermon::where('type', 'audio')->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', 'audio')),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', 'audio')),
             'video' => Tab::make('Video')
                 ->icon('heroicon-o-video-camera')
                 ->badge(Sermon::where('type', 'video')->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', 'video')),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', 'video')),
         ];
     }
 }
-

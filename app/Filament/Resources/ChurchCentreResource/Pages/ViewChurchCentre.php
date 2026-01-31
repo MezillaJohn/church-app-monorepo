@@ -7,10 +7,10 @@ use App\Models\ChurchCentre;
 use Filament\Actions;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
-use Filament\Resources\Pages\ViewRecord;
 
 class ViewChurchCentre extends ViewRecord
 {
@@ -68,7 +68,7 @@ class ViewChurchCentre extends ViewRecord
                         TextEntry::make('users_count')
                             ->label('Total Members')
                             ->numeric()
-                            ->default(fn(ChurchCentre $record) => $record->users()->count())
+                            ->default(fn (ChurchCentre $record) => $record->users()->count())
                             ->icon('heroicon-o-users'),
                     ])
                     ->columns(2)
@@ -97,7 +97,7 @@ class ViewChurchCentre extends ViewRecord
                 ->label('Edit Centre')
                 ->icon('heroicon-o-pencil')
                 ->color('primary')
-                ->url(fn() => ChurchCentreResource::getUrl('edit', ['record' => $this->record])),
+                ->url(fn () => ChurchCentreResource::getUrl('edit', ['record' => $this->record])),
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Church Centre')
@@ -107,4 +107,3 @@ class ViewChurchCentre extends ViewRecord
         ];
     }
 }
-

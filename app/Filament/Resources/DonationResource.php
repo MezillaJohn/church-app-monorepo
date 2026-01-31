@@ -4,18 +4,20 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DonationResource\Pages;
 use App\Models\Donation;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class DonationResource extends Resource
 {
     protected static ?string $model = Donation::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Finance';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;
 
@@ -84,4 +86,3 @@ class DonationResource extends Resource
         ];
     }
 }
-

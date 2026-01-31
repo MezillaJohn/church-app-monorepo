@@ -8,16 +8,14 @@ use App\Services\SettingsService;
 
 class SiteInfoController extends BaseController
 {
-    public function __construct(private SettingsService $settingsService)
-    {
-    }
+    public function __construct(private SettingsService $settingsService) {}
 
     public function index()
     {
         try {
             $socialLinks = $this->settingsService->getGroup('social');
             $appSettings = $this->settingsService->getGroup('app');
-            
+
             $siteInfo = [
                 'social_links' => [
                     'facebook' => $socialLinks['social.facebook'] ?? '',
@@ -44,4 +42,3 @@ class SiteInfoController extends BaseController
         }
     }
 }
-

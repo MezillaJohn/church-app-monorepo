@@ -8,10 +8,10 @@ use Filament\Actions;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
-use Filament\Resources\Pages\ViewRecord;
 
 class ViewSermonSeries extends ViewRecord
 {
@@ -25,7 +25,7 @@ class ViewSermonSeries extends ViewRecord
                     ->schema([
                         ImageEntry::make('image')
                             ->label('Series Image')
-                            ->defaultImageUrl(fn() => null)
+                            ->defaultImageUrl(fn () => null)
                             ->height(300)
                             ->columnSpanFull(),
                         TextEntry::make('name')
@@ -58,7 +58,7 @@ class ViewSermonSeries extends ViewRecord
                         TextEntry::make('sermons_count')
                             ->label('Total Sermons')
                             ->numeric()
-                            ->default(fn(SermonSeries $record) => $record->sermons()->count())
+                            ->default(fn (SermonSeries $record) => $record->sermons()->count())
                             ->icon('heroicon-o-microphone'),
                     ])
                     ->columns(2)
@@ -87,7 +87,7 @@ class ViewSermonSeries extends ViewRecord
                 ->label('Edit Series')
                 ->icon('heroicon-o-pencil')
                 ->color('primary')
-                ->url(fn() => SermonSeriesResource::getUrl('edit', ['record' => $this->record])),
+                ->url(fn () => SermonSeriesResource::getUrl('edit', ['record' => $this->record])),
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Series')
@@ -97,4 +97,3 @@ class ViewSermonSeries extends ViewRecord
         ];
     }
 }
-

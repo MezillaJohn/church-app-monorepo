@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SermonSeeder::class,
             BookSeeder::class,
+            BookPurchaseSeeder::class,
             EventSeeder::class,
             HeroSliderSeeder::class,
             NotificationSeeder::class,

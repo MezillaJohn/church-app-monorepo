@@ -40,4 +40,3 @@ class PartnershipResource extends JsonResource
         ];
     }
 }
-

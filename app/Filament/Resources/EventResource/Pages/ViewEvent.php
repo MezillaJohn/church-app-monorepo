@@ -8,10 +8,10 @@ use Filament\Actions;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
-use Filament\Resources\Pages\ViewRecord;
 
 class ViewEvent extends ViewRecord
 {
@@ -38,8 +38,8 @@ class ViewEvent extends ViewRecord
                         TextEntry::make('event_type')
                             ->label('Event Type')
                             ->badge()
-                            ->formatStateUsing(fn($state) => $state ? ucfirst($state->value) : 'N/A')
-                            ->color(fn($state) => match ($state?->value) {
+                            ->formatStateUsing(fn ($state) => $state ? ucfirst($state->value) : 'N/A')
+                            ->color(fn ($state) => match ($state?->value) {
                                 'service' => 'primary',
                                 'conference' => 'success',
                                 'prayer' => 'info',
@@ -64,31 +64,29 @@ class ViewEvent extends ViewRecord
                     ])
                     ->columns(2)->columnSpanFull(),
 
-
-
                 Section::make('Media & Broadcasting')
                     ->schema([
                         ImageEntry::make('image_url')
                             ->label('Event Image')
                             ->disk('public')
-                            ->defaultImageUrl(fn() => null)
+                            ->defaultImageUrl(fn () => null)
                             ->height(300)
                             ->columnSpanFull(),
                         TextEntry::make('broadcast_url')
                             ->label('Broadcast URL')
-                            ->url(fn($state) => $state, true)
+                            ->url(fn ($state) => $state, true)
                             ->placeholder('No broadcast URL set')
                             ->icon('heroicon-o-video-camera')
                             ->columnSpanFull(),
                     ])
-                    ->visible(fn(Event $record) => $record->image_url || $record->broadcast_url),
+                    ->visible(fn (Event $record) => $record->image_url || $record->broadcast_url),
 
                 Section::make('Attendance & RSVP')
                     ->schema([
                         TextEntry::make('max_attendees')
                             ->label('Maximum Attendees')
                             ->placeholder('Unlimited')
-                            ->suffix(fn(Event $record) => $record->max_attendees ? 'people' : null)
+                            ->suffix(fn (Event $record) => $record->max_attendees ? 'people' : null)
                             ->columnSpanFull(),
                         IconEntry::make('requires_rsvp')
                             ->label('RSVP Required')
@@ -97,7 +95,7 @@ class ViewEvent extends ViewRecord
                             ->falseColor('gray'),
                         TextEntry::make('rsvps_count')
                             ->label('Total RSVPs')
-                            ->getStateUsing(fn(Event $record) => $record->rsvps()->count())
+                            ->getStateUsing(fn (Event $record) => $record->rsvps()->count())
                             ->suffix('people'),
                     ])
                     ->columns(2),
@@ -113,39 +111,39 @@ class ViewEvent extends ViewRecord
                         TextEntry::make('recurrence_pattern')
                             ->label('Pattern')
                             ->badge()
-                            ->formatStateUsing(fn($state) => $state ? ucfirst($state->value) : 'N/A')
-                            ->visible(fn(Event $record) => $record->is_recurring),
+                            ->formatStateUsing(fn ($state) => $state ? ucfirst($state->value) : 'N/A')
+                            ->visible(fn (Event $record) => $record->is_recurring),
                         TextEntry::make('recurrence_interval')
                             ->label('Repeat Every')
-                            ->suffix(fn(Event $record) => $record->recurrence_pattern ? match ($record->recurrence_pattern->value) {
+                            ->suffix(fn (Event $record) => $record->recurrence_pattern ? match ($record->recurrence_pattern->value) {
                                 'daily' => 'day(s)',
                                 'weekly' => 'week(s)',
                                 'monthly' => 'month(s)',
                                 'yearly' => 'year(s)',
                                 default => '',
                             } : null)
-                            ->visible(fn(Event $record) => $record->is_recurring),
+                            ->visible(fn (Event $record) => $record->is_recurring),
                         TextEntry::make('recurrence_end_date')
                             ->label('End Date')
                             ->date('F d, Y')
                             ->placeholder('No end date')
-                            ->visible(fn(Event $record) => $record->is_recurring && $record->recurrence_end_date)
+                            ->visible(fn (Event $record) => $record->is_recurring && $record->recurrence_end_date)
                             ->columnSpanFull(),
                         TextEntry::make('recurrence_count')
                             ->label('Number of Occurrences')
                             ->suffix('times')
                             ->placeholder('Unlimited')
-                            ->visible(fn(Event $record) => $record->is_recurring && $record->recurrence_count)
+                            ->visible(fn (Event $record) => $record->is_recurring && $record->recurrence_count)
                             ->columnSpanFull(),
                     ])
                     ->columns(2)
                     ->collapsible()
-                    ->visible(fn(Event $record) => $record->is_recurring),
+                    ->visible(fn (Event $record) => $record->is_recurring),
                 Section::make('Status & Visibility')
                     ->schema([
                         IconEntry::make('is_live')
                             ->label('Live Status')
-                            ->getStateUsing(fn(Event $record) => $record->isLive())
+                            ->getStateUsing(fn (Event $record) => $record->isLive())
                             ->boolean()
                             ->trueIcon('heroicon-o-signal')
                             ->trueColor('success')
@@ -182,11 +180,11 @@ class ViewEvent extends ViewRecord
                 ->label('Edit Event')
                 ->icon('heroicon-o-pencil')
                 ->color('primary')
-                ->url(fn() => EventResource::getUrl('edit', ['record' => $this->record])),
+                ->url(fn () => EventResource::getUrl('edit', ['record' => $this->record])),
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Event')
-                ->modalDescription(fn(Event $record) => $record->rsvps()->count() > 0
+                ->modalDescription(fn (Event $record) => $record->rsvps()->count() > 0
                     ? "Warning: This event has {$record->rsvps()->count()} RSVP(s). Deleting it will also delete all associated RSVPs. Are you sure you want to continue?"
                     : 'Are you sure you want to delete this event? This action cannot be undone.')
                 ->modalSubmitActionLabel('Yes, delete')
@@ -194,4 +192,3 @@ class ViewEvent extends ViewRecord
         ];
     }
 }
-

@@ -47,4 +47,3 @@ class DonationPolicy
         return $user->isAdmin();
     }
 }
-

@@ -61,4 +61,3 @@ class HeroSliderSeeder extends Seeder
         $this->command->info('Hero slider seeder completed. Note: Images should be uploaded via Filament admin panel.');
     }
 }
-

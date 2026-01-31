@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Filters;
 
@@ -11,16 +11,19 @@ class SermonFilter extends QueryFilter
 
         return $this->builder->with($includes);
     }
+
     public function type($value)
     {
         return $this->builder->where('type', $value);
     }
+
     public function categoryId($value)
     {
         return $this->builder->where('category_id', $value);
     }
+
     public function series($value)
     {
-        return $this->builder->where('series', 'like', '%' . $value . '%');
+        return $this->builder->where('series', 'like', '%'.$value.'%');
     }
 }

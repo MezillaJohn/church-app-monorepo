@@ -18,7 +18,7 @@ class EditSermonSeries extends EditRecord
                 ->label('View Series')
                 ->icon('heroicon-o-eye')
                 ->color('gray')
-                ->url(fn() => SermonSeriesResource::getUrl('view', ['record' => $this->record])),
+                ->url(fn () => SermonSeriesResource::getUrl('view', ['record' => $this->record])),
             DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Series')
@@ -38,4 +38,3 @@ class EditSermonSeries extends EditRecord
         return 'Series updated successfully';
     }
 }
-

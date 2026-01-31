@@ -7,4 +7,3 @@ enum SermonType: string
     case Audio = 'audio';
     case Video = 'video';
 }
-

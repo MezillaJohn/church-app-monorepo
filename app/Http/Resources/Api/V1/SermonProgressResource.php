@@ -24,7 +24,7 @@ class SermonProgressResource extends JsonResource
             'relationships' => [
                 'sermon' => $this->when(
                     $this->relationLoaded('sermon'),
-                    fn() => [
+                    fn () => [
                         'id' => $this->sermon->id,
                         'title' => $this->sermon->title,
                         'duration' => $this->sermon->duration,
@@ -37,4 +37,3 @@ class SermonProgressResource extends JsonResource
         ];
     }
 }
-

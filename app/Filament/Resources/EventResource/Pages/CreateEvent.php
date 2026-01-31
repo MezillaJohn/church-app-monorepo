@@ -19,4 +19,3 @@ class CreateEvent extends CreateRecord
         return 'Event created successfully';
     }
 }
-

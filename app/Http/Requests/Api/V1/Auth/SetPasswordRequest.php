@@ -20,5 +20,3 @@ class SetPasswordRequest extends FormRequest
         ];
     }
 }
-
-

@@ -7,10 +7,10 @@ use App\Models\User;
 use Filament\Actions;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
-use Filament\Resources\Pages\ViewRecord;
 
 class ViewUser extends ViewRecord
 {
@@ -110,7 +110,7 @@ class ViewUser extends ViewRecord
                 ->label('Edit User')
                 ->icon('heroicon-o-pencil')
                 ->color('primary')
-                ->url(fn() => UserResource::getUrl('edit', ['record' => $this->record])),
+                ->url(fn () => UserResource::getUrl('edit', ['record' => $this->record])),
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete User')
@@ -120,4 +120,3 @@ class ViewUser extends ViewRecord
         ];
     }
 }
-

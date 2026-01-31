@@ -9,7 +9,6 @@ use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SermonsRelationManager extends RelationManager
 {
@@ -37,8 +36,8 @@ class SermonsRelationManager extends RelationManager
                     ->limit(50),
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state ? ucfirst($state->value) : '')
-                    ->color(fn($state) => match ($state?->value) {
+                    ->formatStateUsing(fn ($state) => $state ? ucfirst($state->value) : '')
+                    ->color(fn ($state) => match ($state?->value) {
                         'audio' => 'success',
                         'video' => 'info',
                         default => 'gray',
@@ -79,9 +78,9 @@ class SermonsRelationManager extends RelationManager
             ])
             ->actions([
                 Actions\ViewAction::make()
-                    ->url(fn($record) => \App\Filament\Resources\SermonResource::getUrl('view', ['record' => $record])),
+                    ->url(fn ($record) => \App\Filament\Resources\SermonResource::getUrl('view', ['record' => $record])),
                 Actions\EditAction::make()
-                    ->url(fn($record) => \App\Filament\Resources\SermonResource::getUrl('edit', ['record' => $record])),
+                    ->url(fn ($record) => \App\Filament\Resources\SermonResource::getUrl('edit', ['record' => $record])),
                 Actions\DeleteAction::make(),
             ])
             ->bulkActions([

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class HeroSlider extends Model
 {
@@ -33,6 +33,6 @@ class HeroSlider extends Model
      */
     public function getImageUrlAttribute(): string
     {
-        return asset('storage/' . $this->image_path);
+        return asset('storage/'.$this->image_path);
     }
 }

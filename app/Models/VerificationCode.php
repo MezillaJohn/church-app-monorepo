@@ -43,5 +43,3 @@ class VerificationCode extends Model
         $this->save();
     }
 }
-
-

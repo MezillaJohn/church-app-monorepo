@@ -7,7 +7,6 @@ use App\Notifications\EventReminderNotification;
 use App\Services\PushNotificationService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class SendEventReminders extends Command
 {
@@ -41,6 +40,7 @@ class SendEventReminders extends Command
 
         if ($reminders->isEmpty()) {
             $this->info('No reminders to send.');
+
             return Command::SUCCESS;
         }
 
@@ -49,9 +49,10 @@ class SendEventReminders extends Command
 
         foreach ($reminders as $reminder) {
             try {
-                if (!$reminder->user || !$reminder->event) {
+                if (! $reminder->user || ! $reminder->event) {
                     $this->warn("Skipping reminder {$reminder->id}: missing user or event");
                     $failed++;
+
                     continue;
                 }
 
@@ -85,7 +86,7 @@ class SendEventReminders extends Command
                         $data
                     );
 
-                    if (!empty($result) && isset($result[0]['success']) && $result[0]['success']) {
+                    if (! empty($result) && isset($result[0]['success']) && $result[0]['success']) {
                         $pushSent = true;
                         $reminder->update(['notification_sent_at' => now()]);
                         $this->info("Sent push notification for reminder {$reminder->id}");
@@ -122,7 +123,7 @@ class SendEventReminders extends Command
             } catch (\Exception $e) {
                 $failed++;
                 $this->error("Error sending reminder {$reminder->id}: {$e->getMessage()}");
-                Log::error("Error sending event reminder", [
+                Log::error('Error sending event reminder', [
                     'reminder_id' => $reminder->id,
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),

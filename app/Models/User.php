@@ -3,23 +3,22 @@
 namespace App\Models;
 
 use App\Http\Filters\QueryFilter;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 
-class User extends Authenticatable implements MustVerifyEmail, FilamentUser
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -77,6 +76,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     {
         return $this->is_admin;
     }
+
     public function scopeFilter(Builder $builder, QueryFilter $filters)
     {
         return $filters->apply($builder);
@@ -149,6 +149,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         $this->code_expires_at = now()->addMinutes(10);
         $this->code_sent_at = now();
         $this->save();
+
         return $this->email_verification_code;
     }
 
@@ -165,7 +166,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
      */
     public function canResendCode(): bool
     {
-        if (!$this->code_sent_at) {
+        if (! $this->code_sent_at) {
             return true;
         }
 
@@ -192,6 +193,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         $this->reset_code_expires_at = now()->addMinutes(10);
         $this->reset_code_sent_at = now();
         $this->save();
+
         return $this->password_reset_code;
     }
 
@@ -208,7 +210,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
      */
     public function canResendResetCode(): bool
     {
-        if (!$this->reset_code_sent_at) {
+        if (! $this->reset_code_sent_at) {
             return true;
         }
 
@@ -231,10 +233,11 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
      */
     public function getProfileCompleteAttribute(): bool
     {
-        return !empty($this->country)
-            && !empty($this->phone)
-            && !empty($this->gender);
+        return ! empty($this->country)
+            && ! empty($this->phone)
+            && ! empty($this->gender);
     }
+
     public function notifications(): MorphMany
     {
         return $this->morphMany(Notification::class, 'notifiable')->latest();

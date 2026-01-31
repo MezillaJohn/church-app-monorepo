@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\DonationResource\Pages;
 
 use App\Filament\Resources\DonationResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageDonations extends ManageRecords
@@ -17,4 +16,3 @@ class ManageDonations extends ManageRecords
         ];
     }
 }
-

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\EventReminderSetting;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class EventReminderSettingSeeder extends Seeder

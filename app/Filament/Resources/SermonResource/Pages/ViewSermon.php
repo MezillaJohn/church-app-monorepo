@@ -8,10 +8,10 @@ use Filament\Actions;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
-use Filament\Resources\Pages\ViewRecord;
 
 class ViewSermon extends ViewRecord
 {
@@ -33,8 +33,8 @@ class ViewSermon extends ViewRecord
                         TextEntry::make('type')
                             ->label('Sermon Type')
                             ->badge()
-                            ->formatStateUsing(fn($state) => $state ? ucfirst($state->value) : 'N/A')
-                            ->color(fn($state) => match ($state?->value) {
+                            ->formatStateUsing(fn ($state) => $state ? ucfirst($state->value) : 'N/A')
+                            ->color(fn ($state) => match ($state?->value) {
                                 'audio' => 'success',
                                 'video' => 'info',
                                 default => 'gray',
@@ -48,29 +48,29 @@ class ViewSermon extends ViewRecord
                     ->schema([
                         ImageEntry::make('thumbnail_url')
                             ->label('Thumbnail')
-                            ->defaultImageUrl(fn() => null)
+                            ->defaultImageUrl(fn () => null)
                             ->height(300)
                             ->columnSpanFull(),
                         TextEntry::make('audio_file_url')
                             ->label('Audio File')
-                            ->url(fn($state) => $state ? asset('storage/' . $state) : null, true)
+                            ->url(fn ($state) => $state ? asset('storage/'.$state) : null, true)
                             ->placeholder('No audio file')
                             ->icon('heroicon-o-speaker-wave')
-                            ->visible(fn(Sermon $record) => $record->type->value === 'audio')
+                            ->visible(fn (Sermon $record) => $record->type->value === 'audio')
                             ->columnSpanFull(),
                         TextEntry::make('youtube_video_id')
                             ->label('YouTube Video ID')
-                            ->url(fn($state) => $state ? "https://www.youtube.com/watch?v={$state}" : null, true)
+                            ->url(fn ($state) => $state ? "https://www.youtube.com/watch?v={$state}" : null, true)
                             ->placeholder('No YouTube video ID')
                             ->icon('heroicon-o-video-camera')
-                            ->visible(fn(Sermon $record) => $record->type->value === 'video' && $record->youtube_video_id)
+                            ->visible(fn (Sermon $record) => $record->type->value === 'video' && $record->youtube_video_id)
                             ->columnSpanFull(),
                         TextEntry::make('youtube_video_url')
                             ->label('YouTube Video URL')
-                            ->url(fn($state) => $state, true)
+                            ->url(fn ($state) => $state, true)
                             ->placeholder('No YouTube video URL')
                             ->icon('heroicon-o-link')
-                            ->visible(fn(Sermon $record) => $record->type->value === 'video' && $record->youtube_video_url)
+                            ->visible(fn (Sermon $record) => $record->type->value === 'video' && $record->youtube_video_url)
                             ->columnSpanFull(),
                         TextEntry::make('duration')
                             ->label('Duration')
@@ -80,7 +80,7 @@ class ViewSermon extends ViewRecord
                     ])
                     ->columns(1)
                     ->columnSpanFull()
-                    ->visible(fn(Sermon $record) => $record->thumbnail_url || $record->audio_file_url || $record->youtube_video_id || $record->youtube_video_url),
+                    ->visible(fn (Sermon $record) => $record->thumbnail_url || $record->audio_file_url || $record->youtube_video_id || $record->youtube_video_url),
 
                 Section::make('Sermon Information')
                     ->schema([
@@ -151,7 +151,7 @@ class ViewSermon extends ViewRecord
                 ->label('Edit Sermon')
                 ->icon('heroicon-o-pencil')
                 ->color('primary')
-                ->url(fn() => SermonResource::getUrl('edit', ['record' => $this->record])),
+                ->url(fn () => SermonResource::getUrl('edit', ['record' => $this->record])),
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Sermon')
@@ -161,4 +161,3 @@ class ViewSermon extends ViewRecord
         ];
     }
 }
-

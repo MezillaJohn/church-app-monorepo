@@ -18,7 +18,7 @@ class EditSermon extends EditRecord
                 ->label('View Sermon')
                 ->icon('heroicon-o-eye')
                 ->color('gray')
-                ->url(fn() => SermonResource::getUrl('view', ['record' => $this->record])),
+                ->url(fn () => SermonResource::getUrl('view', ['record' => $this->record])),
             DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Sermon')
@@ -38,4 +38,3 @@ class EditSermon extends EditRecord
         return 'Sermon updated successfully';
     }
 }
-

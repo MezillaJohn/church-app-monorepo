@@ -24,14 +24,14 @@ class EventRsvpResource extends JsonResource
             'relationships' => [
                 'user' => $this->when(
                     $this->relationLoaded('user'),
-                    fn() => [
+                    fn () => [
                         'id' => $this->user->id,
                         'name' => $this->user->name,
                     ]
                 ),
                 'event' => $this->when(
                     $this->relationLoaded('event'),
-                    fn() => [
+                    fn () => [
                         'id' => $this->event->id,
                         'title' => $this->event->title,
                         'event_date' => $this->event->event_date?->toDateString(),
@@ -45,4 +45,3 @@ class EventRsvpResource extends JsonResource
         ];
     }
 }
-

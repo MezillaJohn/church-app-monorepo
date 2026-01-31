@@ -13,6 +13,7 @@ class PushTokenController extends BaseController
     {
         try {
             $tokens = $request->user()->pushTokens()->get();
+
             return $this->ok('Push tokens retrieved successfully', PushTokenResource::collection($tokens));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve push tokens', ['exception' => $e->getMessage()], 500);
@@ -38,6 +39,7 @@ class PushTokenController extends BaseController
                     'device_info' => $request->device_info ?? null,
                     'is_active' => true,
                 ]
+
             );
 
             return $this->ok('Push token registered successfully', new PushTokenResource($token), 201);
@@ -53,7 +55,7 @@ class PushTokenController extends BaseController
                 ->where('user_id', $request->user()->id)
                 ->first();
 
-            if (!$token) {
+            if (! $token) {
                 return $this->error('Push token not found', [], 404);
             }
 

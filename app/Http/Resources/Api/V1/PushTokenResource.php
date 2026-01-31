@@ -25,4 +25,3 @@ class PushTokenResource extends JsonResource
         ];
     }
 }
-

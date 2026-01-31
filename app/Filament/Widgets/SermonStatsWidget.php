@@ -35,4 +35,3 @@ class SermonStatsWidget extends StatsOverviewWidget
         ];
     }
 }
-

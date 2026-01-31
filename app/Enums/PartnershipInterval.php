@@ -9,4 +9,3 @@ enum PartnershipInterval: string
     case Monthly = 'monthly';
     case Yearly = 'yearly';
 }
-

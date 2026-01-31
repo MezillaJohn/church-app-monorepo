@@ -20,7 +20,7 @@ class NotificationResource extends JsonResource
             'event_type' => $this->resolveEventType(),
             'event_id' => $this->event_id,
             'data' => $this->data, // Or decode if it's JSON: json_decode($this->data) or cast in model
-            'read_status' => !is_null($this->read_at),
+            'read_status' => ! is_null($this->read_at),
             'read_at' => $this->read_at,
             'created_at' => $this->created_at,
             'created_at_human' => $this->created_at->diffForHumans(),
@@ -38,7 +38,9 @@ class NotificationResource extends JsonResource
             if ($this->relationLoaded('event') && $this->event) {
                 return $this->event->type->value ?? 'sermon';
             }
+
             return 'sermon';
+
             return 'sermon';
         }
 

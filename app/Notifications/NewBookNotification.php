@@ -3,8 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class NewBookNotification extends Notification
@@ -14,9 +12,7 @@ class NewBookNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(public $book)
-    {
-    }
+    public function __construct(public $book) {}
 
     public function via(object $notifiable): array
     {
@@ -26,8 +22,8 @@ class NewBookNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'message' => 'New Book: ' . $this->book->title,
-            'action_url' => "/books/" . $this->book->id,
+            'message' => 'New Book: '.$this->book->title,
+            'action_url' => '/books/'.$this->book->id,
         ];
     }
 }

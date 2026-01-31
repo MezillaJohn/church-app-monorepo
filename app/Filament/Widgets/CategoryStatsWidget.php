@@ -35,4 +35,3 @@ class CategoryStatsWidget extends StatsOverviewWidget
         ];
     }
 }
-

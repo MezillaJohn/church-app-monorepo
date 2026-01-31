@@ -41,16 +41,15 @@ class ManageBooks extends ManageRecords
             'published' => Tab::make('Published')
                 ->icon('heroicon-o-eye')
                 ->badge(Book::where('is_published', true)->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('is_published', true)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('is_published', true)),
             'featured' => Tab::make('Featured')
                 ->icon('heroicon-o-star')
                 ->badge(Book::where('is_featured', true)->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('is_featured', true)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('is_featured', true)),
             'unpublished' => Tab::make('Unpublished')
                 ->icon('heroicon-o-eye-slash')
                 ->badge(Book::where('is_published', false)->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('is_published', false)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('is_published', false)),
         ];
     }
 }
-

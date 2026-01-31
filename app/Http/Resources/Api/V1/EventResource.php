@@ -28,6 +28,7 @@ class EventResource extends JsonResource
                     static::$includeNextLiveEvent = false;
                     $resource = new EventResource($this->parentEvent);
                     static::$includeNextLiveEvent = true;
+
                     return $resource;
                 }
             ),
@@ -52,15 +53,15 @@ class EventResource extends JsonResource
                 'event_time' => $this->event_time?->format('H:i'),
                 'location' => $this->location,
                 'event_type' => $this->event_type,
-                'image_url' => $this->image_url ? env('APP_URL') . '/storage/' . $this->image_url : null,
+                'image_url' => $this->image_url ? env('APP_URL').'/storage/'.$this->image_url : null,
                 'max_attendees' => $this->max_attendees,
-                'rsvp_count' => $this->whenLoaded('rsvps', fn() => $this->rsvps->count()) ?? 0,
+                'rsvp_count' => $this->whenLoaded('rsvps', fn () => $this->rsvps->count()) ?? 0,
                 'requires_rsvp' => $this->requires_rsvp,
                 'is_published' => $this->is_published,
                 'is_recurring' => $this->is_recurring ?? false,
                 'is_recurring_instance' => $this->when(
                     isset($this->is_recurring_instance),
-                    fn() => $this->is_recurring_instance ?? false,
+                    fn () => $this->is_recurring_instance ?? false,
                     false
                 ),
                 'recurrence_pattern' => $this->recurrence_pattern?->value,
@@ -78,4 +79,3 @@ class EventResource extends JsonResource
         ];
     }
 }
-

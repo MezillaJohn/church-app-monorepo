@@ -48,7 +48,7 @@ class SeriesController extends BaseController
                 ->withCount('sermons')
                 ->find($id);
 
-            if (!$series) {
+            if (! $series) {
                 return $this->error('Series not found', [], 404);
             }
 
@@ -58,4 +58,3 @@ class SeriesController extends BaseController
         }
     }
 }
-

@@ -17,4 +17,3 @@ class ManageSermonSeries extends ManageRecords
         ];
     }
 }
-

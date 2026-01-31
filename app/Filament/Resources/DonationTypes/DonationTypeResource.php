@@ -5,20 +5,20 @@ namespace App\Filament\Resources\DonationTypes;
 use App\Filament\Resources\DonationTypes\Pages\ManageDonationTypes;
 use App\Models\DonationType;
 use BackedEnum;
-use UnitEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DonationTypeResource extends Resource
 {
@@ -26,7 +26,7 @@ class DonationTypeResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static UnitEnum|string|null $navigationGroup = 'Giving';
+    protected static UnitEnum|string|null $navigationGroup = 'Finance';
 
     protected static ?string $recordTitleAttribute = 'name';
 

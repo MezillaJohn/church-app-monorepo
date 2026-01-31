@@ -35,4 +35,3 @@ class BookStatsWidget extends StatsOverviewWidget
         ];
     }
 }
-

@@ -18,7 +18,7 @@ class EditBook extends EditRecord
                 ->label('View Book')
                 ->icon('heroicon-o-eye')
                 ->color('gray')
-                ->url(fn() => BookResource::getUrl('view', ['record' => $this->record])),
+                ->url(fn () => BookResource::getUrl('view', ['record' => $this->record])),
             DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Book')
@@ -38,4 +38,3 @@ class EditBook extends EditRecord
         return 'Book updated successfully';
     }
 }
-

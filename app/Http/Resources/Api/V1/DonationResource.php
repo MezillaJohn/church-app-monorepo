@@ -31,7 +31,7 @@ class DonationResource extends JsonResource
             'relationships' => [
                 'donation_type' => $this->when(
                     $this->relationLoaded('donationType'),
-                    fn() => [
+                    fn () => [
                         'id' => $this->donationType->id,
                         'name' => $this->donationType->name,
                         'description' => $this->donationType->description,
@@ -39,7 +39,7 @@ class DonationResource extends JsonResource
                 ),
                 'user' => $this->when(
                     $this->relationLoaded('user'),
-                    fn() => [
+                    fn () => [
                         'id' => $this->user->id,
                         'name' => $this->user->name,
                     ]
@@ -52,4 +52,3 @@ class DonationResource extends JsonResource
         ];
     }
 }
-

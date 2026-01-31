@@ -31,7 +31,7 @@ class UserResource extends JsonResource
             'relationships' => [
                 'church_centre' => new ChurchCentreResource($this->whenLoaded('churchCentre')),
                 'donations' => [
-                    'count' => $this->whenLoaded('donations', fn() => $this->donations->count()),
+                    'count' => $this->whenLoaded('donations', fn () => $this->donations->count()),
                 ],
             ],
             'meta' => [
@@ -41,4 +41,3 @@ class UserResource extends JsonResource
         ];
     }
 }
-

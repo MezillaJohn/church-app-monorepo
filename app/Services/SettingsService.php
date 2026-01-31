@@ -48,7 +48,7 @@ class SettingsService
     public function clearCache(): void
     {
         $settings = Setting::all();
-        
+
         foreach ($settings as $setting) {
             Cache::forget("setting.{$setting->key}");
         }
@@ -59,4 +59,3 @@ class SettingsService
         }
     }
 }
-

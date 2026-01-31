@@ -19,4 +19,3 @@ class CreateChurchCentre extends CreateRecord
         return 'Church centre created successfully';
     }
 }
-

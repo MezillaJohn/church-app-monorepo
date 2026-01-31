@@ -23,7 +23,7 @@ class WatchLaterResource extends JsonResource
             'relationships' => [
                 'sermon' => $this->when(
                     $this->relationLoaded('sermon'),
-                    fn() => [
+                    fn () => [
                         'id' => $this->sermon->id,
                         'title' => $this->sermon->title,
                         'thumbnail_url' => $this->sermon->thumbnail_url,
@@ -38,4 +38,3 @@ class WatchLaterResource extends JsonResource
         ];
     }
 }
-

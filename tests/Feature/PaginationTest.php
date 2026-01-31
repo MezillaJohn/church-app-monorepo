@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Sermon;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PaginationTest extends TestCase
@@ -39,7 +38,7 @@ class PaginationTest extends TestCase
                 'is_published' => true,
                 'views' => 0,
                 'favorites_count' => 0,
-                'is_featured' => false
+                'is_featured' => false,
             ]);
         }
 
@@ -55,12 +54,12 @@ class PaginationTest extends TestCase
                         'type',
                         'attributes' => [
                             'title',
-                            'description'
-                        ]
-                    ]
+                            'description',
+                        ],
+                    ],
                 ],
                 'links' => ['first', 'last', 'prev', 'next'],
-                'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total']
+                'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total'],
             ]);
     }
 
@@ -90,10 +89,9 @@ class PaginationTest extends TestCase
                 'average_rating' => 0,
                 'ratings_count' => 0,
                 'purchases_count' => 0,
-                'is_featured' => false
+                'is_featured' => false,
             ]);
         }
-
 
         $response = $this->getJson('/api/v1/books');
 
@@ -108,12 +106,12 @@ class PaginationTest extends TestCase
                         'attributes' => [
                             'title',
                             'author',
-                            'description'
-                        ]
-                    ]
+                            'description',
+                        ],
+                    ],
                 ],
                 'links' => ['first', 'last', 'prev', 'next'],
-                'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total']
+                'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total'],
             ]);
     }
 }

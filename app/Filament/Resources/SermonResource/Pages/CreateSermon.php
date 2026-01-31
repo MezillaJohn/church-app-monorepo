@@ -19,4 +19,3 @@ class CreateSermon extends CreateRecord
         return 'Sermon created successfully';
     }
 }
-

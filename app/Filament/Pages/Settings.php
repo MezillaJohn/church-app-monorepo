@@ -3,20 +3,21 @@
 namespace App\Filament\Pages;
 
 use App\Services\SettingsService;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Support\Icons\Heroicon;
 use Filament\Schemas\Components\Section as SchemaSection;
-use BackedEnum;
+use Filament\Support\Icons\Heroicon;
 
 class Settings extends Page implements HasForms
 {
     use InteractsWithForms;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Administration';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
@@ -268,4 +269,3 @@ class Settings extends Page implements HasForms
         ];
     }
 }
-

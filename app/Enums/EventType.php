@@ -10,4 +10,3 @@ enum EventType: string
     case Youth = 'youth';
     case Children = 'children';
 }
-

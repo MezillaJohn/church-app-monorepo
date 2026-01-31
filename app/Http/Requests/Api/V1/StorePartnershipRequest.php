@@ -59,4 +59,3 @@ class StorePartnershipRequest extends FormRequest
         ];
     }
 }
-

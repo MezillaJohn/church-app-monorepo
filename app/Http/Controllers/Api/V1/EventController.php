@@ -10,14 +10,13 @@ use Illuminate\Http\Request;
 
 class EventController extends BaseController
 {
-    public function __construct(private EventService $eventService)
-    {
-    }
+    public function __construct(private EventService $eventService) {}
 
     public function index(Request $request)
     {
         try {
             $events = $this->eventService->getAll($request->all());
+
             return $this->ok('Events retrieved successfully', EventResource::collection($events));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve events', ['exception' => $e->getMessage()], 500);
@@ -29,7 +28,7 @@ class EventController extends BaseController
         try {
             $event = $this->eventService->getById($id);
 
-            if (!$event) {
+            if (! $event) {
                 return $this->error('Event not found', [], 404);
             }
 
@@ -48,6 +47,7 @@ class EventController extends BaseController
             ]);
 
             $rsvp = $this->eventService->rsvp($request->user(), $id, $request->all());
+
             return $this->ok('RSVP successful', new EventRsvpResource($rsvp));
         } catch (\Exception $e) {
             return $this->error('Failed to RSVP', ['exception' => $e->getMessage()], 500);
@@ -58,6 +58,7 @@ class EventController extends BaseController
     {
         try {
             $this->eventService->cancelRsvp($request->user(), $id);
+
             return $this->ok('RSVP cancelled successfully');
         } catch (\Exception $e) {
             return $this->error('Failed to cancel RSVP', ['exception' => $e->getMessage()], 500);
@@ -68,6 +69,7 @@ class EventController extends BaseController
     {
         try {
             $rsvps = $this->eventService->getUserRsvps($request->user());
+
             return $this->ok('My RSVPs retrieved successfully', EventRsvpResource::collection($rsvps));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve RSVPs', ['exception' => $e->getMessage()], 500);
@@ -110,6 +112,7 @@ class EventController extends BaseController
     {
         try {
             $this->eventService->removeReminder($request->user(), $id);
+
             return $this->ok('Reminder removed successfully');
         } catch (\Exception $e) {
             return $this->error('Failed to remove reminder', ['exception' => $e->getMessage()], 500);

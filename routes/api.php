@@ -1,22 +1,21 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\SermonController;
 use App\Http\Controllers\Api\V1\BookController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\ChurchCentreController;
 use App\Http\Controllers\Api\V1\DonationController;
 use App\Http\Controllers\Api\V1\EventController;
 use App\Http\Controllers\Api\V1\HeroSliderController;
-use App\Http\Controllers\Api\V1\PaymentController;
-use App\Http\Controllers\Api\V1\RegistrationController;
-use App\Http\Controllers\Api\V1\PushTokenController;
-use App\Http\Controllers\Api\V1\ChurchCentreController;
-use App\Http\Controllers\Api\V1\SeriesController;
-use App\Http\Controllers\Api\V1\PartnershipController;
-use App\Http\Controllers\Api\V1\SiteInfoController;
 use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\V1\PartnershipController;
+use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\PushTokenController;
+use App\Http\Controllers\Api\V1\RegistrationController;
+use App\Http\Controllers\Api\V1\SeriesController;
+use App\Http\Controllers\Api\V1\SermonController;
+use App\Http\Controllers\Api\V1\SiteInfoController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     // Public Authentication routes
@@ -30,7 +29,6 @@ Route::prefix('v1')->group(function () {
     Route::post('/auth/email/verify', [AuthController::class, 'verifyEmail'])->middleware('auth:sanctum');
     Route::post('/auth/email/resend', [AuthController::class, 'resendVerification'])->middleware('auth:sanctum');
 
-
     // Authentication routes (protected - requires email verification)
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -39,7 +37,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
         Route::delete('/auth/account', [AuthController::class, 'deleteAccount']);
 
-        //Sermons
+        // Sermons
         Route::post('/sermons/{id}/favorite', [SermonController::class, 'toggleFavorite']);
         Route::get('/sermons/favorites', [SermonController::class, 'favorites']);
         Route::post('/sermons/{id}/watch-later', [SermonController::class, 'addToWatchLater']);
@@ -47,14 +45,14 @@ Route::prefix('v1')->group(function () {
         Route::post('/sermons/{id}/progress', [SermonController::class, 'updateProgress']);
         Route::get('/sermons/{id}/progress', [SermonController::class, 'getProgress']);
 
-        //Books
+        // Books
         Route::get('/books/featured', [BookController::class, 'featured']);
         Route::get('/library/my-books', [BookController::class, 'myBooks']);
         Route::get('/books/{id}/check-purchase', [BookController::class, 'checkPurchase']);
         Route::post('/books/{id}/rate', [BookController::class, 'rateBook']);
         Route::get('/books/{id}', [BookController::class, 'show']);
 
-        //Events
+        // Events
         Route::post('/events/{id}/rsvp', [EventController::class, 'rsvp']);
         Route::delete('/events/{id}/rsvp', [EventController::class, 'cancelRsvp']);
         Route::get('/events/my-rsvps', [EventController::class, 'myRsvps']);
@@ -62,24 +60,24 @@ Route::prefix('v1')->group(function () {
         Route::delete('/events/{id}/reminder', [EventController::class, 'removeReminder']);
         Route::get('/events/reminder-settings', [EventController::class, 'getReminderSettings']);
 
-        //Giving
+        // Giving
         Route::post('/giving/donate', [DonationController::class, 'donate']);
         Route::get('/giving/history', [DonationController::class, 'history']);
         Route::get('/giving/total', [DonationController::class, 'totalDonations']);
 
-        //Partnerships
+        // Partnerships
         Route::post('/partnerships', [PartnershipController::class, 'store']);
 
-        //Payment
+        // Payment
         Route::post('/books/{id}/purchase', [PaymentController::class, 'purchaseBook']);
         Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']);
 
-        //Push Tokens
+        // Push Tokens
         Route::get('/push-tokens', [PushTokenController::class, 'index']);
         Route::post('/push-tokens', [PushTokenController::class, 'store']);
         Route::delete('/push-tokens/{id}', [PushTokenController::class, 'destroy']);
 
-        // Sermon routes 
+        // Sermon routes
         Route::get('/sermons', [SermonController::class, 'index']);
         Route::get('/sermons/featured', [SermonController::class, 'featured']);
         Route::get('/sermons/{id}', [SermonController::class, 'show']);
@@ -93,18 +91,11 @@ Route::prefix('v1')->group(function () {
         Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     });
 
-
-
-
-
-
     // Event routes (public)
     Route::get('/events', [EventController::class, 'index']);
     Route::get('/events/{id}', [EventController::class, 'show']);
 
-
-
-    // Giving routes 
+    // Giving routes
     Route::get('/giving/types', [DonationController::class, 'getDonationTypes']);
     Route::get('/giving/methods', [DonationController::class, 'getPaymentMethods']);
 
@@ -139,4 +130,3 @@ Route::prefix('v1')->group(function () {
 // Webhook routes (public - no authentication)
 Route::post('/v1/webhooks/paystack', [PaymentController::class, 'handleWebhook']);
 Route::get('/v1/verify-payment', [PaymentController::class, 'verifyPayment']);
-

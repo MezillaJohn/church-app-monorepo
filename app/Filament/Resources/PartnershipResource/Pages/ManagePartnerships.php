@@ -17,4 +17,3 @@ class ManagePartnerships extends ManageRecords
         ];
     }
 }
-

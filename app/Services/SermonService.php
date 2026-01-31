@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\Sermon;
 use App\Models\Favorite;
-use App\Models\WatchLater;
+use App\Models\Sermon;
 use App\Models\SermonProgress;
 use App\Models\User;
+use App\Models\WatchLater;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class SermonService
 {
@@ -24,7 +24,7 @@ class SermonService
                     ->whereColumn('favoritable_id', 'sermons.id')
                     ->where('favoritable_type', Sermon::class)
                     ->where('user_id', $user->id)
-                    ->limit(1)
+                    ->limit(1),
             ]);
         }
 
@@ -37,7 +37,7 @@ class SermonService
         }
 
         if (isset($filters['speaker'])) {
-            $query->where('speaker', 'like', '%' . $filters['speaker'] . '%');
+            $query->where('speaker', 'like', '%'.$filters['speaker'].'%');
         }
 
         if (isset($filters['series_id'])) {
@@ -46,14 +46,14 @@ class SermonService
 
         if (isset($filters['series'])) {
             $query->whereHas('series', function ($q) use ($filters) {
-                $q->where('name', 'like', '%' . $filters['series'] . '%');
+                $q->where('name', 'like', '%'.$filters['series'].'%');
             });
         }
 
         if (isset($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('title', 'like', '%' . $filters['search'] . '%')
-                    ->orWhere('description', 'like', '%' . $filters['search'] . '%');
+                $q->where('title', 'like', '%'.$filters['search'].'%')
+                    ->orWhere('description', 'like', '%'.$filters['search'].'%');
             });
         }
 
@@ -63,7 +63,7 @@ class SermonService
             $query->orderBy('created_at', 'desc');
         }
 
-        return $query->paginate(100);
+        return $query->paginate(15);
     }
 
     public function getById(int $id, ?User $user = null): ?Sermon
@@ -77,7 +77,7 @@ class SermonService
                     ->whereColumn('favoritable_id', 'sermons.id')
                     ->where('favoritable_type', Sermon::class)
                     ->where('user_id', $user->id)
-                    ->limit(1)
+                    ->limit(1),
             ]);
         }
 
@@ -96,6 +96,7 @@ class SermonService
                 if ($favorite) {
                     $favorite->delete();
                     Sermon::where('id', $sermonId)->decrement('favorites_count');
+
                     return false;
                 }
 
@@ -181,7 +182,7 @@ class SermonService
                     ->whereColumn('favoritable_id', 'sermons.id')
                     ->where('favoritable_type', Sermon::class)
                     ->where('user_id', $user->id)
-                    ->limit(1)
+                    ->limit(1),
             ]);
         }
 
@@ -197,8 +198,8 @@ class SermonService
         }
 
         // Order by priority: series matches first, then speaker, then category
-        if (!empty($priorityConditions)) {
-            $query->where(function ($q) use ($priorityConditions, $sermon) {
+        if (! empty($priorityConditions)) {
+            $query->where(function ($q) use ($priorityConditions) {
                 foreach ($priorityConditions as $condition) {
                     $q->orWhere($condition[0], $condition[1], $condition[2]);
                 }
@@ -225,7 +226,7 @@ class SermonService
                     ->whereColumn('favoritable_id', 'sermons.id')
                     ->where('favoritable_type', Sermon::class)
                     ->where('user_id', $user->id)
-                    ->limit(1)
+                    ->limit(1),
             ]);
         }
 
@@ -236,4 +237,3 @@ class SermonService
         return $query->latest()->paginate(15);
     }
 }
-

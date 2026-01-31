@@ -19,4 +19,3 @@ class CreateBook extends CreateRecord
         return 'Book created successfully';
     }
 }
-

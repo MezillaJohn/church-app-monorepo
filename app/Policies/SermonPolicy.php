@@ -53,4 +53,3 @@ class SermonPolicy
         return $user->isAdmin();
     }
 }
-

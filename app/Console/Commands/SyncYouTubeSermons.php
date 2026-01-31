@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Services\YouTubeService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class SyncYouTubeSermons extends Command
 {
@@ -31,31 +30,33 @@ class SyncYouTubeSermons extends Command
 
         $channelId = config('youtube.channel_id');
 
-        if (!$channelId) {
+        if (! $channelId) {
             $this->error('YouTube channel ID not configured. Please set YOUTUBE_CHANNEL_ID in .env');
+
             return Command::FAILURE;
         }
 
-        if (!config('youtube.api_key')) {
+        if (! config('youtube.api_key')) {
             $this->error('YouTube API key not configured. Please set YOUTUBE_API_KEY in .env');
+
             return Command::FAILURE;
         }
 
         $results = $service->syncVideosToSermons($channelId);
 
-        $this->info("Sync completed!");
+        $this->info('Sync completed!');
         $this->info("  Added: {$results['added']}");
         $this->info("  Skipped: {$results['skipped']}");
 
-        if (!empty($results['errors'])) {
+        if (! empty($results['errors'])) {
             $this->error('Errors encountered:');
             foreach ($results['errors'] as $error) {
                 $this->error("  - {$error}");
             }
+
             return Command::FAILURE;
         }
 
         return Command::SUCCESS;
     }
 }
-

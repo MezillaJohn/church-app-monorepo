@@ -15,6 +15,7 @@ class PartnershipController extends BaseController
     {
         try {
             $types = PartnershipType::where('is_active', true)->get();
+
             return $this->ok('Partnership types retrieved successfully', PartnershipTypeResource::collection($types));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve partnership types', ['exception' => $e->getMessage()], 500);
@@ -27,7 +28,7 @@ class PartnershipController extends BaseController
             $data = $request->validated();
 
             // If user is authenticated, set user_id if not provided
-            if ($request->user() && !isset($data['user_id'])) {
+            if ($request->user() && ! isset($data['user_id'])) {
                 $data['user_id'] = $request->user()->id;
             }
 
@@ -40,4 +41,3 @@ class PartnershipController extends BaseController
         }
     }
 }
-

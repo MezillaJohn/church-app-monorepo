@@ -13,4 +13,3 @@ return [
 
     'recurrence_expansion_months' => env('EVENT_RECURRENCE_EXPANSION_MONTHS', 3),
 ];
-

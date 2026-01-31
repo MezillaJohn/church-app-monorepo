@@ -5,20 +5,22 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SermonSeriesResource\Pages;
 use App\Filament\Resources\SermonSeriesResource\RelationManagers;
 use App\Models\SermonSeries;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 use Illuminate\Support\Str;
 
 class SermonSeriesResource extends Resource
 {
     protected static ?string $model = SermonSeries::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Content';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
 
@@ -143,4 +145,3 @@ class SermonSeriesResource extends Resource
         ];
     }
 }
-

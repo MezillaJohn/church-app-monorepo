@@ -4,22 +4,23 @@ namespace App\Filament\Pages;
 
 use App\Mail\AdminUserMail;
 use App\Models\User;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Support\Icons\Heroicon;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Mail;
-use BackedEnum;
 
 class SendUserEmail extends Page implements HasForms
 {
     use InteractsWithForms;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Communication';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
 
@@ -66,8 +67,8 @@ class SendUserEmail extends Page implements HasForms
                         ->options(User::query()->pluck('name', 'id'))
                         ->searchable()
                         ->preload()
-                        ->visible(fn (Get $get) => $get('recipient_type') === 'single')
-                        ->required(fn (Get $get) => $get('recipient_type') === 'single')
+                        ->visible(fn(Get $get) => $get('recipient_type') === 'single')
+                        ->required(fn(Get $get) => $get('recipient_type') === 'single')
                         ->columnSpanFull(),
                     Forms\Components\Select::make('user_ids')
                         ->label('Select Users')
@@ -75,13 +76,13 @@ class SendUserEmail extends Page implements HasForms
                         ->options(User::query()->pluck('name', 'id'))
                         ->searchable()
                         ->preload()
-                        ->visible(fn (Get $get) => $get('recipient_type') === 'selected')
-                        ->required(fn (Get $get) => $get('recipient_type') === 'selected')
+                        ->visible(fn(Get $get) => $get('recipient_type') === 'selected')
+                        ->required(fn(Get $get) => $get('recipient_type') === 'selected')
                         ->columnSpanFull(),
                     Forms\Components\Placeholder::make('all_users_info')
                         ->label('')
                         ->content('This will send the email to all users in the system.')
-                        ->visible(fn (Get $get) => $get('recipient_type') === 'all')
+                        ->visible(fn(Get $get) => $get('recipient_type') === 'all')
                         ->columnSpanFull(),
                 ])
                 ->columnSpanFull(),
@@ -142,6 +143,7 @@ class SendUserEmail extends Page implements HasForms
                     ->title('No recipients selected')
                     ->danger()
                     ->send();
+
                 return;
             }
 
@@ -182,4 +184,3 @@ class SendUserEmail extends Page implements HasForms
         ];
     }
 }
-

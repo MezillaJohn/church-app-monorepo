@@ -18,7 +18,7 @@ class EditChurchCentre extends EditRecord
                 ->label('View Centre')
                 ->icon('heroicon-o-eye')
                 ->color('gray')
-                ->url(fn() => ChurchCentreResource::getUrl('view', ['record' => $this->record])),
+                ->url(fn () => ChurchCentreResource::getUrl('view', ['record' => $this->record])),
             DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Church Centre')
@@ -38,4 +38,3 @@ class EditChurchCentre extends EditRecord
         return 'Church centre updated successfully';
     }
 }
-

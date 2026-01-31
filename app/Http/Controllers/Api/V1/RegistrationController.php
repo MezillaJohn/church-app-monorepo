@@ -37,6 +37,7 @@ class RegistrationController extends BaseController
             $nextAllowedAt = $existing->last_sent_at->copy()->addSeconds($cooldown);
             if ($nextAllowedAt->isFuture()) {
                 $secondsRemaining = now()->diffInSeconds($nextAllowedAt);
+
                 return $this->error(
                     'Please wait before requesting another code',
                     [
@@ -68,7 +69,7 @@ class RegistrationController extends BaseController
     {
         $email = strtolower(trim($request->input('email')));
         $existing = VerificationCode::where('email', $email)->active()->latest()->first();
-        if (!$existing) {
+        if (! $existing) {
             return $this->error('No active verification request found. Please request a new code.', [], 404);
         }
 
@@ -77,6 +78,7 @@ class RegistrationController extends BaseController
             $nextAllowedAt = $existing->last_sent_at->copy()->addSeconds($cooldown);
             if ($nextAllowedAt->isFuture()) {
                 $secondsRemaining = now()->diffInSeconds($nextAllowedAt);
+
                 return $this->error(
                     'Please wait before requesting another code',
                     [
@@ -106,7 +108,7 @@ class RegistrationController extends BaseController
             ->latest()
             ->first();
 
-        if (!$record) {
+        if (! $record) {
             return $this->error('Invalid or expired code', [], 422);
         }
 
@@ -116,6 +118,7 @@ class RegistrationController extends BaseController
 
         if ($record->code !== $code) {
             $record->increment('attempts');
+
             return $this->error('Invalid code', [], 422);
         }
 
@@ -144,11 +147,11 @@ class RegistrationController extends BaseController
             ->latest()
             ->first();
 
-        if (!$record || !$record->proceed_token_expires_at || $record->proceed_token_expires_at->isPast()) {
+        if (! $record || ! $record->proceed_token_expires_at || $record->proceed_token_expires_at->isPast()) {
             return $this->error('Invalid or expired proceed token', [], 422);
         }
 
-        if (!Hash::check($proceedToken, (string) $record->proceed_token_hash)) {
+        if (! Hash::check($proceedToken, (string) $record->proceed_token_hash)) {
             return $this->error('Invalid proceed token', [], 422);
         }
 
@@ -157,7 +160,7 @@ class RegistrationController extends BaseController
         }
 
         return DB::transaction(function () use ($record, $email, $password) {
-            $user = new User();
+            $user = new User;
             $user->name = $record->name ?? '';
             $user->email = $email;
             $user->password = Hash::make($password);
@@ -176,5 +179,3 @@ class RegistrationController extends BaseController
         });
     }
 }
-
-

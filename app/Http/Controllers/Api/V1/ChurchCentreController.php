@@ -14,7 +14,7 @@ class ChurchCentreController extends BaseController
             $centres = ChurchCentre::where('is_active', true)
                 ->orderBy('name')
                 ->get();
-            
+
             return $this->ok('Church centres retrieved successfully', ChurchCentreResource::collection($centres));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve church centres', ['exception' => $e->getMessage()], 500);

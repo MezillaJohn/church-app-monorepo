@@ -3,15 +3,11 @@
 namespace App\Observers;
 
 use App\Models\Sermon;
-use App\Models\User;
 use App\Services\PushNotificationService;
-use Illuminate\Support\Facades\Log;
 
 class SermonObserver
 {
-    public function __construct(private ?PushNotificationService $pushNotificationService = null)
-    {
-    }
+    public function __construct(private ?PushNotificationService $pushNotificationService = null) {}
 
     /**
      * Handle the Sermon "created" event.
@@ -32,7 +28,7 @@ class SermonObserver
     protected function checkAndNotify(Sermon $sermon): void
     {
         // Check if media exists
-        $hasMedia = !empty($sermon->audio_file_url) || !empty($sermon->youtube_video_id) || !empty($sermon->youtube_video_url);
+        $hasMedia = ! empty($sermon->audio_file_url) || ! empty($sermon->youtube_video_id) || ! empty($sermon->youtube_video_url);
 
         if ($hasMedia && $sermon->is_published) {
             // We need to notify all users. BATCHING this is important for performance.

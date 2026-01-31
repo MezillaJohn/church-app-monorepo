@@ -10,9 +10,7 @@ class VerificationCodeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public string $name, public string $code)
-    {
-    }
+    public function __construct(public string $name, public string $code) {}
 
     public function build(): self
     {
@@ -24,5 +22,3 @@ class VerificationCodeMail extends Mailable
             ]);
     }
 }
-
-

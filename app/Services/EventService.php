@@ -2,22 +2,19 @@
 
 namespace App\Services;
 
-use App\Models\Event;
-use App\Models\EventReminderSetting;
-use App\Models\EventRsvp;
-use App\Models\EventReminder;
-use App\Models\User;
 use App\Enums\RecurrencePattern;
-use App\Services\PushNotificationService;
+use App\Models\Event;
+use App\Models\EventReminder;
+use App\Models\EventRsvp;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Carbon\Carbon;
 
 class EventService
 {
-    public function __construct(private ?PushNotificationService $pushNotificationService = null)
-    {
-    }
+    public function __construct(private ?PushNotificationService $pushNotificationService = null) {}
+
     public function getAll(array $filters = []): LengthAwarePaginator
     {
         $query = Event::query();
@@ -32,8 +29,8 @@ class EventService
 
         if (isset($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('title', 'like', '%' . $filters['search'] . '%')
-                    ->orWhere('description', 'like', '%' . $filters['search'] . '%');
+                $q->where('title', 'like', '%'.$filters['search'].'%')
+                    ->orWhere('description', 'like', '%'.$filters['search'].'%');
             });
         }
 
@@ -147,7 +144,7 @@ class EventService
 
         // Calculate reminder time based on event datetime and reminder setting
         // Format both date and time as strings to avoid Carbon concatenation issues
-        $eventDateTime = Carbon::parse($event->event_date->toDateString() . ' ' . $event->event_time->format('H:i:s'));
+        $eventDateTime = Carbon::parse($event->event_date->toDateString().' '.$event->event_time->format('H:i:s'));
         $reminderTime = $eventDateTime->copy()->subMinutes($reminderSetting->minutes_before);
 
         return EventReminder::updateOrCreate(
@@ -182,7 +179,7 @@ class EventService
 
         foreach ($events as $event) {
             // If it's a recurring parent event, generate instances
-            if ($event->is_recurring && !$event->parent_event_id) {
+            if ($event->is_recurring && ! $event->parent_event_id) {
                 $instances = $this->generateRecurringInstances($event, $expandUntil);
                 $expanded = $expanded->merge($instances);
             } else {
@@ -237,7 +234,7 @@ class EventService
 
         while ($currentDate->lte($endDate) && ($occurrenceNumber + $instanceCount) < $maxCount) {
             // Create a virtual instance
-            $instance = new Event();
+            $instance = new Event;
             $instance->setRawAttributes([
                 'id' => $event->id, // Use parent event ID for virtual instances
                 'title' => $event->title,
@@ -263,7 +260,7 @@ class EventService
 
             // Set virtual instance flag and occurrence identifier
             $instance->setAttribute('is_recurring_instance', true);
-            $instance->setAttribute('virtual_occurrence_id', $event->id . '_' . ($occurrenceNumber + $instanceCount));
+            $instance->setAttribute('virtual_occurrence_id', $event->id.'_'.($occurrenceNumber + $instanceCount));
 
             $instances->push($instance);
 
@@ -282,7 +279,7 @@ class EventService
     {
         $from = $fromDate ?? $currentDate;
 
-        if (!$pattern) {
+        if (! $pattern) {
             return $from->copy()->addDay(); // Default to next day if no pattern
         }
 
@@ -310,4 +307,3 @@ class EventService
         return $result;
     }
 }
-

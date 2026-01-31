@@ -4,18 +4,20 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\HeroSliderResource\Pages;
 use App\Models\HeroSlider;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class HeroSliderResource extends Resource
 {
     protected static ?string $model = HeroSlider::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Content';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
@@ -103,4 +105,3 @@ class HeroSliderResource extends Resource
         ];
     }
 }
-

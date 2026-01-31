@@ -22,4 +22,3 @@ class ManageChurchCentres extends ManageRecords
         ];
     }
 }
-

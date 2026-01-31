@@ -22,10 +22,10 @@ class BookResource extends JsonResource
                 'author' => $this->author,
                 'description' => $this->description,
                 'price' => $this->price,
-                'cover_image' => $this->cover_image ? env('APP_URL') . '/storage/' . $this->cover_image : null,
+                'cover_image' => $this->cover_image ? env('APP_URL').'/storage/'.$this->cover_image : null,
                 'file_url' => $this->when(
                     $this->shouldShowFileUrl(),
-                    fn() => $this->file_url ? env('APP_URL') . '/storage/' . $this->file_url : null
+                    fn () => $this->file_url ? env('APP_URL').'/storage/'.$this->file_url : null
                 ),
                 'preview_pages' => $this->preview_pages,
                 'purchases_count' => $this->purchases_count ?? 0,
@@ -61,4 +61,3 @@ class BookResource extends JsonResource
         return isset($this->hasPurchased) && $this->hasPurchased;
     }
 }
-

@@ -31,4 +31,3 @@ trait ApiResponse
         ], $code);
     }
 }
-

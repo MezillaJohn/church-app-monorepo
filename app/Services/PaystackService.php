@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class PaystackService
 {
     protected ?string $secretKey;
+
     protected ?string $publicKey;
 
     public function __construct()
@@ -21,7 +22,7 @@ class PaystackService
      */
     public function initializeTransaction(array $data): array
     {
-        Log::info('secret key and public key: ' . $this->secretKey . ' ' . $this->publicKey);
+        Log::info('secret key and public key: '.$this->secretKey.' '.$this->publicKey);
         try {
             $currency = $data['currency'] ?? 'NGN';
             $amount = $data['amount'];
@@ -47,9 +48,9 @@ class PaystackService
                 return $response->json('data');
             }
 
-            throw new \Exception('Paystack initialization failed: ' . $response->json('message'));
+            throw new \Exception('Paystack initialization failed: '.$response->json('message'));
         } catch (\Exception $e) {
-            Log::error('Paystack initialization error: ' . $e->getMessage());
+            Log::error('Paystack initialization error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -72,6 +73,7 @@ class PaystackService
         ];
 
         $multiplier = $multipliers[$currency] ?? 100;
+
         return (int) ($amount * $multiplier);
     }
 
@@ -89,9 +91,9 @@ class PaystackService
                 return $response->json('data');
             }
 
-            throw new \Exception('Paystack verification failed: ' . $response->json('message'));
+            throw new \Exception('Paystack verification failed: '.$response->json('message'));
         } catch (\Exception $e) {
-            Log::error('Paystack verification error: ' . $e->getMessage());
+            Log::error('Paystack verification error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -101,7 +103,7 @@ class PaystackService
      */
     public function generateReference(): string
     {
-        return 'GODHOUSE-' . time() . '-' . uniqid();
+        return 'GODHOUSE-'.time().'-'.uniqid();
     }
 
     /**
@@ -112,4 +114,3 @@ class PaystackService
         return $this->publicKey;
     }
 }
-

@@ -4,19 +4,21 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SermonResource\Pages;
 use App\Models\Sermon;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class SermonResource extends Resource
 {
     protected static ?string $model = Sermon::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Content';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMicrophone;
 
@@ -235,4 +237,3 @@ class SermonResource extends Resource
         ];
     }
 }
-

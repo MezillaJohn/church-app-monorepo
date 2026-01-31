@@ -13,14 +13,13 @@ use Illuminate\Http\Request;
 
 class DonationController extends BaseController
 {
-    public function __construct(private DonationService $donationService)
-    {
-    }
+    public function __construct(private DonationService $donationService) {}
 
     public function getDonationTypes()
     {
         try {
             $types = DonationType::where('is_active', true)->get();
+
             return $this->ok('Donation types retrieved successfully', DonationTypeResource::collection($types));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve donation types', ['exception' => $e->getMessage()], 500);
@@ -31,6 +30,7 @@ class DonationController extends BaseController
     {
         try {
             $methods = $this->donationService->getPaymentMethods();
+
             return $this->ok('Payment methods retrieved successfully', $methods);
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve payment methods', ['exception' => $e->getMessage()], 500);
@@ -68,6 +68,7 @@ class DonationController extends BaseController
     {
         try {
             $donations = $this->donationService->getUserDonations($request->user(), $request->all());
+
             return $this->ok('Donation history retrieved successfully', DonationResource::collection($donations));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve donation history', ['exception' => $e->getMessage()], 500);
@@ -78,6 +79,7 @@ class DonationController extends BaseController
     {
         try {
             $total = $this->donationService->getTotalDonations($request->user());
+
             return $this->ok('Total donations retrieved successfully', ['total' => $total]);
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve total donations', ['exception' => $e->getMessage()], 500);

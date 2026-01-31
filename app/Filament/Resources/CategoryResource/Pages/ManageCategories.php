@@ -36,25 +36,23 @@ class ManageCategories extends ManageRecords
             'active' => Tab::make('Active')
                 ->icon('heroicon-o-check-circle')
                 ->badge(Category::where('is_active', true)->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('is_active', true)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('is_active', true)),
             'sermon' => Tab::make('Sermon')
                 ->icon('heroicon-o-microphone')
                 ->badge(Category::where('type', 'sermon')->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', 'sermon')),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', 'sermon')),
             'book' => Tab::make('Book')
                 ->icon('heroicon-o-book-open')
                 ->badge(Category::where('type', 'book')->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', 'book')),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', 'book')),
             'general' => Tab::make('General')
                 ->icon('heroicon-o-squares-2x2')
                 ->badge(Category::where('type', 'general')->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', 'general')),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', 'general')),
             'inactive' => Tab::make('Inactive')
                 ->icon('heroicon-o-x-circle')
                 ->badge(Category::where('is_active', false)->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('is_active', false)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('is_active', false)),
         ];
     }
 }
-
-

@@ -10,14 +10,13 @@ use Illuminate\Http\Request;
 
 class BookController extends BaseController
 {
-    public function __construct(private BookService $bookService)
-    {
-    }
+    public function __construct(private BookService $bookService) {}
 
     public function index(Request $request)
     {
         try {
             $books = $this->bookService->getAll($request->all());
+
             return $this->ok('Books retrieved successfully', BookResource::collection($books));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve books', ['exception' => $e->getMessage()], 500);
@@ -29,7 +28,7 @@ class BookController extends BaseController
         try {
             $book = $this->bookService->getById($id);
 
-            if (!$book) {
+            if (! $book) {
                 return $this->error('Book not found', [], 404);
             }
 
@@ -53,6 +52,7 @@ class BookController extends BaseController
     {
         try {
             $books = $this->bookService->getFeatured();
+
             return $this->ok('Featured books retrieved successfully', BookResource::collection($books));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve featured books', ['exception' => $e->getMessage()], 500);
@@ -63,6 +63,7 @@ class BookController extends BaseController
     {
         try {
             $purchases = $this->bookService->getPurchasedBooks($request->user());
+
             return $this->ok('My books retrieved successfully', BookPurchaseResource::collection($purchases));
         } catch (\Exception $e) {
             return $this->error('Failed to retrieve my books', ['exception' => $e->getMessage()], 500);
@@ -73,6 +74,7 @@ class BookController extends BaseController
     {
         try {
             $hasPurchased = $this->bookService->checkIfPurchased($request->user(), $id);
+
             return $this->ok('Purchase status retrieved', ['purchased' => $hasPurchased]);
         } catch (\Exception $e) {
             return $this->error('Failed to check purchase status', ['exception' => $e->getMessage()], 500);
@@ -90,13 +92,13 @@ class BookController extends BaseController
             $user = $request->user();
             $book = $this->bookService->getById($id);
 
-            if (!$book) {
+            if (! $book) {
                 return $this->error('Book not found', [], 404);
             }
 
             // Check if user has purchased the book
             $hasPurchased = $this->bookService->checkIfPurchased($user, $id);
-            if (!$hasPurchased) {
+            if (! $hasPurchased) {
                 return $this->error('You must purchase this book before rating it', [], 403);
             }
 

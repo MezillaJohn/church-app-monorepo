@@ -70,4 +70,3 @@ class BookPolicy
             ->exists() || $user->isAdmin();
     }
 }
-

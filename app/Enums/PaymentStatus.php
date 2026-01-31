@@ -8,4 +8,3 @@ enum PaymentStatus: string
     case Completed = 'completed';
     case Failed = 'failed';
 }
-

@@ -22,8 +22,7 @@ class EventReminderMail extends Mailable implements ShouldQueue
         public User $user,
         public Event $event,
         public string $reminderTimeText
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.
@@ -31,7 +30,7 @@ class EventReminderMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Event Reminder: ' . $this->event->title,
+            subject: 'Event Reminder: '.$this->event->title,
         );
     }
 

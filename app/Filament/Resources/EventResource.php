@@ -4,20 +4,21 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EventResource\Pages;
 use App\Models\Event;
-use Carbon\Carbon;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Content';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
@@ -230,7 +231,7 @@ class EventResource extends Resource
                 Tables\Filters\Filter::make('live')
                     ->label('Live')
                     ->query(function ($query) {
-                        $now = \Carbon\Carbon::now();
+                        $now = \Illuminate\Support\Carbon::now();
                         $liveStart = $now->copy()->subMinutes(5);
                         $liveEnd = $now->copy()->addMinutes(30);
 
@@ -290,4 +291,3 @@ class EventResource extends Resource
         ];
     }
 }
-

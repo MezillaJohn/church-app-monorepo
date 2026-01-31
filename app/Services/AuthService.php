@@ -23,7 +23,7 @@ class AuthService
 
     public function login(array $credentials): ?array
     {
-        if (!auth()->attempt($credentials)) {
+        if (! auth()->attempt($credentials)) {
             return null;
         }
 
@@ -62,7 +62,7 @@ class AuthService
 
     public function changePassword(User $user, string $currentPassword, string $newPassword): bool
     {
-        if (!Hash::check($currentPassword, $user->password)) {
+        if (! Hash::check($currentPassword, $user->password)) {
             return false;
         }
 
@@ -75,7 +75,7 @@ class AuthService
 
     public function resendVerificationCode(User $user): string
     {
-        if (!$user->canResendCode()) {
+        if (! $user->canResendCode()) {
             throw new \Exception('Please wait 60 seconds before requesting a new code.');
         }
 
@@ -87,12 +87,12 @@ class AuthService
     {
         $user = User::where('email', $email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return null; // Don't reveal if email exists
         }
 
         // Check throttle
-        if (!$user->canResendResetCode()) {
+        if (! $user->canResendResetCode()) {
             throw new \Exception('Please wait 60 seconds before requesting a new code.');
         }
 
@@ -109,7 +109,7 @@ class AuthService
     {
         $user = User::where('email', $email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
@@ -139,15 +139,11 @@ class AuthService
 
     /**
      * Delete user account
-     * 
-     * @param User $user
-     * @param string $password
-     * @return bool
      */
     public function deleteAccount(User $user, string $password): bool
     {
         // Verify password before deletion
-        if (!Hash::check($password, $user->password)) {
+        if (! Hash::check($password, $user->password)) {
             return false;
         }
 
@@ -160,4 +156,3 @@ class AuthService
         return true;
     }
 }
-

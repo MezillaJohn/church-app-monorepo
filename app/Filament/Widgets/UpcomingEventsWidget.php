@@ -8,11 +8,10 @@ use Filament\Actions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Builder;
 
 class UpcomingEventsWidget extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
@@ -60,4 +59,3 @@ class UpcomingEventsWidget extends BaseWidget
             ->description('Next 7 upcoming published events');
     }
 }
-

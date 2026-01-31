@@ -15,14 +15,14 @@ class EnsureEmailIsVerified
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user()) {
+        if (! $request->user()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthenticated',
             ], 401);
         }
 
-        if (!$request->user()->hasVerifiedEmail()) {
+        if (! $request->user()->hasVerifiedEmail()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Your email address is not verified. Please verify your email to continue.',
@@ -33,4 +33,3 @@ class EnsureEmailIsVerified
         return $next($request);
     }
 }
-

@@ -15,7 +15,7 @@ class AppSettingsResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDevicePhoneMobile;
 
-    protected static UnitEnum|string|null $navigationGroup = 'Settings';
+    protected static UnitEnum|string|null $navigationGroup = 'Administration';
 
     protected static ?string $modelLabel = 'App Settings';
 

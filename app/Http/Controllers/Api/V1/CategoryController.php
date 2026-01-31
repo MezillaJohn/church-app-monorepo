@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\V1\Controller as BaseController;
 use App\Http\Resources\Api\V1\CategoryResource;
 use App\Models\Category;
-use Illuminate\Http\Request;
 
 class CategoryController extends BaseController
 {

@@ -14,12 +14,12 @@ class EventStatsWidget extends StatsOverviewWidget
         $upcomingEvents = Event::whereNull('parent_event_id')
             ->where('event_date', '>=', now()->toDateString())
             ->count();
-        
+
         $liveEvents = Event::whereNull('parent_event_id')
             ->get()
             ->filter(fn ($event) => $event->isLive())
             ->count();
-        
+
         $publishedEvents = Event::whereNull('parent_event_id')
             ->where('is_published', true)
             ->count();

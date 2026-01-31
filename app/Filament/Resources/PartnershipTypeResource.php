@@ -4,19 +4,21 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PartnershipTypeResource\Pages;
 use App\Models\PartnershipType;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section as SchemaSection;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Support\Icons\Heroicon;
-use BackedEnum;
 
 class PartnershipTypeResource extends Resource
 {
     protected static ?string $model = PartnershipType::class;
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Partnership';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
@@ -102,4 +104,3 @@ class PartnershipTypeResource extends Resource
         ];
     }
 }
-

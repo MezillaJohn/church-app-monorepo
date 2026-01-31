@@ -13,7 +13,7 @@ class YouTubeService
 
     public function __construct()
     {
-        $client = new Google_Client();
+        $client = new Google_Client;
         $client->setDeveloperKey(config('youtube.api_key'));
         $this->youtube = new Google_Service_YouTube($client);
     }
@@ -32,6 +32,7 @@ class YouTubeService
 
             if (empty($channelResponse->getItems())) {
                 Log::error("YouTube channel not found: {$channelId}");
+
                 return [];
             }
 
@@ -49,7 +50,8 @@ class YouTubeService
 
             return $this->extractVideos($playlistItemsResponse);
         } catch (\Exception $e) {
-            Log::error('YouTube API Error: ' . $e->getMessage());
+            Log::error('YouTube API Error: '.$e->getMessage());
+
             return [];
         }
     }
@@ -105,7 +107,8 @@ class YouTubeService
                 'published_at' => $snippet->getPublishedAt(),
             ];
         } catch (\Exception $e) {
-            Log::error("Error fetching video details for {$videoId}: " . $e->getMessage());
+            Log::error("Error fetching video details for {$videoId}: ".$e->getMessage());
+
             return null;
         }
     }
@@ -116,6 +119,7 @@ class YouTubeService
     protected function parseDuration(string $duration): int
     {
         $interval = new \DateInterval($duration);
+
         return ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
     }
 
@@ -138,14 +142,16 @@ class YouTubeService
 
             if ($exists) {
                 $results['skipped']++;
+
                 continue;
             }
 
             // Get detailed video information
             $details = $this->getVideoDetails($video['video_id']);
 
-            if (!$details) {
+            if (! $details) {
                 $results['errors'][] = "Failed to fetch details for video: {$video['video_id']}";
+
                 continue;
             }
 
@@ -164,11 +170,10 @@ class YouTubeService
                 $results['added']++;
                 Log::info("Synced sermon: {$details['title']}");
             } catch (\Exception $e) {
-                $results['errors'][] = "Error creating sermon for {$details['video_id']}: " . $e->getMessage();
+                $results['errors'][] = "Error creating sermon for {$details['video_id']}: ".$e->getMessage();
             }
         }
 
         return $results;
     }
 }
-

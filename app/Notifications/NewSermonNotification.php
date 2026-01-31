@@ -3,8 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class NewSermonNotification extends Notification
@@ -14,9 +12,7 @@ class NewSermonNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(public $sermon)
-    {
-    }
+    public function __construct(public $sermon) {}
 
     public function via(object $notifiable): array
     {
@@ -26,10 +22,10 @@ class NewSermonNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'message' => 'New Sermon: ' . $this->sermon->title,
-            'action_url' => "/sermons/" . $this->sermon->id,
+            'message' => 'New Sermon: '.$this->sermon->title,
+            'action_url' => '/sermons/'.$this->sermon->id,
             // Additional data handled by custom db columns (event_type/id) via logic we'll add to DB channel or manually if needed.
-            // Wait, standard Database channel puts this in `data`. 
+            // Wait, standard Database channel puts this in `data`.
             // Our custom table has `event_type` and `event_id`.
             // The standard DatabaseChannel::buildPayload uses toArray/toDatabase.
             // We need to ensure event_type/id are set.
@@ -41,7 +37,7 @@ class NewSermonNotification extends Notification
             // If we use Notification::send(), Laravel handles it.
             // To fill custom columns, we might need a custom channel or just manual creation in Observer.
             // Given the requirement for custom columns, manual creation in Observer is safer/easier than extending DatabaseChannel.
-            // Let's stick to using the Notification class for structure, but Observer might manually insert OR we override toDatabase... 
+            // Let's stick to using the Notification class for structure, but Observer might manually insert OR we override toDatabase...
             // no, toDatabase returns array for `data` column.
             // Let's make this class useful for `data` content.
         ];

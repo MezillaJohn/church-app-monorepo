@@ -18,7 +18,7 @@ class EditUser extends EditRecord
                 ->label('View User')
                 ->icon('heroicon-o-eye')
                 ->color('gray')
-                ->url(fn() => UserResource::getUrl('view', ['record' => $this->record])),
+                ->url(fn () => UserResource::getUrl('view', ['record' => $this->record])),
             DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete User')
@@ -38,4 +38,3 @@ class EditUser extends EditRecord
         return 'User updated successfully';
     }
 }
-

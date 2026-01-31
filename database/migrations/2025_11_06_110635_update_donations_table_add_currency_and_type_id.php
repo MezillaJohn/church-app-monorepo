@@ -94,7 +94,7 @@ return new class extends Migration
     private function restoreExistingDonationTypes(): void
     {
         $donations = \DB::table('donations')->get();
-        
+
         foreach ($donations as $donation) {
             $donationType = \App\Models\DonationType::find($donation->donation_type_id);
             if ($donationType) {

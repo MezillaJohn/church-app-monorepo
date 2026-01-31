@@ -8,10 +8,10 @@ use Filament\Actions;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
-use Filament\Resources\Pages\ViewRecord;
 
 class ViewBook extends ViewRecord
 {
@@ -25,7 +25,7 @@ class ViewBook extends ViewRecord
                     ->schema([
                         ImageEntry::make('cover_image')
                             ->label('Cover Image')
-                            ->defaultImageUrl(fn() => null)
+                            ->defaultImageUrl(fn () => null)
                             ->height(400)
                             ->columnSpanFull(),
                         TextEntry::make('title')
@@ -80,7 +80,7 @@ class ViewBook extends ViewRecord
                     ->schema([
                         TextEntry::make('file_url')
                             ->label('Book File')
-                            ->url(fn($state) => $state ? asset('storage/' . $state) : null, true)
+                            ->url(fn ($state) => $state ? asset('storage/'.$state) : null, true)
                             ->placeholder('No file uploaded')
                             ->icon('heroicon-o-document')
                             ->columnSpanFull(),
@@ -93,7 +93,7 @@ class ViewBook extends ViewRecord
                     ])
                     ->columns(1)
                     ->columnSpanFull()
-                    ->visible(fn(Book $record) => $record->file_url || $record->preview_pages)
+                    ->visible(fn (Book $record) => $record->file_url || $record->preview_pages)
                     ->collapsible(),
 
                 Section::make('Status & Visibility')
@@ -135,7 +135,7 @@ class ViewBook extends ViewRecord
                 ->label('Edit Book')
                 ->icon('heroicon-o-pencil')
                 ->color('primary')
-                ->url(fn() => BookResource::getUrl('edit', ['record' => $this->record])),
+                ->url(fn () => BookResource::getUrl('edit', ['record' => $this->record])),
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading('Delete Book')
@@ -145,4 +145,3 @@ class ViewBook extends ViewRecord
         ];
     }
 }
-

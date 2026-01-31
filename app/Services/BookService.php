@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class BookService
 {
-    public function __construct(private SettingsService $settingsService)
-    {
-    }
+    public function __construct(private SettingsService $settingsService) {}
 
     public function getAll(array $filters = []): LengthAwarePaginator
     {
@@ -24,9 +22,9 @@ class BookService
 
         if (isset($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('title', 'like', '%' . $filters['search'] . '%')
-                    ->orWhere('author', 'like', '%' . $filters['search'] . '%')
-                    ->orWhere('description', 'like', '%' . $filters['search'] . '%');
+                $q->where('title', 'like', '%'.$filters['search'].'%')
+                    ->orWhere('author', 'like', '%'.$filters['search'].'%')
+                    ->orWhere('description', 'like', '%'.$filters['search'].'%');
             });
         }
 
@@ -47,8 +45,8 @@ class BookService
             ->with(['category'])
             ->orderBy('purchases_count', 'desc')
             ->limit($limit)
-        ->get();
-}
+            ->get();
+    }
 
     public function checkIfPurchased(User $user, int $bookId): bool
     {
@@ -62,7 +60,6 @@ class BookService
         // Normal purchase verification
         return $user->bookPurchases()->where('book_id', $bookId)->where('status', 'completed')->exists();
     }
-
 
     public function getPurchasedBooks(User $user): LengthAwarePaginator
     {
@@ -126,4 +123,3 @@ class BookService
         ]);
     }
 }
-

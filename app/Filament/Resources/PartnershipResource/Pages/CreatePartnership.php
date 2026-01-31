@@ -19,4 +19,3 @@ class CreatePartnership extends CreateRecord
         return 'Partnership created successfully';
     }
 }
-
