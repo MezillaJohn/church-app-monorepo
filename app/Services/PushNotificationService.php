@@ -94,11 +94,8 @@ class PushNotificationService
 
         foreach ($chunks as $chunk) {
             try {
-                $response = Http::withHeaders([
-                    'Accept' => 'application/json',
-                    'Accept-encoding' => 'gzip, deflate',
-                    'Content-Type' => 'application/json',
-                ])->post($this->expoApiUrl.'?useFcmV1=true', $chunk);
+                $response = Http::acceptJson()
+                    ->post($this->expoApiUrl . '?useFcmV1=true', $chunk);
 
                 $responseData = $response->json();
 
