@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\User;
+use App\Services\PushNotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
@@ -16,10 +17,10 @@ class ProcessNewSermonNotifications implements ShouldQueue
      */
     public function __construct(public $sermon) {}
 
-    public function handle(): void
+    public function handle(PushNotificationService $pushNotificationService): void
     {
         // Get all users in chunks
-        User::chunk(100, function ($users) {
+        User::chunk(100, function ($users) use ($pushNotificationService) {
             $notifications = [];
             $now = now();
 
@@ -40,10 +41,22 @@ class ProcessNewSermonNotifications implements ShouldQueue
                 ];
             }
 
-            // Bulk insert
+            // Bulk insert database notifications
             if (! empty($notifications)) {
                 DB::table('notifications')->insert($notifications);
             }
+
+            // Send push notifications to this chunk of users
+            $pushNotificationService->sendToUsers(
+                $users,
+                'New Sermon Available',
+                $this->sermon->title,
+                [
+                    'type' => 'sermon',
+                    'sermon_id' => $this->sermon->id,
+                    'action_url' => '/sermons/'.$this->sermon->id,
+                ]
+            );
         });
     }
 }

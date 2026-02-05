@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\User;
+use App\Services\PushNotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
@@ -16,9 +17,9 @@ class ProcessNewBookNotifications implements ShouldQueue
      */
     public function __construct(public $book) {}
 
-    public function handle(): void
+    public function handle(PushNotificationService $pushNotificationService): void
     {
-        User::chunk(100, function ($users) {
+        User::chunk(100, function ($users) use ($pushNotificationService) {
             $notifications = [];
             $now = now();
 
@@ -39,9 +40,22 @@ class ProcessNewBookNotifications implements ShouldQueue
                 ];
             }
 
+            // Bulk insert database notifications
             if (! empty($notifications)) {
                 DB::table('notifications')->insert($notifications);
             }
+
+            // Send push notifications to this chunk of users
+            $pushNotificationService->sendToUsers(
+                $users,
+                'New Book Available',
+                $this->book->title,
+                [
+                    'type' => 'book',
+                    'book_id' => $this->book->id,
+                    'action_url' => '/books/'.$this->book->id,
+                ]
+            );
         });
     }
 }
