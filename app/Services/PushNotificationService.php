@@ -32,15 +32,18 @@ class PushNotificationService
     public function sendNotification(array $tokens, string $title, string $body, array $data = []): array
     {
         $messages = array_map(function ($token) use ($title, $body, $data) {
-            return [
+            $message = [
                 'to' => $token,
-                'sound' => 'default',
                 'title' => $title,
                 'body' => $body,
-                'data' => $data,
-                'priority' => 'default',
-                'badge' => 1,
             ];
+
+            // Only include data if it's not empty
+            if (!empty($data)) {
+                $message['data'] = $data;
+            }
+
+            return $message;
         }, $tokens);
 
         return $this->sendBatch($messages);
