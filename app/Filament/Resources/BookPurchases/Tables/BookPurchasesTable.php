@@ -28,7 +28,7 @@ class BookPurchasesTable
                 TextColumn::make('status')
                     ->searchable()
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'completed' => 'success',
                         'pending' => 'warning',
                         'failed' => 'danger',
@@ -48,6 +48,10 @@ class BookPurchasesTable
             ])
             ->recordActions([
                 EditAction::make(),
+            ])
+            ->headerActions([
+                \App\Filament\Actions\ExportWithTotalsAction::make()
+                    ->withTotals(['price_paid']),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

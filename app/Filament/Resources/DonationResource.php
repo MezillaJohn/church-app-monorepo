@@ -69,6 +69,10 @@ class DonationResource extends Resource
             ->filters([
                 //
             ])
+            ->headerActions([
+                \App\Filament\Actions\ExportWithTotalsAction::make()
+                    ->withTotals(['amount']),
+            ])
             ->actions([
                 Actions\EditAction::make(),
             ])

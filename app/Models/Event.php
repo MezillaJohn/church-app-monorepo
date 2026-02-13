@@ -109,7 +109,7 @@ class Event extends Model
         );
 
         $liveStart = $eventDateTime->copy()->subMinutes(5);
-        $liveEnd = $eventDateTime->copy()->addMinutes(30);
+        $liveEnd = $eventDateTime->copy()->addMinutes(150);
         $now = Carbon::now();
 
         return $now->gte($liveStart) && $now->lte($liveEnd);

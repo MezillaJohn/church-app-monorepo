@@ -56,7 +56,7 @@ class SermonService
                     ->orWhere('description', 'like', '%'.$filters['search'].'%');
             });
         }
-
+        
         if (isset($filters['sort'])) {
             $query->orderBy('created_at', $filters['sort']);
         } else {

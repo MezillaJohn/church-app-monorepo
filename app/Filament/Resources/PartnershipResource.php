@@ -171,6 +171,10 @@ class PartnershipResource extends Resource
                     Actions\DeleteBulkAction::make(),
                 ]),
             ])
+            ->headerActions([
+                \App\Filament\Actions\ExportWithTotalsAction::make()
+                    ->withTotals(['amount']),
+            ])
             ->defaultSort('created_at', 'desc');
     }
 

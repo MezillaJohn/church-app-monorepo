@@ -174,6 +174,9 @@ class UserResource extends Resource
                     ->url(fn(User $record) => UserResource::getUrl('edit', ['record' => $record])),
                 Actions\DeleteAction::make(),
             ])
+            ->headerActions([
+                \App\Filament\Actions\ExportWithTotalsAction::make(),
+            ])
             ->bulkActions([
                 Actions\BulkActionGroup::make([
                     Actions\DeleteBulkAction::make(),
