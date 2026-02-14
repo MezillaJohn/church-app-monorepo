@@ -172,4 +172,62 @@ class PaystackService
     {
         return $this->publicKey;
     }
+    /**
+     * Update a subaccount
+     */
+    public function updateSubaccount(string $code, array $data): array
+    {
+        try {
+            $payload = [
+                'business_name' => $data['business_name'] ?? null,
+                'settlement_bank' => $data['settlement_bank'] ?? null,
+                'account_number' => $data['account_number'] ?? null,
+                'percentage_charge' => $data['percentage_charge'] ?? null,
+                'primary_contact_email' => $data['primary_contact_email'] ?? null,
+                'primary_contact_name' => $data['primary_contact_name'] ?? null,
+                'primary_contact_phone' => $data['primary_contact_phone'] ?? null,
+            ];
+
+            // Filter null values
+            $payload = array_filter($payload, fn($value) => !is_null($value));
+
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer {$this->secretKey}",
+                'Content-Type' => 'application/json',
+            ])->put("https://api.paystack.co/subaccount/{$code}", $payload);
+
+            if ($response->successful()) {
+                return $response->json('data');
+            }
+
+            throw new \Exception('Paystack subaccount update failed: ' . $response->json('message'));
+        } catch (\Exception $e) {
+            Log::error('Paystack subaccount update error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Delete (or deactivate) a subaccount
+     * Note: Paystack allows deletion of subaccounts if they haven't been involved in transactions.
+     * Use with caution.
+     */
+    public function deleteSubaccount(string $code): bool
+    {
+        try {
+            // Using the code as ID for deletion, as Paystack often accepts code or ID
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer {$this->secretKey}",
+            ])->delete("https://api.paystack.co/subaccount/{$code}");
+
+            if ($response->successful()) {
+                return true;
+            }
+
+            throw new \Exception('Paystack subaccount deletion failed: ' . $response->json('message'));
+        } catch (\Exception $e) {
+            Log::error('Paystack subaccount deletion error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 }

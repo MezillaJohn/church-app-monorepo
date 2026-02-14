@@ -56,6 +56,34 @@ class SubaccountsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                \Filament\Actions\DeleteAction::make()
+                    ->before(function ($record) {
+                        if (!empty($record->paystack_subaccount_code)) {
+                            try {
+                                app(\App\Services\PaystackService::class)->deleteSubaccount($record->paystack_subaccount_code);
+
+                                \Filament\Notifications\Notification::make()
+                                    ->success()
+                                    ->title('Paystack Subaccount Deleted')
+                                    ->body('The subaccount has been deleted from Paystack.')
+                                    ->send();
+                            } catch (\Exception $e) {
+                                \Filament\Notifications\Notification::make()
+                                    ->danger()
+                                    ->title('Paystack Deletion Failed')
+                                    ->body('Could not delete subaccount from Paystack: ' . $e->getMessage())
+                                    ->send();
+
+                                // Halt deletion if Paystack fails? 
+                                // Or allow local deletion?
+                                // Let's halt to ensure consistency, but user can always manually delete via database if desperate.
+                                $action = \Filament\Actions\DeleteAction::make(); // Dummy for IDE
+                                // In a closure, we can't easily access $action->halt(). 
+                                // Throwing an exception works to stop the action.
+                                throw $e;
+                            }
+                        }
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

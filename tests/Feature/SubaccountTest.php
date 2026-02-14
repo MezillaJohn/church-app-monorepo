@@ -112,3 +112,42 @@ test('donation service initiates payment without subaccount', function () {
 
     expect($url)->toBe('http://paystack.com/pay/456');
 });
+
+test('paystack service can update subaccount', function () {
+    $paystackService = \Illuminate\Support\Facades\App::make(PaystackService::class);
+
+    \Illuminate\Support\Facades\Http::fake([
+        'api.paystack.co/subaccount/SUB_123456' => \Illuminate\Support\Facades\Http::response([
+            'status' => true,
+            'message' => 'Subaccount updated',
+            'data' => [
+                'subaccount_code' => 'SUB_123456',
+                'percentage_charge' => 50,
+            ]
+        ], 200),
+    ]);
+
+    $data = [
+        'business_name' => 'Updated Business',
+        'percentage_charge' => 50,
+    ];
+
+    $response = $paystackService->updateSubaccount('SUB_123456', $data);
+
+    expect($response['percentage_charge'])->toBe(50);
+});
+
+test('paystack service can delete subaccount', function () {
+    $paystackService = \Illuminate\Support\Facades\App::make(PaystackService::class);
+
+    \Illuminate\Support\Facades\Http::fake([
+        'api.paystack.co/subaccount/SUB_123456' => \Illuminate\Support\Facades\Http::response([
+            'status' => true,
+            'message' => 'Subaccount deleted',
+        ], 200),
+    ]);
+
+    $result = $paystackService->deleteSubaccount('SUB_123456');
+
+    expect($result)->toBeTrue();
+});
