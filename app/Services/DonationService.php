@@ -11,7 +11,9 @@ use Illuminate\Support\Str;
 
 class DonationService
 {
-    public function __construct(private PaystackService $paystackService) {}
+    public function __construct(private PaystackService $paystackService)
+    {
+    }
 
     public function getPaymentMethods(): array
     {
@@ -51,6 +53,8 @@ class DonationService
      */
     public function initiatePayment(Donation $donation, User $user): string
     {
+        $donation->loadMissing('donationType.subaccount');
+        
         $data = [
             'email' => $user->email,
             'amount' => $donation->amount,
@@ -65,6 +69,10 @@ class DonationService
                 'currency' => $donation->currency,
             ],
         ];
+
+        if ($donation->donationType && $donation->donationType->subaccount) {
+            $data['subaccount'] = $donation->donationType->subaccount->paystack_subaccount_code;
+        }
 
         $response = $this->paystackService->initializeTransaction($data);
 

@@ -22,7 +22,6 @@ class PaystackService
      */
     public function initializeTransaction(array $data): array
     {
-        Log::info('secret key and public key: '.$this->secretKey.' '.$this->publicKey);
         try {
             $currency = $data['currency'] ?? 'NGN';
             $amount = $data['amount'];
@@ -39,6 +38,10 @@ class PaystackService
                 'metadata' => $data['metadata'] ?? [],
             ];
 
+            if (isset($data['subaccount'])) {
+                $payload['subaccount'] = $data['subaccount'];
+            }
+
             $response = Http::withHeaders([
                 'Authorization' => "Bearer {$this->secretKey}",
                 'Content-Type' => 'application/json',
@@ -48,9 +51,9 @@ class PaystackService
                 return $response->json('data');
             }
 
-            throw new \Exception('Paystack initialization failed: '.$response->json('message'));
+            throw new \Exception('Paystack initialization failed: ' . $response->json('message'));
         } catch (\Exception $e) {
-            Log::error('Paystack initialization error: '.$e->getMessage());
+            Log::error('Paystack initialization error: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -91,9 +94,9 @@ class PaystackService
                 return $response->json('data');
             }
 
-            throw new \Exception('Paystack verification failed: '.$response->json('message'));
+            throw new \Exception('Paystack verification failed: ' . $response->json('message'));
         } catch (\Exception $e) {
-            Log::error('Paystack verification error: '.$e->getMessage());
+            Log::error('Paystack verification error: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -103,7 +106,63 @@ class PaystackService
      */
     public function generateReference(): string
     {
-        return 'GODHOUSE-'.time().'-'.uniqid();
+        return 'GODHOUSE-' . time() . '-' . uniqid();
+    }
+
+    /**
+     * Create a subaccount
+     */
+    public function createSubaccount(array $data): array
+    {
+        try {
+            $payload = [
+                'business_name' => $data['business_name'],
+                'settlement_bank' => $data['settlement_bank'],
+                'account_number' => $data['account_number'],
+                'percentage_charge' => $data['percentage_charge'],
+                'primary_contact_email' => $data['primary_contact_email'] ?? null,
+                'primary_contact_name' => $data['primary_contact_name'] ?? null,
+                'primary_contact_phone' => $data['primary_contact_phone'] ?? null,
+            ];
+
+            // Filter null values
+            $payload = array_filter($payload, fn($value) => !is_null($value));
+
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer {$this->secretKey}",
+                'Content-Type' => 'application/json',
+            ])->post('https://api.paystack.co/subaccount', $payload);
+
+            if ($response->successful()) {
+                return $response->json('data');
+            }
+
+            throw new \Exception('Paystack subaccount creation failed: ' . $response->json('message'));
+        } catch (\Exception $e) {
+            Log::error('Paystack subaccount creation error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * List banks
+     */
+    public function listBanks(): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer {$this->secretKey}",
+            ])->get('https://api.paystack.co/bank');
+
+            if ($response->successful()) {
+                return $response->json('data');
+            }
+
+            return [];
+        } catch (\Exception $e) {
+            Log::error('Paystack list banks error: ' . $e->getMessage());
+            return [];
+        }
     }
 
     /**

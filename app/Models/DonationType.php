@@ -11,6 +11,7 @@ class DonationType extends Model
         'name',
         'description',
         'is_active',
+        'subaccount_id',
     ];
 
     protected $casts = [
@@ -20,5 +21,10 @@ class DonationType extends Model
     public function donations(): HasMany
     {
         return $this->hasMany(Donation::class);
+    }
+
+    public function subaccount(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Subaccount::class);
     }
 }

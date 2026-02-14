@@ -9,6 +9,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -24,7 +25,7 @@ class DonationTypeResource extends Resource
 {
     protected static ?string $model = DonationType::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
     protected static UnitEnum|string|null $navigationGroup = 'Finance';
 
@@ -49,6 +50,14 @@ class DonationTypeResource extends Resource
                     ->columnSpanFull()
                     ->placeholder('A brief description of this donation type')
                     ->helperText('Optional description to help members understand this donation type'),
+                Select::make('subaccount_id')
+                    ->label('Paystack Subaccount')
+                    ->relationship('subaccount', 'business_name')
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->business_name} ({$record->paystack_subaccount_code})")
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Select a subaccount (optional)')
+                    ->helperText('If selected, payments for this donation type will be split with this subaccount.'),
                 Toggle::make('is_active')
                     ->label('Active')
                     ->default(true)
