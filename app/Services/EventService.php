@@ -13,7 +13,75 @@ use Illuminate\Support\Collection;
 
 class EventService
 {
-    public function __construct(private ?PushNotificationService $pushNotificationService = null) {}
+    public function __construct(private ?PushNotificationService $pushNotificationService = null)
+    {
+    }
+
+    public function getLatestLive(): ?Event
+    {
+        // 1. Get all published events for today (and potentially yesterday for late night events)
+        // We need to check a window around "now" to capture any potential live events
+        // The live window is -5 mins to +150 mins.
+        // So an event starting at T must be such that T >= now - 150min AND T <= now + 5min
+        // We can just fetch events +- 1 day to be safe and let isLive() do the heavy lifting
+        $startWindow = now()->subDay()->startOfDay();
+        $endWindow = now()->endOfDay();
+
+        // Fetch non-recurring candidates
+        $query = Event::where('is_published', true)
+            ->whereNull('parent_event_id')
+            ->whereRaw('DATE(event_date) >= ?', [$startWindow->format('Y-m-d')])
+            ->whereRaw('DATE(event_date) <= ?', [$endWindow->format('Y-m-d')]);
+
+        $candidates = $query->get();
+
+        // Fetch recurring parents that COULD have an instance today
+        // We'll use the existing expansion logic but limit the window
+        $recurringParents = Event::where('is_published', true)
+            ->where('is_recurring', true)
+            ->whereNull('parent_event_id')
+            ->get();
+
+        // Expand recurring events for just today/yesterday
+        // We can pass a shorter expansion window to expandRecurringEvents if we modify it
+        // Or just manually call generateRecurringInstances for a short window
+        $expanded = collect();
+        foreach ($recurringParents as $parent) {
+            // We need to generate instances that cover "now"
+            // generateRecurringInstances generates from "today" until "expandUntil"
+            // but we might need an instance from yesterday if it's still live.
+            // The current generateRecurringInstances logic starts from "today" or "next occurrence".
+            // We might miss an event from yesterday that is still live.
+            // However, for now let's assume events are mostly same-day.
+            // To be robust, we should probably check if an instance from yesterday is live.
+            // But existing logic in generateRecurringInstances starts check from "now()->startOfDay()".
+
+            // Let's use the method we have. It generates instances from "Today" onwards.
+            // If we need yesterday, we'd need to adjust that method or duplicate logic.
+            // Given the constraints, let's Stick to Today for recurring for now unless we see issues.
+
+            $instances = $this->generateRecurringInstances($parent, now()->endOfDay());
+            $expanded = $expanded->merge($instances);
+        }
+
+        // Merge all candidates
+        $allEvents = $candidates->merge($expanded);
+
+        // Merge all candidates
+        $allEvents = $candidates->merge($expanded);
+
+        // Filter for live events
+        $liveEvents = $allEvents->filter(function ($event) {
+            return $event->isLive();
+        });
+
+        // Return the one with the LATEST start time (most recent)
+        // Sort by event_date + event_time descending
+        return $liveEvents->sortByDesc(function ($event) {
+            return Carbon::parse($event->event_date)->setTimeFrom(Carbon::parse($event->event_time));
+        })->first();
+    }
+
 
     public function getAll(array $filters = []): LengthAwarePaginator
     {
@@ -29,8 +97,8 @@ class EventService
 
         if (isset($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('title', 'like', '%'.$filters['search'].'%')
-                    ->orWhere('description', 'like', '%'.$filters['search'].'%');
+                $q->where('title', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('description', 'like', '%' . $filters['search'] . '%');
             });
         }
 
@@ -144,7 +212,7 @@ class EventService
 
         // Calculate reminder time based on event datetime and reminder setting
         // Format both date and time as strings to avoid Carbon concatenation issues
-        $eventDateTime = Carbon::parse($event->event_date->toDateString().' '.$event->event_time->format('H:i:s'));
+        $eventDateTime = Carbon::parse($event->event_date->toDateString() . ' ' . $event->event_time->format('H:i:s'));
         $reminderTime = $eventDateTime->copy()->subMinutes($reminderSetting->minutes_before);
 
         return EventReminder::updateOrCreate(
@@ -179,7 +247,7 @@ class EventService
 
         foreach ($events as $event) {
             // If it's a recurring parent event, generate instances
-            if ($event->is_recurring && ! $event->parent_event_id) {
+            if ($event->is_recurring && !$event->parent_event_id) {
                 $instances = $this->generateRecurringInstances($event, $expandUntil);
                 $expanded = $expanded->merge($instances);
             } else {
@@ -260,7 +328,7 @@ class EventService
 
             // Set virtual instance flag and occurrence identifier
             $instance->setAttribute('is_recurring_instance', true);
-            $instance->setAttribute('virtual_occurrence_id', $event->id.'_'.($occurrenceNumber + $instanceCount));
+            $instance->setAttribute('virtual_occurrence_id', $event->id . '_' . ($occurrenceNumber + $instanceCount));
 
             $instances->push($instance);
 
@@ -279,7 +347,7 @@ class EventService
     {
         $from = $fromDate ?? $currentDate;
 
-        if (! $pattern) {
+        if (!$pattern) {
             return $from->copy()->addDay(); // Default to next day if no pattern
         }
 

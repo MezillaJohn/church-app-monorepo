@@ -30,4 +30,9 @@ class Subaccount extends Model
     {
         return $this->hasMany(DonationType::class);
     }
+
+    public function books(): HasMany
+    {
+        return $this->hasMany(Book::class);
+    }
 }

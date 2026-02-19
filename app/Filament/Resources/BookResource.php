@@ -59,6 +59,12 @@ class BookResource extends Resource
                             ->prefix('₦')
                             ->helperText('Enter the price in Naira')
                             ->columnSpanFull(),
+                        Forms\Components\Select::make('subaccount_id')
+                            ->label('Subaccount')
+                            ->relationship('subaccount', 'business_name')
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull(),
                         Forms\Components\FileUpload::make('cover_image')
                             ->label('Cover Image')
                             ->image()

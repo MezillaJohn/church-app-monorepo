@@ -45,6 +45,7 @@ class Settings extends Page implements HasForms
             'social_linkedin' => \App\Models\Setting::get('social.linkedin', ''),
             'social_youtube' => \App\Models\Setting::get('social.youtube', ''),
             'temporary_paid_access_mode' => \App\Models\Setting::get('books.temporary_paid_access_mode', false),
+            'book_default_subaccount_id' => \App\Models\Setting::get('books.default_subaccount_id'),
         ]);
     }
 
@@ -132,6 +133,13 @@ class Settings extends Page implements HasForms
                         ->label('Temporary Paid Access Mode')
                         ->helperText('⚠️ When enabled, ALL books become accessible to ALL users without purchase verification. Use for promotions, testing, or emergency access.')
                         ->inline(false)
+                        ->columnSpanFull(),
+                    Forms\Components\Select::make('book_default_subaccount_id')
+                        ->label('Default Book Subaccount')
+                        ->helperText('Select the default subaccount to use for book purchases if the book does not have a specific subaccount assigned.')
+                        ->options(\App\Models\Subaccount::pluck('business_name', 'id'))
+                        ->searchable()
+                        ->preload()
                         ->columnSpanFull(),
                 ])
                 ->columnSpanFull(),
@@ -245,6 +253,14 @@ class Settings extends Page implements HasForms
             'boolean',
             'books',
             'Temporary mode to make all books accessible without purchase verification'
+        );
+
+        $settingsService->set(
+            'books.default_subaccount_id',
+            $data['book_default_subaccount_id'] ?? null,
+            'integer',
+            'books',
+            'Default subaccount ID for book purchases'
         );
 
         $settingsService->clearCache();

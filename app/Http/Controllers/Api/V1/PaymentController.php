@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\V1\Controller as BaseController;
 use App\Models\BookPurchase;
 use App\Models\Donation;
+use App\Models\Setting;
+use App\Models\Subaccount;
 use App\Models\User;
 use App\Services\PaystackService;
 use App\Services\PushNotificationService;
@@ -17,7 +19,8 @@ class PaymentController extends BaseController
     public function __construct(
         private PaystackService $paystackService,
         private ?PushNotificationService $pushNotificationService = null
-    ) {}
+    ) {
+    }
 
     /**
      * Initialize book purchase payment
@@ -29,7 +32,7 @@ class PaymentController extends BaseController
         try {
             $book = \App\Models\Book::findOrFail($bookId);
 
-            if (! $book->is_published) {
+            if (!$book->is_published) {
                 return $this->error('Book is not available for purchase', [], 404);
             }
 
@@ -45,7 +48,7 @@ class PaymentController extends BaseController
 
             $reference = $this->paystackService->generateReference();
 
-            $paymentData = $this->paystackService->initializeTransaction([
+            $paymentPayload = [
                 'email' => $email,
                 'amount' => $book->price,
                 'reference' => $reference,
@@ -54,7 +57,27 @@ class PaymentController extends BaseController
                     'book_id' => $book->id,
                     'user_id' => $request->user()->id,
                 ],
-            ]);
+            ];
+
+            // Determine subaccount
+            $subaccountCode = null;
+            if ($book->subaccount_id) {
+                // Use book-specific subaccount
+                $subaccountCode = $book->subaccount->paystack_subaccount_code ?? null;
+            } else {
+                // Use default subaccount if configured
+                $defaultSubaccountId = Setting::get('books.default_subaccount_id');
+                if ($defaultSubaccountId) {
+                    $defaultSubaccount = Subaccount::find($defaultSubaccountId);
+                    $subaccountCode = $defaultSubaccount->paystack_subaccount_code ?? null;
+                }
+            }
+
+            if ($subaccountCode) {
+                $paymentPayload['subaccount'] = $subaccountCode;
+            }
+
+            $paymentData = $this->paystackService->initializeTransaction($paymentPayload);
 
             // Create pending purchase record
             BookPurchase::create([

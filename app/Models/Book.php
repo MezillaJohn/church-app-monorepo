@@ -27,6 +27,7 @@ class Book extends Model
         'purchases_count',
         'is_featured',
         'is_published',
+        'subaccount_id',
     ];
 
     protected $casts = [
@@ -39,6 +40,11 @@ class Book extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function subaccount(): BelongsTo
+    {
+        return $this->belongsTo(Subaccount::class);
     }
 
     public function ratings(): HasMany

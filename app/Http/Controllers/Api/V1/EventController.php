@@ -10,7 +10,9 @@ use Illuminate\Http\Request;
 
 class EventController extends BaseController
 {
-    public function __construct(private EventService $eventService) {}
+    public function __construct(private EventService $eventService)
+    {
+    }
 
     public function index(Request $request)
     {
@@ -23,12 +25,27 @@ class EventController extends BaseController
         }
     }
 
+    public function latestLive()
+    {
+        try {
+            $event = $this->eventService->getLatestLive();
+
+            if (!$event) {
+                return $this->error('No live event found', [], 404);
+            }
+
+            return $this->ok('Latest live event retrieved successfully', new EventResource($event));
+        } catch (\Exception $e) {
+            return $this->error('Failed to retrieve latest live event', ['exception' => $e->getMessage()], 500);
+        }
+    }
+
     public function show(int $id)
     {
         try {
             $event = $this->eventService->getById($id);
 
-            if (! $event) {
+            if (!$event) {
                 return $this->error('Event not found', [], 404);
             }
 

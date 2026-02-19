@@ -6,12 +6,14 @@ use App\Enums\EventType;
 use App\Enums\RecurrencePattern;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'title',
         'description',
@@ -93,7 +95,7 @@ class Event extends Model
      */
     public function isLive(): bool
     {
-        if (! $this->event_date || ! $this->event_time) {
+        if (!$this->event_date || !$this->event_time) {
             return false;
         }
 
@@ -126,7 +128,7 @@ class Event extends Model
             ->whereNull('parent_event_id')
             ->get()
             ->filter(function ($event) use ($now) {
-                if (! $event->event_date || ! $event->event_time) {
+                if (!$event->event_date || !$event->event_time) {
                     return false;
                 }
 

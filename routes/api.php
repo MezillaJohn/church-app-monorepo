@@ -92,6 +92,7 @@ Route::prefix('v1')->group(function () {
     });
 
     // Event routes (public)
+    Route::get('/events/live', [EventController::class, 'latestLive']);
     Route::get('/events', [EventController::class, 'index']);
     Route::get('/events/{id}', [EventController::class, 'show']);
 
