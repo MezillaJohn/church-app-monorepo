@@ -1,17 +1,40 @@
 {
-    "$schema": "https://json.schemastore.org/package.json",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "build": "vite build",
-        "dev": "vite"
-    },
-    "devDependencies": {
-        "@tailwindcss/vite": "^4.0.0",
-        "axios": "^1.11.0",
-        "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^2.0.0",
-        "tailwindcss": "^4.0.0",
-        "vite": "^7.0.7"
-    }
+  "name": "church-app-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Church App — monorepo (API + Mobile)",
+  "scripts": {
+    "dev": "concurrently --names \"api,app,admin\" --prefix-colors \"bgBlue.bold,bgGreen.bold,bgMagenta.bold\" --kill-others-on-fail \"npm run dev --prefix node-backend\" \"yarn --cwd church-app start\" \"npm run dev --prefix admin-panel\"",
+
+    "dev:api": "npm run dev --prefix node-backend",
+    "dev:app": "yarn --cwd church-app start",
+    "dev:admin": "npm run dev --prefix admin-panel",
+    "dev:app:android": "yarn --cwd church-app android",
+    "dev:app:ios": "yarn --cwd church-app ios",
+
+    "build": "concurrently --names \"api,app\" \"npm run build --prefix node-backend\" \"yarn --cwd church-app web\"",
+    "build:api": "npm run build --prefix node-backend",
+    "build:app": "yarn --cwd church-app web",
+
+    "test": "concurrently --names \"api,app\" \"npm run test --prefix node-backend\" \"yarn --cwd church-app test\"",
+    "test:api": "npm run test --prefix node-backend",
+    "test:app": "yarn --cwd church-app test",
+
+    "lint": "concurrently --names \"api,app\" \"npm run lint --prefix node-backend\" \"yarn --cwd church-app lint\"",
+    "lint:api": "npm run lint --prefix node-backend",
+    "lint:app": "yarn --cwd church-app lint",
+
+    "db:generate": "npm run db:generate --prefix node-backend",
+    "db:migrate": "npm run db:migrate --prefix node-backend",
+    "db:migrate:prod": "npm run db:migrate:prod --prefix node-backend",
+    "db:seed": "npm run db:seed --prefix node-backend",
+    "db:studio": "npm run db:studio --prefix node-backend",
+
+    "install:all": "npm install --prefix node-backend && yarn --cwd church-app install && npm install --prefix admin-panel",
+    "install:api": "npm install --prefix node-backend",
+    "install:app": "yarn --cwd church-app install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
