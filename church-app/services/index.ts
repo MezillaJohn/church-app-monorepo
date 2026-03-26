@@ -8,7 +8,9 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { Mutex } from "async-mutex";
 
-const BASE_URL_RENDER = "https://church-app-monorepo.onrender.com/api/v1/";
+const BASE_URL_RENDER =
+  process.env.EXPO_PUBLIC_API_URL ||
+  "https://church-app-monorepo.onrender.com/api/v1/";
 
 const mutex = new Mutex();
 
