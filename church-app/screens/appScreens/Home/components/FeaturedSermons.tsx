@@ -30,23 +30,17 @@ export const FeaturedSermons: React.FC<FeaturedSermonsProps> = ({ type }) => {
   };
 
   const handlePress = (item: any) => {
-    const attrs = item;
-
     router.push({
       pathname: "/stack/audioPlay",
       params: {
-        id: (item as any)?._id || item?.id,
-        title: attrs?.title,
-        preacher: attrs?.speaker,
-        audioUrl: attrs?.audio_file_url || (attrs as any)?.audioFileUrl,
-        thumbnail: attrs?.thumbnail_url || (attrs as any)?.thumbnailUrl,
-        series:
-          item?.relationships?.series?.attributes?.name ||
-          (attrs as any)?.seriesName ||
-          "",
+        id: item?._id || item?.id,
+        title: item?.title,
+        preacher: item?.speaker,
+        audioUrl: item?.audioFileUrl,
+        thumbnail: item?.thumbnailUrl,
+        series: item?.seriesId?.name || "",
       },
     });
-
   };
 
   if (isLoading) {
@@ -103,7 +97,6 @@ export const FeaturedSermons: React.FC<FeaturedSermonsProps> = ({ type }) => {
           }
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => {
-            const attrs = item
             return (
               <VideoSermonCard
                 page={1}
@@ -131,17 +124,16 @@ export const FeaturedSermons: React.FC<FeaturedSermonsProps> = ({ type }) => {
       ) : (
         <View>
           {sermons.slice(0, 4).map((item: any) => {
-            const attrs = item?.attributes || item;
-            const sermonId = (item as any)?._id || item?.id;
+            const sermonId = item?._id || item?.id;
             return (
               <AudioSermonCard
                 key={sermonId?.toString()}
-                title={attrs?.title || ""}
-                speaker={attrs?.speaker || ""}
-                duration={attrs?.duration}
-                thumbnailUrl={attrs?.thumbnail_url || (attrs as any)?.thumbnailUrl || ""}
-                audioUrl={attrs?.audio_file_url || (attrs as any)?.audioFileUrl || ""}
-                isFavorited={attrs?.is_favorited || (attrs as any)?.isFavorited}
+                title={item?.title || ""}
+                speaker={item?.speaker || ""}
+                duration={item?.duration}
+                thumbnailUrl={item?.thumbnailUrl || ""}
+                audioUrl={item?.audioFileUrl || ""}
+                isFavorited={item?.isFavorited}
                 sermon={item}
                 onPress={() => handlePress(item)}
                 onFavourite={() =>

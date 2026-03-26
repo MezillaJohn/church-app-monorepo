@@ -36,7 +36,7 @@ export const LiveBanner: React.FC = () => {
 
   if (!liveEvent) return null;
 
-  const attrs: any = liveEvent.attributes || liveEvent;
+  const attrs: any = liveEvent;
 
   return (
     <Animated.View

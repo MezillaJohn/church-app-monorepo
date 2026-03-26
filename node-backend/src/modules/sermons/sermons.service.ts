@@ -36,7 +36,10 @@ export const SermonsService = {
     if (query.seriesId) filter['seriesId'] = query.seriesId;
     if (query.type) filter['type'] = query.type;
     if (query.speaker) filter['speaker'] = { $regex: query.speaker, $options: 'i' };
-    if (query.search) filter['$text'] = { $search: query.search };
+    if (query.search) {
+      const re = new RegExp(query.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      filter['$or'] = [{ title: re }, { speaker: re }];
+    }
 
     const [rawData, total] = await Promise.all([
       Sermon.find(filter).populate(sermonPopulate).sort({ date: -1 }).skip(skip).limit(take),

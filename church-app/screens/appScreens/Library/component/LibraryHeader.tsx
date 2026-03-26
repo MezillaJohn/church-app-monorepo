@@ -126,17 +126,15 @@ const LibraryHeader = () => {
           showsHorizontalScrollIndicator={false}
           onScroll={onScroll}
           scrollEventThrottle={16}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => {
-            const attrs = item.attributes;
-
+          keyExtractor={(item: any) => (item._id ?? item.id).toString()}
+          renderItem={({ item }: { item: any }) => {
             return (
               <Pressable
-                onPress={() => handleNavToBookDetails(item?.id)}
+                onPress={() => handleNavToBookDetails(item._id ?? item.id)}
                 style={styles.slide}
               >
                 <AppImageBackground
-                  source={{ uri: attrs.cover_image }}
+                  source={{ uri: item.coverImage }}
                   style={styles.image}
                   imageStyle={styles.imageStyle}
                 >
@@ -146,16 +144,16 @@ const LibraryHeader = () => {
                   />
 
                   <View style={styles.textOverlay}>
-                    <AppText style={styles.title}>{attrs.title}</AppText>
+                    <AppText style={styles.title}>{item.title}</AppText>
 
                     <AppText numberOfLines={1} style={styles.subtitle}>
-                      {attrs.description}
+                      {item.description}
                     </AppText>
 
                     <TouchableOpacity
                       onPress={() =>
-                        attrs?.file_url
-                          ? handleOpenPdf(attrs?.file_url)
+                        item.fileUrl
+                          ? handleOpenPdf(item.fileUrl)
                           : handleBuyBook(item)
                       }
                       style={styles.ctaButton}
@@ -165,7 +163,7 @@ const LibraryHeader = () => {
                       ) : (
                         <>
                           <AppText style={styles.ctaText}>
-                            {attrs?.file_url ? "Read Now" : "Buy Now"}
+                            {item.fileUrl ? "Read Now" : "Buy Now"}
                           </AppText>
                           <ArrowRight
                             size={16}

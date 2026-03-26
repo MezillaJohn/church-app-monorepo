@@ -21,20 +21,7 @@ const AudioSermons = () => {
       const id = s._id || s.id;
       const download = downloadedMap[id];
       if (download?.local_audio_uri) {
-        if (s.attributes) {
-          return {
-            ...s,
-            attributes: {
-              ...s.attributes,
-              audio_file_url: download.local_audio_uri,
-            },
-          };
-        }
-        return {
-          ...s,
-          audio_file_url: download.local_audio_uri,
-          audioFileUrl: download.local_audio_uri,
-        };
+        return { ...s, audioFileUrl: download.local_audio_uri };
       }
       return s;
     });

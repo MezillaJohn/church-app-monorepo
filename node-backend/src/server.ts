@@ -1,11 +1,17 @@
 import app from './app';
 import { env } from './config/env';
 import { connectDatabase, disconnectDatabase } from './database/connection';
+import { PushTokensService } from './modules/push-tokens/push-tokens.service';
 import { logger } from './shared/utils/logger';
 
 const server = app.listen(env.PORT, async () => {
   await connectDatabase();
   logger.info(`🚀 Server running on port ${env.PORT} [${env.NODE_ENV}]`);
+
+  // Clean up push tokens older than 90 days on startup
+  PushTokensService.cleanupStaleTokens(90).catch((err) =>
+    logger.error('Stale token cleanup failed', { err }),
+  );
 });
 
 // ─── Graceful shutdown ─────────────────────────────────────────────────────────

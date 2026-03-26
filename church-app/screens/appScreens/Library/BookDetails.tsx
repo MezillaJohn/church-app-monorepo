@@ -18,21 +18,19 @@ const BookDetails = () => {
 
   const { data, isLoading, isFetching } = useViewBooksByIdQuery({ id: bookId! }, { skip: !bookId, refetchOnMountOrArgChange: true });
 
-  // Normalise both Mongoose flat format and legacy JSON:API format
   const raw = data?.data as any;
-  const src = raw?.attributes ?? raw;
   const attributes = {
-    title: src?.title ?? "",
-    author: src?.author ?? "",
-    description: src?.description ?? "",
-    price: String(src?.price ?? "0"),
-    cover_image: src?.coverImage ?? src?.cover_image ?? null,
-    file_url: src?.fileUrl ?? src?.file_url ?? null,
-    preview_pages: src?.previewPages ?? src?.preview_pages ?? "",
-    purchases_count: src?.purchasesCount ?? src?.purchases_count ?? 0,
-    average_rating: String(src?.averageRating ?? src?.average_rating ?? "0"),
+    title: raw?.title ?? "",
+    author: raw?.author ?? "",
+    description: raw?.description ?? "",
+    price: String(raw?.price ?? "0"),
+    cover_image: raw?.coverImage ?? null,
+    file_url: raw?.fileUrl ?? null,
+    preview_pages: raw?.previewPages ?? "",
+    purchases_count: raw?.purchasesCount ?? 0,
+    average_rating: String(raw?.averageRating ?? "0"),
   } as Record<string, any>;
-  const category = raw?.categoryId?.name ?? raw?.relationships?.category?.attributes?.name ?? "Unknown";
+  const category = raw?.categoryId?.name ?? "Unknown";
 
 
   const book = raw ? attributes : null;

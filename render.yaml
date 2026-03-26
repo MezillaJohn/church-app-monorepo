@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: church-app-api
+    runtime: node
+    plan: free
+    rootDir: node-backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+    autoDeploy: true

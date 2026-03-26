@@ -27,16 +27,16 @@ const UpdateProfile = () => {
 
   const { data } = useChurchCentersQuery(null);
 
-  // ✅ names list for UI
+  // names list for UI
   const centreNames = useMemo(() => {
-    return data?.data?.map((item) => item.attributes.name) ?? [];
+    return data?.data?.map((item: any) => item.name) ?? [];
   }, [data]);
 
-  // ✅ map name -> id
+  // map name -> id
   const centreMap = useMemo(() => {
-    const map: Record<string, number> = {};
-    data?.data?.forEach((item) => {
-      map[item.attributes.name] = item.id;
+    const map: Record<string, string> = {};
+    data?.data?.forEach((item: any) => {
+      map[item.name] = item._id;
     });
     return map;
   }, [data]);

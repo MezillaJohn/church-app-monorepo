@@ -245,6 +245,19 @@ export interface DashboardStats {
   recentUsers: User[];
 }
 
+// ─── Support Ticket ──────────────────────────────────────────────────────
+export interface SupportTicket {
+  _id: string;
+  userId: User | string;
+  subject: string;
+  message: string;
+  status: 'open' | 'in-progress' | 'resolved';
+  adminResponse?: string;
+  respondedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ─── Upload ───────────────────────────────────────────────────────────────────
 export interface UploadResult {
   url: string;

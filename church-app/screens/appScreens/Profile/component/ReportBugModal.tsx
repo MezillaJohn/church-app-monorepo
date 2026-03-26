@@ -26,7 +26,7 @@ const ReportBugModal: React.FC<ReportBugModalProps> = ({
     const subject = encodeURIComponent("Bug Report from DigiYo App");
     const body = encodeURIComponent(bugText);
 
-    const emailUrl = `mailto:devmedia@godhouse.org?subject=${subject}&body=${body}`;
+    const emailUrl = `mailto:mezillaperewei@gmail.com?subject=${subject}&body=${body}`;
 
     Linking.openURL(emailUrl)
       .then(() => {

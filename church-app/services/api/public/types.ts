@@ -241,26 +241,17 @@ export interface ChurchCentreResponse {
 }
 
 export interface ChurchCentre {
-  id: number;
-  type: "church_centre";
-  attributes: ChurchCentreAttributes;
-  meta: ChurchCentreMeta;
-}
-
-export interface ChurchCentreAttributes {
+  _id: string;
   name: string;
-  address: string;
-  city: string;
-  state: string;
+  address?: string;
+  city?: string;
+  state?: string;
   country: string;
-  contact_phone: string;
-  contact_email: string;
-  is_active: boolean;
-}
-
-export interface ChurchCentreMeta {
-  created_at: string; // ISO date string
-  updated_at: string; // ISO date string
+  contactPhone?: string;
+  contactEmail?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface HeroSliderResponse {

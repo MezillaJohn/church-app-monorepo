@@ -94,8 +94,6 @@ const NowPlayingIndicator = () => {
 
   if (!currentSermon) return null;
 
-  const attrs = currentSermon.attributes || currentSermon;
-
   return (
     <Pressable
       style={styles.nowPlayingRow}
@@ -103,15 +101,12 @@ const NowPlayingIndicator = () => {
         router.push({
           pathname: "/stack/audioPlay",
           params: {
-            id: currentSermon.id || currentSermon._id,
-            title: attrs.title,
-            preacher: attrs.speaker,
-            audioUrl: attrs.audio_file_url || attrs.audioFileUrl,
-            thumbnail: attrs.thumbnail_url || attrs.thumbnailUrl,
-            series:
-              currentSermon.relationships?.series?.attributes?.name ||
-              attrs.seriesName ||
-              "",
+            id: currentSermon._id || currentSermon.id,
+            title: currentSermon.title,
+            preacher: currentSermon.speaker,
+            audioUrl: currentSermon.audioFileUrl,
+            thumbnail: currentSermon.thumbnailUrl,
+            series: currentSermon.seriesId?.name || "",
           },
         })
       }
@@ -120,7 +115,7 @@ const NowPlayingIndicator = () => {
         <AudioBars />
       </View>
       <AppText style={styles.nowPlayingText} numberOfLines={1}>
-        {attrs.title}
+        {currentSermon.title}
       </AppText>
     </Pressable>
   );

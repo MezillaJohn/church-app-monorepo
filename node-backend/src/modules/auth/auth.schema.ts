@@ -74,6 +74,11 @@ export const setPasswordSchema = z.object({
   churchCentreId: mongoId.optional(),
 });
 
+export const deleteAccountSchema = z.object({
+  password: z.string().min(1),
+});
+
+export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;

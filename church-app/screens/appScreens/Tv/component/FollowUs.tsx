@@ -18,10 +18,11 @@ const FollowUs = () => {
 
   const { data, isLoading } = useGetSocialLinksQuery(null);
 
-  const Facebook = data?.data?.attributes?.social_links?.facebook;
-  const X = data?.data?.attributes?.social_links?.twitter; // renamed
-  const Instagram = data?.data?.attributes?.social_links?.instagram;
-  const Youtube = data?.data?.attributes?.social_links?.youtube;
+  const settings = (data?.data as any)?.settings ?? {};
+  const Facebook = settings.facebook;
+  const X = settings.twitter;
+  const Instagram = settings.instagram;
+  const Youtube = settings.youtube;
 
   const XImage = require("@/assets/images/x.jpg");
 

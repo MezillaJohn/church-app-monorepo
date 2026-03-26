@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
-import { Calendar, Clock, MapPin, Users } from "lucide-react-native";
+import { MapPin, Play, Users } from "lucide-react-native";
 import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -56,21 +56,18 @@ export default function EventDetails() {
   const event = useMemo(() => {
     if (!data?.data) return null;
     const raw = data.data as any;
-    const src = raw.attributes ?? raw;
-    const startRaw = src.eventDate ?? src.event_date;
-    const endRaw = src.endDate ?? src.end_date;
     return {
-      title: src.title ?? "",
-      description: src.description ?? "",
-      startDate: formatEventDate(startRaw),
-      startTime: formatEventTime(startRaw),
-      endDate: formatEventDate(endRaw),
-      endTime: formatEventTime(endRaw),
-      location: src.location ?? null,
-      imageUrl: src.imageUrl ?? src.image_url ?? null,
-      requiresRsvp: src.requiresRsvp ?? src.requires_rsvp ?? false,
-      broadcastUrl: src.broadcastUrl ?? src.broadcast_url ?? null,
-      isLive: src.isLive ?? src.is_live ?? false,
+      title: raw.title ?? "",
+      description: raw.description ?? "",
+      startDate: formatEventDate(raw.eventDate),
+      startTime: formatEventTime(raw.eventDate),
+      endDate: formatEventDate(raw.endDate),
+      endTime: formatEventTime(raw.endDate),
+      location: raw.location ?? null,
+      imageUrl: raw.imageUrl ?? null,
+      requiresRsvp: raw.requiresRsvp ?? false,
+      broadcastUrl: raw.broadcastUrl ?? null,
+      isLive: raw.isLive ?? false,
     };
   }, [data]);
 
@@ -168,6 +165,17 @@ export default function EventDetails() {
               <AppText style={styles.sectionHeader}>About This Event</AppText>
               <AppText style={styles.description}>{event.description}</AppText>
             </>
+          ) : null}
+
+          {/* WATCH BROADCAST */}
+          {event.broadcastUrl ? (
+            <TouchableOpacity
+              onPress={() => setIsVisible(true)}
+              style={styles.broadcastBtn}
+            >
+              <Play size={18} color={Colors.white} fill={Colors.white} />
+              <AppText style={styles.broadcastText}>Watch Broadcast</AppText>
+            </TouchableOpacity>
           ) : null}
 
           {/* RSVP SECTION */}
@@ -321,6 +329,21 @@ const styles = StyleSheet.create({
     color: Colors.deemedWhite,
     fontSize: moderateSize(12),
     marginBottom: moderateSize(30),
+  },
+  broadcastBtn: {
+    backgroundColor: "#ef4444",
+    paddingVertical: 14,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: 10,
+    marginBottom: moderateSize(20),
+  },
+  broadcastText: {
+    color: Colors.white,
+    fontFamily: Fonts.Bold,
+    fontSize: moderateSize(12),
   },
   rsvpBtn: {
     backgroundColor: Colors.primary,

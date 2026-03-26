@@ -9,7 +9,8 @@ export default function LibraryLayout() {
       <Stack.Screen options={{ headerShown: false }} name="downloads" />
       <Stack.Screen options={{ headerShown: false }} name="updateProfile" />
       <Stack.Screen options={{ headerShown: false }} name="changePassword" />
-      <Stack.Screen options={{ headerShown: false }} name="deleteAccont" />
+      <Stack.Screen options={{ headerShown: false }} name="deleteAccount" />
+      <Stack.Screen options={{ headerShown: false }} name="contactSupport" />
     </Stack>
   );
 }

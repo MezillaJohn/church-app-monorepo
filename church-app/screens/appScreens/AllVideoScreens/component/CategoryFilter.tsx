@@ -41,7 +41,7 @@ const CategoryFilter = ({ onSelect }: CategoryFilterProps) => {
         {showCategoryDropdown && (
           <View style={styles.dropdownWrapper}>
             <FlatList
-              data={[{ _id: null, name: "All" }, ...categories.map((c: any) => ({ _id: c._id || c.id, name: c.attributes?.name || c.name }))]}
+              data={[{ _id: null, name: "All" }, ...categories.map((c: any) => ({ _id: c._id || c.id, name: c.name }))]}
               keyExtractor={(item) => String(item._id ?? "all")}
               renderItem={({ item }) => (
                 <TouchableOpacity

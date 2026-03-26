@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { notificationsApi } from '@/api/notifications';
+import { usersApi } from '@/api/users';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type Column } from '@/components/shared/DataTable';
 import { Pagination } from '@/components/shared/Pagination';
@@ -14,11 +15,118 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Send, Bell } from 'lucide-react';
+import { Loader2, Send, Bell, Search, X, UserIcon } from 'lucide-react';
 import { formatDateTime } from '@/lib/utils';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/api/client';
 import type { Notification, User } from '@/types';
+
+// ─── User Picker ─────────────────────────────────────────────────────────────
+
+function UserPicker({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (userId: string, user?: User) => void;
+}) {
+  const [search, setSearch] = useState('');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['admin-users-picker', search],
+    queryFn: () => usersApi.list({ search, perPage: 8 }),
+    enabled: search.length >= 2,
+  });
+
+  const users = data?.data ?? [];
+
+  const handleSelect = (user: User) => {
+    setSelectedUser(user);
+    onChange(user._id, user);
+    setSearch('');
+    setIsOpen(false);
+  };
+
+  const handleClear = () => {
+    setSelectedUser(null);
+    onChange('');
+    setSearch('');
+  };
+
+  if (selectedUser) {
+    return (
+      <div className="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-muted/30">
+        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
+          <UserIcon size={14} className="text-white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium truncate">{selectedUser.name}</p>
+          <p className="text-xs text-muted-foreground truncate">{selectedUser.email}</p>
+        </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7 shrink-0"
+          onClick={handleClear}
+        >
+          <X size={14} />
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <div className="relative">
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          placeholder="Search by name or email..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setIsOpen(true);
+          }}
+          onFocus={() => search.length >= 2 && setIsOpen(true)}
+          className="pl-9"
+        />
+      </div>
+
+      {isOpen && search.length >= 2 && (
+        <div className="absolute z-50 mt-1 w-full rounded-lg border border-white/10 bg-[#0d1421] shadow-xl max-h-[250px] overflow-y-auto">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 size={16} className="animate-spin text-muted-foreground" />
+            </div>
+          ) : users.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              No users found
+            </p>
+          ) : (
+            users.map((user) => (
+              <button
+                key={user._id}
+                type="button"
+                onClick={() => handleSelect(user)}
+                className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/[0.04] transition-colors text-left"
+              >
+                <div className="h-7 w-7 rounded-full bg-violet-500/20 flex items-center justify-center shrink-0">
+                  <UserIcon size={12} className="text-violet-400" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium truncate">{user.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                </div>
+              </button>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ─── Send Push Form ────────────────────────────────────────────────────────────
 
@@ -29,7 +137,7 @@ const pushSchema = z.object({
   userId: z.string().optional(),
 }).refine(
   (data) => data.targetType !== 'user' || (data.userId && data.userId.trim().length > 0),
-  { message: 'User ID is required when targeting a specific user', path: ['userId'] },
+  { message: 'Please select a user', path: ['userId'] },
 );
 
 type PushFormData = z.infer<typeof pushSchema>;
@@ -41,6 +149,13 @@ function SendPushTab() {
   });
 
   const targetType = form.watch('targetType');
+
+  // Clear userId when switching to "all"
+  useEffect(() => {
+    if (targetType === 'all') {
+      form.setValue('userId', '');
+    }
+  }, [targetType, form]);
 
   const mutation = useMutation({
     mutationFn: (data: PushFormData) =>
@@ -125,9 +240,12 @@ function SendPushTab() {
             {targetType === 'user' && (
               <FormField control={form.control} name="userId" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>User ID *</FormLabel>
+                  <FormLabel>Select User *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter the user's ID" {...field} />
+                    <UserPicker
+                      value={field.value ?? ''}
+                      onChange={(userId) => field.onChange(userId)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -182,6 +300,19 @@ function HistoryTab() {
           );
         }
         return <span className="text-sm text-muted-foreground">{String(user)}</span>;
+      },
+    },
+    {
+      key: 'data',
+      header: 'Content',
+      cell: (n) => {
+        const d = n.data as { title?: string; body?: string };
+        return (
+          <div className="max-w-[250px]">
+            {d?.title && <p className="text-sm font-medium truncate">{d.title}</p>}
+            {d?.body && <p className="text-xs text-muted-foreground truncate">{d.body}</p>}
+          </div>
+        );
       },
     },
     {

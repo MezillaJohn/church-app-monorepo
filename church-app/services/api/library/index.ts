@@ -5,15 +5,18 @@ import { BooksResponse, ViewBookResponse } from "@/services/api/public/types";
 export const libraryEndpoints = authenticatedBase.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    books: builder.query<BooksResponse, { page: number }>({
-      query: (params) => ({
+    books: builder.query<BooksResponse, { page: number; search?: string }>({
+      query: ({ search, ...rest }) => ({
         url: "books",
         method: "GET",
-        params,
+        params: {
+          ...rest,
+          ...(search ? { search } : {}),
+        },
       }),
 
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName;
+      serializeQueryArgs: ({ endpointName, queryArgs }) => {
+        return `${endpointName}-${queryArgs.search ?? ""}`;
       },
       merge: (currentCache, newItems) => {
         if (newItems.meta.current_page === 1) {

@@ -4,5 +4,10 @@
 .env
 .env.local
 
+# Firebase service account keys
+*-firebase-adminsdk-*.json
+*firebase*.json
+!church-app/google-services.json
+
 # Each package manages its own node_modules
 node_modules/

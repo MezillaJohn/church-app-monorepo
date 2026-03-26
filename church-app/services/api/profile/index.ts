@@ -51,13 +51,12 @@ export const profileEndpoints = authenticatedBase.injectEndpoints({
       }),
     }),
 
-    logout: builder.mutation<any, any>({
-      query: () => {
-        return {
-          url: "auth/logout",
-          method: "POST",
-        };
-      },
+    logout: builder.mutation<any, { pushToken?: string | null }>({
+      query: (body) => ({
+        url: "auth/logout",
+        method: "POST",
+        body,
+      }),
     }),
 
     deleteAcc: builder.mutation<any, { password: string }>({
@@ -69,6 +68,17 @@ export const profileEndpoints = authenticatedBase.injectEndpoints({
         };
       },
     }),
+
+    submitSupportTicket: builder.mutation<
+      any,
+      { subject: string; message: string }
+    >({
+      query: (body) => ({
+        url: "support-tickets",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -78,4 +88,5 @@ export const {
   useChangePasswordMutation,
   useLogoutMutation,
   useDeleteAccMutation,
+  useSubmitSupportTicketMutation,
 } = profileEndpoints;

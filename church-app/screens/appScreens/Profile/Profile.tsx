@@ -17,6 +17,7 @@ import {
   Edit3,
   Globe,
   Heart,
+  Headphones,
   LogOut,
   Mail,
   Phone,
@@ -28,10 +29,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, Badge, GlassCard, StatCard, Text } from "@/components/global";
 import { Colors, Fonts, Gradients, whiteOpacity } from "@/constants/theme";
 import { useAuth } from "@/context/AuthContext";
+import { useNotification } from "@/context/Notification";
 import { useDisplayError } from "@/hooks/displayError";
 import ReportBugModal from "@/screens/appScreens/Profile/component/ReportBugModal";
 import { useLogoutMutation, useProfileQuery } from "@/services/api/profile";
 import { useGetFavouriteSermonsQuery } from "@/services/api/sermon";
+import { useDownloadedSermons } from "@/hooks/useDownloadedSermons";
 import { moderateSize } from "@/utils/useResponsiveStyle";
 
 /* ── Reusable option row ── */
@@ -103,13 +106,16 @@ const Profile = () => {
     useLogoutMutation();
   useDisplayError(err);
   const { logout } = useAuth();
+  const { expoPushToken } = useNotification();
 
   const user = data?.data;
   const churchCenter = user?.churchCentreId;
   const favCount = favouritesData?.data?.length ?? 0;
+  const { downloadedMap } = useDownloadedSermons();
+  const downloadCount = Object.keys(downloadedMap).length;
 
   const handleLogout = () => {
-    logoutMutation({})
+    logoutMutation({ pushToken: expoPushToken })
       .unwrap()
       .then(() => logout())
       .catch((err: any) => console.log(err, "error"));
@@ -156,15 +162,9 @@ const Profile = () => {
             />
             <StatCard
               label="Downloads"
-              value="—"
+              value={downloadCount}
               icon={<Download size={14} color={Colors.accent3} />}
               color={Colors.accent3}
-            />
-            <StatCard
-              label="Donations"
-              value="—"
-              icon={<Heart size={14} color={Colors.accent2} />}
-              color={Colors.accent2}
             />
           </View>
 
@@ -242,6 +242,11 @@ const Profile = () => {
               }
             />
             <OptionRow
+              icon={<Headphones size={18} color={Colors.accent2} />}
+              label="Contact Support"
+              onPress={() => router.navigate("/(tabs)/profile/contactSupport")}
+            />
+            <OptionRow
               icon={<Bug size={18} color={Colors.warning} />}
               label="Report a Bug"
               onPress={() => setBugModalVisible(true)}
@@ -256,7 +261,7 @@ const Profile = () => {
             <OptionRow
               icon={<Trash2 size={18} color={Colors.error} />}
               label="Delete Account"
-              onPress={() => router.push("/profile/deleteAccont")}
+              onPress={() => router.push("/(tabs)/profile/deleteAccount")}
               danger
             />
           </GlassCard>

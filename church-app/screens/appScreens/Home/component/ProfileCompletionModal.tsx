@@ -111,7 +111,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
     <AppModal
       height={Size.getHeight() * 0.8} // ⬅ modal fills 80% of screen
       isModalVisible={visible}
-      handleClose={() => {}}
+      handleClose={onClose}
     >
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -123,12 +123,22 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
         <AppText
           style={{
             fontSize: moderateSize(16),
-            marginBottom: moderateSize(20),
+            marginBottom: moderateSize(4),
             textAlign: "center",
             fontFamily: Fonts.Bold,
           }}
         >
           Complete Your Profile
+        </AppText>
+        <AppText
+          style={{
+            fontSize: moderateSize(11),
+            marginBottom: moderateSize(16),
+            textAlign: "center",
+            color: Colors.deemedWhite,
+          }}
+        >
+          You can skip this and complete it later
         </AppText>
 
         {/* Country */}
@@ -208,9 +218,21 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
 
         <CustomButton
           processing={isLoading}
-          style={{ marginTop: 20, marginBottom: 20 }}
+          style={{ marginTop: 20 }}
           title="Save Profile"
           onPress={handleSubmit}
+        />
+
+        <CustomButton
+          style={{
+            marginTop: 10,
+            marginBottom: 20,
+            backgroundColor: "transparent",
+            borderWidth: 1,
+            borderColor: "rgba(255,255,255,0.2)",
+          }}
+          title="Skip for now"
+          onPress={onClose}
         />
       </ScrollView>
     </AppModal>

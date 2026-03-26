@@ -33,9 +33,8 @@ const AllBooks = () => {
     if (!debouncedSearch.trim()) return allBooks;
     const query = debouncedSearch.toLowerCase();
     return allBooks.filter((item: any) => {
-      const attrs = item?.attributes || item;
-      const title = (attrs?.title || "").toLowerCase();
-      const author = (attrs?.author || "").toLowerCase();
+      const title = (item?.title || "").toLowerCase();
+      const author = (item?.author || "").toLowerCase();
       return title.includes(query) || author.includes(query);
     });
   }, [allBooks, debouncedSearch]);

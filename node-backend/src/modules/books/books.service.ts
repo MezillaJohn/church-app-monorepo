@@ -16,7 +16,10 @@ export const BooksService = {
     if (query.categoryId) filter['categoryId'] = query.categoryId;
     if (query.isFeatured !== undefined) filter['isFeatured'] = query.isFeatured;
     if (query.author) filter['author'] = { $regex: query.author, $options: 'i' };
-    if (query.search) filter['$text'] = { $search: query.search };
+    if (query.search) {
+      const re = new RegExp(query.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      filter['$or'] = [{ title: re }, { author: re }];
+    }
 
     const [data, total] = await Promise.all([
       Book.find(filter).populate(bookPopulate).sort({ createdAt: -1 }).skip(skip).limit(take),

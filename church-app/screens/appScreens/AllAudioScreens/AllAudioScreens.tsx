@@ -36,16 +36,11 @@ const AllAudioScreens = () => {
 
   const sermons = useMemo(() => {
     const rawSermons = data?.data ?? [];
-    return rawSermons.map((s) => {
-      const download = downloadedMap[s.id];
+    return rawSermons.map((s: any) => {
+      const id = s._id || s.id;
+      const download = downloadedMap[id];
       if (download?.local_audio_uri) {
-        return {
-          ...s,
-          attributes: {
-            ...s.attributes,
-            audio_file_url: download.local_audio_uri,
-          },
-        };
+        return { ...s, audioFileUrl: download.local_audio_uri };
       }
       return s;
     });
@@ -105,7 +100,7 @@ const AllAudioScreens = () => {
               <RefreshControl refreshing={isFetching} onRefresh={refetch} />
             }
             data={sermons}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item: any) => (item._id || item.id).toString()}
             renderItem={({ item }) => (
               <AudioSermonCard params={params} item={item} />
             )}

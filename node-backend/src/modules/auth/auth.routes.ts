@@ -11,6 +11,7 @@ import {
   changePasswordSchema,
   updateProfileSchema,
   refreshTokenSchema,
+  deleteAccountSchema,
   validateEmailSchema,
   requestCodeSchema,
   verifyCodeSchema,
@@ -43,6 +44,6 @@ router.post('/logout', AuthController.logout);
 router.get('/profile', AuthController.profile);
 router.put('/profile', validate({ body: updateProfileSchema }), AuthController.updateProfile);
 router.post('/change-password', validate({ body: changePasswordSchema }), AuthController.changePassword);
-router.delete('/account', AuthController.deleteAccount);
+router.delete('/account', validate({ body: deleteAccountSchema }), AuthController.deleteAccount);
 
 export default router;

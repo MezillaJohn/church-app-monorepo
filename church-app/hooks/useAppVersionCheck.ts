@@ -28,13 +28,12 @@ export const useAppVersionCheck = () => {
 
   const { data } = useGetSocialLinksQuery(null);
 
-  const androidApi = data?.data?.attributes?.app_info?.android?.version ?? null;
-  const iosApi = data?.data?.attributes?.app_info?.ios?.version ?? null;
+  const settings = (data?.data as any)?.settings ?? {};
+  const androidApi = settings.android_version ?? null;
+  const iosApi = settings.ios_version ?? null;
 
-  const iosDownloadUrl =
-    data?.data?.attributes?.app_info?.ios?.download_url ?? null;
-  const androidDownloadUrl =
-    data?.data?.attributes?.app_info?.android?.download_url ?? null;
+  const iosDownloadUrl = settings.ios_download_url ?? null;
+  const androidDownloadUrl = settings.android_download_url ?? null;
 
   /** Sync Redux only if not already stored */
   useEffect(() => {

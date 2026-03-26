@@ -46,7 +46,6 @@ const VideoSermons = () => {
           keyExtractor={(item) => (item._id || item.id).toString()}
           contentContainerStyle={{ paddingRight: moderateSize(10) }}
           renderItem={({ item }) => {
-            const attrs = item?.attributes || item;
             return (
               <VideoSermonCard
                 params={params}
@@ -56,16 +55,13 @@ const VideoSermons = () => {
                     pathname: "/stack/videoDetailsScreen",
                     params: {
                       id: item?._id || item?.id,
-                      title: attrs?.title,
-                      preacher: attrs?.speaker,
-                      duration: attrs?.duration,
-                      description: attrs?.description,
-                      videoUrl: attrs?.youtube_video_url || attrs?.youtubeVideoUrl,
-                      videoId: attrs?.youtube_video_id || attrs?.youtubeVideoId,
-                      series:
-                        item?.relationships?.series?.attributes?.name ||
-                        attrs?.seriesName ||
-                        "",
+                      title: item?.title,
+                      preacher: item?.speaker,
+                      duration: item?.duration,
+                      description: item?.description,
+                      videoUrl: item?.youtubeVideoUrl,
+                      videoId: item?.youtubeVideoId,
+                      series: item?.seriesId?.name || "",
                     },
                   })
                 }

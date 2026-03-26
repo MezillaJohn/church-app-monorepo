@@ -1,13 +1,18 @@
 import { z } from 'zod';
 import { mongoId } from '../../shared/utils/mongo-id';
 
+const optionalMongoId = z.preprocess(
+  (val) => (val === '' ? undefined : val),
+  mongoId.optional(),
+);
+
 export const sermonQuerySchema = z.object({
   page: z.coerce.number().int().positive().optional(),
   perPage: z.coerce.number().int().positive().optional(),
   search: z.string().optional(),
-  categoryId: mongoId.optional(),
-  category_id: mongoId.optional(),
-  seriesId: mongoId.optional(),
+  categoryId: optionalMongoId,
+  category_id: optionalMongoId,
+  seriesId: optionalMongoId,
   type: z.enum(['audio', 'video']).optional(),
   speaker: z.string().optional(),
 });

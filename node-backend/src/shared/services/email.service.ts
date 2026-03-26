@@ -26,6 +26,10 @@ async function send(options: SendEmailOptions): Promise<void> {
 }
 
 export const EmailService = {
+  async sendMail(options: SendEmailOptions): Promise<void> {
+    await send(options);
+  },
+
   async sendVerificationCode(email: string, code: string, name: string): Promise<void> {
     await send({
       to: email,

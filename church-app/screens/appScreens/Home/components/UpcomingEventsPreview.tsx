@@ -18,16 +18,14 @@ export const UpcomingEventsPreview: React.FC = () => {
     <View style={styles.container}>
       <SectionHeader text="Upcoming Events" rightText="See all" route="/stack/events" />
       {events.map((event: any) => {
-        const attrs = event?.attributes || event;
-        const startDate = attrs?.start_date || attrs?.startDate || attrs?.event_date;
-        const imageUrl = attrs?.image_url || (attrs as any)?.imageUrl || "";
         return (
           <EventCard
             key={(event._id || event.id).toString()}
-            title={attrs?.title || attrs?.name}
-            date={startDate}
-            location={attrs?.location || attrs?.venue}
-            imageUrl={imageUrl}
+            title={event?.title}
+            date={event?.eventDate}
+            location={event?.location}
+            imageUrl={event?.imageUrl || ""}
+            isLive={event?.isLive}
             onPress={() =>
               router.push({
                 pathname: "/stack/eventDetails",

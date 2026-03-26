@@ -15,11 +15,18 @@ export const sermonEndpoints = authenticatedBase.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
     sermons: builder.query<SermonsResponse, SermonQueryParams>({
-      query: (params) => ({
-        url: "sermons",
-        method: "GET",
-        params,
-      }),
+      query: (params) => {
+        const { category_id, search, ...rest } = params;
+        return {
+          url: "sermons",
+          method: "GET",
+          params: {
+            ...rest,
+            ...(search ? { search } : {}),
+            ...(category_id ? { category_id } : {}),
+          },
+        };
+      },
 
       serializeQueryArgs: ({ endpointName, queryArgs }) => {
         const { type, search, sort, category_id, series } = queryArgs;

@@ -199,7 +199,7 @@ const Notification = () => {
               preacher: item.event.speaker,
               audioUrl: item.event.audio_file_url ?? undefined,
               thumbnail: item.event.thumbnail_url,
-              series: (item.event as any).series?.attributes?.name ?? "",
+              series: (item.event as any).seriesId?.name ?? "",
             },
           });
         }

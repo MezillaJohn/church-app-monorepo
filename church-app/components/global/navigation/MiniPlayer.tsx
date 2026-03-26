@@ -30,7 +30,7 @@ export const MiniPlayer: React.FC = () => {
         audioUrl: attrs.audioFileUrl,
         thumbnail: thumbnailUrl,
         series:
-          (currentSermon as any).relationships?.series?.attributes?.name
+          (currentSermon as any).seriesId?.name || ""
       },
     });
   };

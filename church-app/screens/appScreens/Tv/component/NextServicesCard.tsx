@@ -16,7 +16,7 @@ const NextServicesCard = ({
 }) => {
   if (!nextLiveEvent) return null;
 
-  const attr = nextLiveEvent.attributes;
+  const attr = nextLiveEvent as any;
 
   return (
     <Card
@@ -78,12 +78,12 @@ const NextServicesCard = ({
               fontSize: moderateSize(12),
             }}
           >
-            {attr.event_time} WAT
+            {new Date(attr.eventDate).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })} WAT
           </AppText>
         </View>
       </View>
 
-      <CountDowntimer eventDate={attr.event_date} eventTime={attr.event_time} />
+      <CountDowntimer eventDate={attr.eventDate} eventTime={attr.eventDate} />
     </Card>
   );
 };

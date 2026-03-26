@@ -2,17 +2,14 @@
 import { EventItem } from "@/services/api/public/types";
 import { useMemo } from "react";
 
-export function useLiveEvents(events: EventItem[]) {
+export function useLiveEvents(events: any[]) {
   const liveEvent = useMemo(() => {
-    return events.find((e) => e.attributes?.is_live === true) || null;
+    return events.find((e: any) => e.isLive === true) || null;
   }, [events]);
 
   const nextLiveEvent = useMemo(() => {
-    for (const e of events) {
-      if (e.relationships?.next_live_event) {
-        return e.relationships.next_live_event;
-      }
-    }
+    // Node backend doesn't nest next_live_event in relationships
+    // Future: fetch next upcoming event separately if needed
     return null;
   }, [events]);
 

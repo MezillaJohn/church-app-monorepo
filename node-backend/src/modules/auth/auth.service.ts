@@ -202,7 +202,13 @@ export const AuthService = {
     return user;
   },
 
-  async deleteAccount(userId: string) {
+  async deleteAccount(userId: string, password: string) {
+    const user = await User.findById(userId).select('+password');
+    if (!user) throw new AppError('User not found', 404);
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new AppError('Incorrect password', 401);
+
     await User.deleteOne({ _id: userId });
   },
 

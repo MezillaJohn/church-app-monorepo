@@ -22,14 +22,14 @@ const StoreList = ({ item }: { item: any }) => {
     >
       <AppImage
         onImagePress={handleNav}
-        source={{ uri: item?.attributes?.cover_image }}
+        source={{ uri: item?.coverImage }}
         style={styles.image}
       />
       <View style={styles.textContent}>
-        <AppText style={styles.title}>{item?.attributes?.title}</AppText>
-        <AppText style={styles.author}>{item?.attributes?.author}</AppText>
+        <AppText style={styles.title}>{item?.title}</AppText>
+        <AppText style={styles.author}>{item?.author}</AppText>
         <AppText style={styles.pages}>
-          {item?.attributes?.preview_pages} pages
+          {item?.previewPages} pages
         </AppText>
       </View>
     </TouchableOpacity>

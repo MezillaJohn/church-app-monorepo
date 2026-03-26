@@ -35,7 +35,6 @@ const VideoSeries = ({ series }: VideoSeriesProps) => {
         contentContainerStyle={styles.scroll}
       >
         {videos.map((item: any) => {
-          const v = item.attributes ?? item;
           const itemId = item._id || item.id;
 
           return (
@@ -46,23 +45,20 @@ const VideoSeries = ({ series }: VideoSeriesProps) => {
                 router.push({
                   pathname: "/stack/videoDetailsScreen",
                   params: {
-                    videoUrl: v?.youtube_video_url || v?.youtubeVideoUrl || "",
-                    videoId: v?.youtube_video_id || v?.youtubeVideoId || "",
-                    series:
-                      item?.relationships?.series?.attributes?.name ||
-                      v?.seriesName ||
-                      "",
-                    title: v?.title || "",
-                    preacher: v?.speaker || "",
-                    duration: String(v?.duration ?? ""),
-                    description: v?.description || "",
+                    videoUrl: item?.youtubeVideoUrl || "",
+                    videoId: item?.youtubeVideoId || "",
+                    series: item?.seriesId?.name || "",
+                    title: item?.title || "",
+                    preacher: item?.speaker || "",
+                    duration: String(item?.duration ?? ""),
+                    description: item?.description || "",
                   },
                 })
               }
             >
               <View style={styles.thumbnail}>
                 <AppImage
-                  source={{ uri: v?.thumbnail_url || v?.thumbnailUrl }}
+                  source={{ uri: item?.thumbnailUrl }}
                   style={{ width: moderateSize(170) }}
                 />
 
@@ -79,10 +75,10 @@ const VideoSeries = ({ series }: VideoSeriesProps) => {
               </View>
 
               <AppText numberOfLines={1} style={styles.title}>
-                {v?.title}
+                {item?.title}
               </AppText>
 
-              <AppText style={styles.meta}>{v?.speaker}</AppText>
+              <AppText style={styles.meta}>{item?.speaker}</AppText>
             </TouchableOpacity>
           );
         })}

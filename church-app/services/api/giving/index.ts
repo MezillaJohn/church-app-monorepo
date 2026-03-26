@@ -51,11 +51,12 @@ export const givingEndpoints = authenticatedBase.injectEndpoints({
       any,
       {
         fullname: string;
-        phone_no: string;
+        phoneNo: string;
         email: string;
-        partnership_type_id: number;
+        partnershipTypeId: string;
         interval: string;
         amount: number;
+        currency?: string;
       }
     >({
       query: (body) => ({

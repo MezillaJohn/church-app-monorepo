@@ -68,29 +68,28 @@ const Event = () => {
           ) : (
             <FlatList
               data={data?.data}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
+              keyExtractor={(item: any) => (item._id ?? item.id).toString()}
+              renderItem={({ item }: { item: any }) => (
                 <EventCard
                   onImagePress={(image) => {
                     setImageToView(image);
                     setIsPreviewImage(true);
                   }}
                   item={{
-                    id: item.id.toString(),
-                    title: item?.attributes.title,
-                    description: item.attributes.description,
-                    date: moment(item.attributes.event_date).format("DD"),
-                    month: moment(item.attributes.event_date).format("MMM"),
-                    year: moment(item.attributes.event_date).format("YYYY"),
-                    time: moment(
-                      `${item.attributes.event_date} ${item.attributes.event_time}`,
-                      "YYYY-MM-DD HH:mm"
-                    ).format("h:mm A"),
-                    image: item.attributes.image_url ?? "",
+                    id: (item._id ?? item.id).toString(),
+                    title: item.title,
+                    description: item.description,
+                    date: moment(item.eventDate).format("DD"),
+                    month: moment(item.eventDate).format("MMM"),
+                    year: moment(item.eventDate).format("YYYY"),
+                    time: moment(item.eventDate).format("h:mm A"),
+                    image: item.imageUrl ?? "",
                     reactions: Math.floor(Math.random() * 500),
                   }}
-                  reminderEnabled={!!reminders[item.id]}
-                  onToggleReminder={() => toggleReminder(item.id.toString())}
+                  reminderEnabled={!!reminders[item._id ?? item.id]}
+                  onToggleReminder={() =>
+                    toggleReminder((item._id ?? item.id).toString())
+                  }
                 />
               )}
               contentContainerStyle={{ paddingBottom: moderateSize(100) }}

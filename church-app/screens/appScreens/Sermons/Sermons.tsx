@@ -46,8 +46,9 @@ const Sermons = () => {
     page: 1,
   });
 
+
   // Books
-  const { data: booksData, isLoading: booksLoading } = useBooksQuery({ page: 1 });
+  const { data: booksData, isLoading: booksLoading } = useBooksQuery({ page: 1, search: debouncedSearch });
 
   const { downloadedMap, isLoaded: downloadsLoaded } = useDownloadedSermons();
 
@@ -56,43 +57,38 @@ const Sermons = () => {
       const id = s._id || s.id;
       const download = downloadedMap[id];
       if (download?.local_audio_uri) {
-        if (s.attributes) {
-          return { ...s, attributes: { ...s.attributes, audio_file_url: download.local_audio_uri } };
-        }
-        return { ...s, audio_file_url: download.local_audio_uri, audioFileUrl: download.local_audio_uri };
+        return { ...s, audioFileUrl: download.local_audio_uri };
       }
       return s;
     });
   }, [audioData, downloadedMap]);
 
   const handleVideoPress = useCallback((item: any) => {
-    const attrs = item?.attributes || item;
     router.push({
       pathname: "/stack/videoDetailsScreen",
       params: {
         id: item?._id || item?.id,
-        title: attrs?.title,
-        preacher: attrs?.speaker,
-        duration: attrs?.duration,
-        description: attrs?.description,
-        videoUrl: attrs?.youtube_video_url || attrs?.youtubeVideoUrl,
-        videoId: attrs?.youtube_video_id || attrs?.youtubeVideoId,
-        series: item?.relationships?.series?.attributes?.name || attrs?.seriesName || "",
+        title: item?.title,
+        preacher: item?.speaker,
+        duration: item?.duration,
+        description: item?.description,
+        videoUrl: item?.youtubeVideoUrl,
+        videoId: item?.youtubeVideoId,
+        series: item?.seriesId?.name || "",
       },
     });
   }, [router]);
 
   const handleAudioPress = useCallback((item: any) => {
-    const attrs = item?.attributes || item;
     router.push({
       pathname: "/stack/audioPlay",
       params: {
-        id: (item as any)?._id || item?.id,
-        title: attrs?.title,
-        preacher: attrs?.speaker,
-        audioUrl: attrs?.audio_file_url || (attrs as any)?.audioFileUrl,
-        thumbnail: attrs?.thumbnail_url || (attrs as any)?.thumbnailUrl,
-        series: item?.relationships?.series?.attributes?.name || (attrs as any)?.seriesName || "",
+        id: item?._id || item?.id,
+        title: item?.title,
+        preacher: item?.speaker,
+        audioUrl: item?.audioFileUrl,
+        thumbnail: item?.thumbnailUrl,
+        series: item?.seriesId?.name || "",
       },
     });
   }, [router]);
@@ -157,15 +153,14 @@ const Sermons = () => {
     return (
       <View style={styles.gridContainer}>
         {items.map((item: any) => {
-          const attrs = item?.attributes || item;
           return (
             <View key={(item._id || item.id).toString()} style={styles.gridItem}>
               <VideoSermonCard
-                title={attrs?.title || ""}
-                description={attrs?.description || ""}
-                speaker={attrs?.speaker || ""}
-                duration={attrs?.duration}
-                thumbnailUrl={attrs?.thumbnail_url || attrs?.thumbnailUrl || ""}
+                title={item?.title || ""}
+                description={item?.description || ""}
+                speaker={item?.speaker || ""}
+                duration={item?.duration}
+                thumbnailUrl={item?.thumbnailUrl || ""}
                 onPress={() => handleVideoPress(item)}
                 style={{ width: "100%" }}
               />
@@ -193,17 +188,16 @@ const Sermons = () => {
     return (
       <View style={styles.listContainer}>
         {items.map((item: any) => {
-          const attrs = item?.attributes || item;
-          const sermonId = (item as any)?._id || item?.id;
+          const sermonId = item?._id || item?.id;
           return (
             <AudioSermonCard
               key={sermonId?.toString()}
-              title={attrs?.title || ""}
-              speaker={attrs?.speaker || ""}
-              duration={attrs?.duration}
-              thumbnailUrl={attrs?.thumbnail_url || (attrs as any)?.thumbnailUrl || ""}
-              audioUrl={attrs?.audio_file_url || (attrs as any)?.audioFileUrl || ""}
-              isFavorited={attrs?.is_favorited || (attrs as any)?.isFavorited}
+              title={item?.title || ""}
+              speaker={item?.speaker || ""}
+              duration={item?.duration}
+              thumbnailUrl={item?.thumbnailUrl || ""}
+              audioUrl={item?.audioFileUrl || ""}
+              isFavorited={item?.isFavorited}
               sermon={item}
               onPress={() => handleAudioPress(item)}
               onFavourite={() =>
@@ -241,14 +235,13 @@ const Sermons = () => {
     return (
       <View style={styles.gridContainer}>
         {items.map((item: any) => {
-          const attrs = item?.attributes || item;
           return (
             <View key={(item._id || item.id).toString()} style={styles.gridItem}>
               <BookCard
-                title={attrs?.title || ""}
-                author={attrs?.author || ""}
-                coverImage={attrs?.cover_image || attrs?.coverImage || ""}
-                price={attrs?.price?.toString()}
+                title={item?.title || ""}
+                author={item?.author || ""}
+                coverImage={item?.coverImage || ""}
+                price={item?.price?.toString()}
                 onPress={() => handleBookPress(item)}
                 style={{ width: "100%" }}
               />
@@ -270,7 +263,7 @@ const Sermons = () => {
             <SearchBar
               value={searchText}
               onChangeText={setSearchText}
-              placeholder="Search sermons, books..."
+              placeholder={activeSegment === 0 ? "Search video sermons..." : activeSegment === 1 ? "Search audio sermons..." : "Search books..."}
               style={{ flex: 1 }}
             />
           </View>

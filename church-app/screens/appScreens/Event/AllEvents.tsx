@@ -85,16 +85,15 @@ const AllEvents = () => {
     return (
       <View style={styles.listContainer}>
         {events.map((item: any) => {
-          const attrs = item?.attributes || item;
           return (
             <EventCard
               key={(item._id || item.id).toString()}
-              title={attrs?.title || ""}
-              date={attrs?.event_date || attrs?.eventDate}
-              endDate={attrs?.end_date || attrs?.endDate}
-              location={attrs?.location}
-              imageUrl={attrs?.image_url || attrs?.imageUrl}
-              isLive={attrs?.is_live || attrs?.isLive}
+              title={item?.title || ""}
+              date={item?.eventDate}
+              endDate={item?.endDate}
+              location={item?.location}
+              imageUrl={item?.imageUrl}
+              isLive={item?.isLive}
               onPress={() => handleEventPress(item)}
             />
           );

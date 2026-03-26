@@ -13,6 +13,7 @@ import {
   Tag,
   Tags,
   Bell,
+  Headphones,
   Settings,
   LogOut,
   DollarSign,
@@ -46,6 +47,7 @@ const manageNav: NavItem[] = [
 ];
 
 const systemNav: NavItem[] = [
+  { label: 'Support Tickets', to: '/support-tickets', icon: Headphones },
   { label: 'Notifications', to: '/notifications', icon: Bell },
   { label: 'Settings', to: '/settings', icon: Settings },
 ];

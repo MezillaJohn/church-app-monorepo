@@ -17,7 +17,7 @@ export default function TvPlayerView({
 }: {
   liveEvent: EventItem | null;
 }) {
-  const title = liveEvent?.attributes?.title ?? "Wholeword TV Live";
+  const title = (liveEvent as any)?.title ?? "Wholeword TV Live";
   const subtitle = liveEvent
     ? "Going Live Now"
     : "No Live Service at the Moment";
@@ -111,9 +111,9 @@ export default function TvPlayerView({
           {subtitle}
         </AppText>
 
-        {liveEvent?.attributes?.description && (
+        {(liveEvent as any)?.description && (
           <AppText style={{ marginTop: 4, fontSize: moderateSize(14) }}>
-            {liveEvent.attributes.description}
+            {(liveEvent as any).description}
           </AppText>
         )}
       </View>

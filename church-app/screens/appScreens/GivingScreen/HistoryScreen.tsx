@@ -23,12 +23,11 @@ const HistoryScreen = () => {
   const { data, isLoading } = useHistoryQuery(null);
   const donationHistory = data?.data || [];
 
-  const renderItem = ({ item }: { item: DonationHistoryItem }) => {
-    const { amount, donation_type, status } = item.attributes;
-    const {
-      donation_type: { name, description },
-    } = item?.relationships;
-    const date = moment(item.meta.created_at).format("MMM D, YYYY • h:mm A");
+  const renderItem = ({ item }: { item: any }) => {
+    const amount = item.amount;
+    const status = item.status;
+    const name = item.donationTypeId?.name ?? "Donation";
+    const date = moment(item.createdAt).format("MMM D, YYYY • h:mm A");
 
     const Icon = Gift;
 
@@ -97,7 +96,7 @@ const HistoryScreen = () => {
         <FlatList
           data={donationHistory}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item: any) => (item._id ?? item.id).toString()}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 60, paddingTop: 30 }}
         />

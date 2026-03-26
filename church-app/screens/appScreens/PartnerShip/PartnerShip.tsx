@@ -59,23 +59,23 @@ const PartnerShip = () => {
     validateOnChange: false,
     validateOnBlur: true,
     initialValues: {
-      fullName: authUser?.attributes?.name ?? "",
-      phone: authUser?.attributes?.phone ?? "",
-      email: authUser?.attributes?.email ?? "",
+      fullName: authUser?.name ?? "",
+      phone: authUser?.phone ?? "",
+      email: authUser?.email ?? "",
       type: "",
       typeId: "",
-      currency: "NGN", // default
+      currency: "NGN",
       amount: "",
       time: "",
     },
     onSubmit: async (values) => {
       const payload = {
         fullname: values.fullName,
-        phone_no: values.phone,
+        phoneNo: values.phone,
         email: values.email,
-        partnership_type_id: Number(values.typeId),
+        partnershipTypeId: values.typeId,
         interval: values.time.toLowerCase(),
-        currency: values.currency, // NEW
+        currency: values.currency,
         amount: Number(values.amount),
       };
 
@@ -186,17 +186,17 @@ const PartnerShip = () => {
           contentContainerStyle={{ paddingBottom: 30 }}
           style={{ padding: 18 }}
         >
-          {(data?.data ?? []).map((item) => (
+          {(data?.data ?? []).map((item: any) => (
             <TouchableOpacity
-              key={item.id}
+              key={item._id}
               onPress={() => {
-                formikProps.setFieldValue("type", item.attributes.name);
-                formikProps.setFieldValue("typeId", item.id);
+                formikProps.setFieldValue("type", item.name);
+                formikProps.setFieldValue("typeId", item._id);
                 setIsTypeVisible(false);
               }}
               style={styles.sheetItem}
             >
-              <AppText style={styles.sheetText}>{item.attributes.name}</AppText>
+              <AppText style={styles.sheetText}>{item.name}</AppText>
             </TouchableOpacity>
           ))}
         </ScrollView>

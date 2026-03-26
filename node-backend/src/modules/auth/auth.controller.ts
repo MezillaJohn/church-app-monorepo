@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
+import { PushTokensService } from '../push-tokens/push-tokens.service';
 import { ApiResponse } from '../../shared/utils/api-response';
 import { catchAsync } from '../../shared/utils/catch-async';
 
@@ -50,13 +51,18 @@ export const AuthController = {
   }),
 
   deleteAccount: catchAsync(async (req: Request, res: Response) => {
-    await AuthService.deleteAccount(req.user!.id);
+    await AuthService.deleteAccount(req.user!.id, req.body.password);
+    // Remove all push tokens for deleted user
+    await PushTokensService.removeAllForUser(req.user!.id);
     return ApiResponse.noContent(res);
   }),
 
-  logout: catchAsync(async (_req: Request, res: Response) => {
-    // JWT is stateless — client discards token.
-    // For token blacklisting add a Redis-based denylist here.
+  logout: catchAsync(async (req: Request, res: Response) => {
+    // Remove the push token for this device so it stops receiving notifications
+    const pushToken = req.body?.pushToken;
+    if (pushToken) {
+      await PushTokensService.removeByToken(pushToken);
+    }
     return ApiResponse.success(res, null, 'Logged out successfully');
   }),
 

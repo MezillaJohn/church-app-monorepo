@@ -27,8 +27,7 @@ const Favourite = () => {
     const audio: any[] = [];
     const video: any[] = [];
     sermons.forEach((item: any) => {
-      const attrs = item?.attributes ?? item;
-      if (attrs?.type === "video") video.push(item);
+      if (item?.type === "video") video.push(item);
       else audio.push(item);
     });
     return { audioData: audio, videoData: video };
@@ -117,7 +116,6 @@ const Favourite = () => {
                 columnWrapperStyle={[styles.row]}
                 contentContainerStyle={styles.listContent}
                 renderItem={({ item }: any) => {
-                  const attrs = item?.attributes ?? item;
                   return (
                     <VideoSermonCard
                       page={1}
@@ -128,20 +126,13 @@ const Favourite = () => {
                           pathname: "/stack/videoDetailsScreen",
                           params: {
                             id: String(item?._id ?? item?.id),
-                            title: attrs?.title,
-                            preacher: attrs?.speaker,
-                            duration: attrs?.duration,
-                            description: attrs?.description,
-                            videoUrl:
-                              attrs?.youtube_video_url ??
-                              attrs?.youtubeVideoUrl,
-                            videoId:
-                              attrs?.youtube_video_id ??
-                              attrs?.youtubeVideoId,
-                            series:
-                              attrs?.series ??
-                              item?.seriesId?.name ??
-                              "",
+                            title: item?.title,
+                            preacher: item?.speaker,
+                            duration: item?.duration,
+                            description: item?.description,
+                            videoUrl: item?.youtubeVideoUrl,
+                            videoId: item?.youtubeVideoId,
+                            series: item?.seriesId?.name ?? "",
                           },
                         })
                       }

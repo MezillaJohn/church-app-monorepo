@@ -106,21 +106,12 @@ export interface PartnershipTypeResponse {
 }
 
 export interface PartnershipTypeItem {
-  id: number;
-  type: string; // always "partnership_type"
-  attributes: PartnershipTypeAttributes;
-  meta: PartnershipTypeMeta;
-}
-
-export interface PartnershipTypeAttributes {
+  _id: string;
   name: string;
-  description: string;
-  is_active: boolean;
-}
-
-export interface PartnershipTypeMeta {
-  created_at: string; // ISO datetime string
-  updated_at: string; // ISO datetime string
+  description?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Giving categories from the unified /categories?type=giving endpoint

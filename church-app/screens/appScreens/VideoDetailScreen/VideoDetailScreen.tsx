@@ -51,23 +51,23 @@ export default function VideoDetailsScreen() {
   const { data: sermonData, isLoading: isFetchingSermon } =
     useGetSermonByIdQuery(params.videoId!, { skip: !isDeepLink });
 
-  const sermon = sermonData?.data;
-  const videoUrl = params.videoUrl || sermon?.attributes?.youtube_video_url;
-  const id = params.id || String(sermon?.id);
-  const title = params.title || sermon?.attributes?.title;
-  const preacher = params.preacher || sermon?.attributes?.speaker;
+  const sermon = sermonData?.data as any;
+  const videoUrl = params.videoUrl || sermon?.youtubeVideoUrl;
+  const id = params.id || String(sermon?._id || sermon?.id);
+  const title = params.title || sermon?.title;
+  const preacher = params.preacher || sermon?.speaker;
   const duration =
-    params.duration || String(sermon?.attributes?.duration ?? "0");
-  const description = params.description || sermon?.attributes?.description;
+    params.duration || String(sermon?.duration ?? "0");
+  const description = params.description || sermon?.description;
   const series =
-    params.series || sermon?.relationships?.series?.attributes?.name;
+    params.series || sermon?.seriesId?.name;
 
   const [playing, setPlaying] = useState(true);
 
   const getYouTubeId = (url?: string | null | undefined) => {
-    if (!url) return sermon?.attributes?.youtube_video_id || "";
+    if (!url) return sermon?.youtubeVideoId || "";
     const match = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
-    return match ? match[1] : sermon?.attributes?.youtube_video_id || "";
+    return match ? match[1] : sermon?.youtubeVideoId || "";
   };
 
   const extractedId = getYouTubeId(videoUrl);
