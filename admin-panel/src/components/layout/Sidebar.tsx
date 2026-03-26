@@ -20,6 +20,7 @@ import {
   List,
   Zap,
   Layers,
+  Clock,
   X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -44,6 +45,7 @@ const manageNav: NavItem[] = [
   { label: 'Church Centres', to: '/church-centres', icon: Church },
   { label: 'Bank Accounts', to: '/bank-accounts', icon: Landmark },
   { label: 'Hero Sliders', to: '/hero-sliders', icon: Image },
+  { label: 'Service Times', to: '/service-times', icon: Clock },
 ];
 
 const systemNav: NavItem[] = [

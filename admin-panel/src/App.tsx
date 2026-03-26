@@ -24,6 +24,7 @@ const PartnershipTypesPage = lazy(() => import('@/pages/partnership-types/Partne
 const NotificationsPage = lazy(() => import('@/pages/notifications/NotificationsPage'));
 const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage'));
 const SupportTicketsPage = lazy(() => import('@/pages/support-tickets/SupportTicketsPage'));
+const ServiceTimesPage = lazy(() => import('@/pages/service-times/ServiceTimesPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 30_000, retry: 1 } },
@@ -77,6 +78,7 @@ function AppRoutes() {
         <Route path="notifications" element={<Suspense fallback={<PageFallback />}><NotificationsPage /></Suspense>} />
         <Route path="settings" element={<Suspense fallback={<PageFallback />}><SettingsPage /></Suspense>} />
         <Route path="support-tickets" element={<Suspense fallback={<PageFallback />}><SupportTicketsPage /></Suspense>} />
+        <Route path="service-times" element={<Suspense fallback={<PageFallback />}><ServiceTimesPage /></Suspense>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

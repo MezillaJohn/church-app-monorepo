@@ -25,6 +25,7 @@ import paymentRoutes from './modules/payments/payments.routes';
 import siteInfoRoutes from './modules/site-info/site-info.routes';
 import adminRoutes from './modules/admin/admin.routes';
 import supportTicketRoutes from './modules/support-tickets/support-tickets.routes';
+import serviceTimeRoutes from './modules/service-times/service-times.routes';
 
 const app = express();
 
@@ -94,6 +95,7 @@ app.use(`${v1}/push-tokens`, pushTokenRoutes);
 app.use(`${v1}/payments`, paymentRoutes);
 app.use(`${v1}/site-info`, siteInfoRoutes);
 app.use(`${v1}/support-tickets`, supportTicketRoutes);
+app.use(`${v1}/service-times`, serviceTimeRoutes);
 app.use(`${v1}/admin`, adminRoutes);
 
 // ─── Error handling ───────────────────────────────────────────────────────────

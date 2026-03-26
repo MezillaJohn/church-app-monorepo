@@ -56,8 +56,23 @@ export const publicEndpoints = unAuthenticatedBase.injectEndpoints({
         url: "site-info",
       }),
     }),
+
+    serviceTimes: builder.query<{ success: boolean; data: ServiceTime[] }, null>({
+      query: () => ({
+        url: "service-times",
+      }),
+    }),
   }),
 });
+
+export interface ServiceTime {
+  _id: string;
+  day: string;
+  time: string;
+  label: string;
+  order: number;
+  isActive: boolean;
+}
 
 export const {
   useEventsQuery,
@@ -66,4 +81,5 @@ export const {
   useGetCategoryQuery,
   useEventByIdQuery,
   useGetSocialLinksQuery,
+  useServiceTimesQuery,
 } = publicEndpoints;

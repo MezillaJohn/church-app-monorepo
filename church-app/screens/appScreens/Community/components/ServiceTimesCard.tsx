@@ -1,16 +1,25 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { Clock } from "lucide-react-native";
 import { GlassCard, Text } from "@/components/global";
 import { Colors } from "@/constants/theme";
 import { moderateSize } from "@/utils/useResponsiveStyle";
-
-const SERVICE_TIMES = [
-  { day: "Sunday", time: "9:00 AM & 11:00 AM", label: "Main Service" },
-  { day: "Wednesday", time: "6:30 PM", label: "Midweek Service" },
-];
+import { useServiceTimesQuery } from "@/services/api/public";
 
 export const ServiceTimesCard: React.FC = () => {
+  const { data, isLoading } = useServiceTimesQuery(null);
+  const serviceTimes = data?.data ?? [];
+
+  if (isLoading) {
+    return (
+      <GlassCard style={styles.card} elevated>
+        <ActivityIndicator color={Colors.primary} />
+      </GlassCard>
+    );
+  }
+
+  if (serviceTimes.length === 0) return null;
+
   return (
     <GlassCard style={styles.card} elevated>
       <View style={styles.header}>
@@ -19,12 +28,12 @@ export const ServiceTimesCard: React.FC = () => {
           SERVICE TIMES
         </Text>
       </View>
-      {SERVICE_TIMES.map((service, i) => (
+      {serviceTimes.map((service, i) => (
         <View
-          key={i}
+          key={service._id}
           style={[
             styles.row,
-            i < SERVICE_TIMES.length - 1 && styles.rowBorder,
+            i < serviceTimes.length - 1 && styles.rowBorder,
           ]}
         >
           <View>

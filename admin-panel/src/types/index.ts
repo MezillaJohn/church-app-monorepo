@@ -258,6 +258,18 @@ export interface SupportTicket {
   updatedAt: string;
 }
 
+// ─── Service Time ────────────────────────────────────────────────────────────
+export interface ServiceTime {
+  _id: string;
+  day: string;
+  time: string;
+  label: string;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ─── Upload ───────────────────────────────────────────────────────────────────
 export interface UploadResult {
   url: string;

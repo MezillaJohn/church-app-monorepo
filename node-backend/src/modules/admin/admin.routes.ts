@@ -20,6 +20,7 @@ import adminSettingsRoutes from './settings/settings.routes';
 import adminNotificationsRoutes from './notifications/notifications.routes';
 import adminUploadsRoutes from './uploads/uploads.routes';
 import adminSupportTicketsRoutes from './support-tickets/support-tickets.routes';
+import adminServiceTimesRoutes from './service-times/service-times.routes';
 
 const router = Router();
 
@@ -44,5 +45,6 @@ router.use('/settings', adminSettingsRoutes);
 router.use('/notifications', adminNotificationsRoutes);
 router.use('/uploads', adminUploadsRoutes);
 router.use('/support-tickets', adminSupportTicketsRoutes);
+router.use('/service-times', adminServiceTimesRoutes);
 
 export default router;
