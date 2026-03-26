@@ -1,12 +1,12 @@
 import type { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-import type { AnyZodObject } from 'zod';
+import type { AnyZodObject, ZodTypeAny } from 'zod';
 import { ApiResponse } from '../utils/api-response';
 
 interface ValidateTarget {
-  body?: AnyZodObject;
-  query?: AnyZodObject;
-  params?: AnyZodObject;
+  body?: ZodTypeAny;
+  query?: ZodTypeAny;
+  params?: ZodTypeAny;
 }
 
 /**

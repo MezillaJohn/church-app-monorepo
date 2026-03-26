@@ -5,10 +5,11 @@ import { paginate, buildPaginationMeta } from '../../shared/utils/pagination';
 import type { EventQueryInput } from './events.schema';
 
 /** Attach a computed `isLive` boolean based on current time vs date range */
-function withLiveStatus(doc: IEvent) {
+function withLiveStatus(doc: any) {
   const now = new Date();
-  const obj = doc.toJSON();
-  obj.isLive = doc.eventDate <= now && doc.endDate >= now;
+  const docAny = doc as any;
+  const obj = typeof docAny.toJSON === 'function' ? docAny.toJSON() : { ...docAny };
+  obj.isLive = docAny.eventDate <= now && docAny.endDate >= now;
   return obj;
 }
 
