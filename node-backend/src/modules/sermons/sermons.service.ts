@@ -32,6 +32,7 @@ export const SermonsService = {
 
     const filter: Record<string, unknown> = { isPublished: true };
     if (query.categoryId) filter['categoryId'] = query.categoryId;
+    if (query.category_id) filter['categoryId'] = query.category_id;
     if (query.seriesId) filter['seriesId'] = query.seriesId;
     if (query.type) filter['type'] = query.type;
     if (query.speaker) filter['speaker'] = { $regex: query.speaker, $options: 'i' };

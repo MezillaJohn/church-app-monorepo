@@ -130,7 +130,7 @@ const Sermons = () => {
             style={[styles.categoryPill, isActive && styles.categoryPillActive]}
           >
             <Text variant="caption" style={{ color: isActive ? Colors.primary : Colors.textMuted }}>
-              {cat.attributes?.name || cat.name}
+              {cat.name}
             </Text>
           </Pressable>
         );

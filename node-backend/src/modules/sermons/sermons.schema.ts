@@ -6,6 +6,7 @@ export const sermonQuerySchema = z.object({
   perPage: z.coerce.number().int().positive().optional(),
   search: z.string().optional(),
   categoryId: mongoId.optional(),
+  category_id: mongoId.optional(),
   seriesId: mongoId.optional(),
   type: z.enum(['audio', 'video']).optional(),
   speaker: z.string().optional(),

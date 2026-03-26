@@ -1,7 +1,7 @@
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
-import { Pause, Play } from "lucide-react-native";
+import { Pause, Play, X } from "lucide-react-native";
 import * as Haptics from "expo-haptics";
 import { useAudio } from "@/context/AudioContext";
 import { Text } from "@/components/global/typography/Text";
@@ -10,14 +10,14 @@ import { Colors, whiteOpacity } from "@/constants/theme";
 import { moderateSize } from "@/utils/useResponsiveStyle";
 
 export const MiniPlayer: React.FC = () => {
-  const { currentSermon, isPlaying, togglePlay, position, duration } =
+  const { currentSermon, isPlaying, togglePlay, closePlayer, position, duration } =
     useAudio();
   const router = useRouter();
 
   if (!currentSermon) return null;
 
-  const attrs: any = currentSermon.attributes || currentSermon;
-  const thumbnailUrl = attrs.thumbnail_url || attrs.thumbnailUrl;
+  const attrs = currentSermon;
+  const thumbnailUrl = attrs?.thumbnailUrl
   const progress = duration > 0 ? position / duration : 0;
 
   const handlePress = () => {
@@ -27,12 +27,10 @@ export const MiniPlayer: React.FC = () => {
         id: (currentSermon as any).id || (currentSermon as any)._id,
         title: attrs.title,
         preacher: attrs.speaker,
-        audioUrl: attrs.audio_file_url || attrs.audioFileUrl,
+        audioUrl: attrs.audioFileUrl,
         thumbnail: thumbnailUrl,
         series:
-          (currentSermon as any).relationships?.series?.attributes?.name ||
-          attrs.seriesName ||
-          "",
+          (currentSermon as any).relationships?.series?.attributes?.name
       },
     });
   };
@@ -40,6 +38,11 @@ export const MiniPlayer: React.FC = () => {
   const handleToggle = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     togglePlay();
+  };
+
+  const handleClose = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    closePlayer();
   };
 
   return (
@@ -81,6 +84,9 @@ export const MiniPlayer: React.FC = () => {
             />
           )}
         </Pressable>
+        <Pressable onPress={handleClose} hitSlop={8} style={styles.closeButton}>
+          <X size={moderateSize(16)} color={whiteOpacity("0.5")} />
+        </Pressable>
       </View>
     </Pressable>
   );
@@ -117,6 +123,13 @@ const styles = StyleSheet.create({
     height: moderateSize(36),
     borderRadius: moderateSize(18),
     backgroundColor: "rgba(0,217,166,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeButton: {
+    width: moderateSize(28),
+    height: moderateSize(28),
+    borderRadius: moderateSize(14),
     alignItems: "center",
     justifyContent: "center",
   },

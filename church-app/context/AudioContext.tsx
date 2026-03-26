@@ -10,6 +10,7 @@ interface AudioContextType {
     togglePlay: () => void;
     pause: () => void;
     seekTo: (seconds: number) => void;
+    closePlayer: () => void;
     isPlaying: boolean;
     duration: number;
     position: number;
@@ -118,6 +119,17 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
     }, [player]);
 
+    const closePlayer = useCallback(() => {
+        if (player) {
+            player.pause();
+            player.replace(null);
+        }
+        setCurrentSermon(null);
+        setIsPlaying(false);
+        setPosition(0);
+        setDuration(0);
+    }, [player]);
+
     return (
         <AudioContext.Provider
             value={{
@@ -127,6 +139,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 togglePlay,
                 pause,
                 seekTo,
+                closePlayer,
                 isPlaying,
                 duration,
                 position,
