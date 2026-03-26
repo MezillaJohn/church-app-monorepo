@@ -12,7 +12,16 @@ const server = app.listen(env.PORT, async () => {
   PushTokensService.cleanupStaleTokens(90).catch((err) =>
     logger.error('Stale token cleanup failed', { err }),
   );
+
+  // Keep Render instance awake by pinging it every 7 minutes
+  const renderUrl = 'https://church-app-monorepo.onrender.com';
+  setInterval(() => {
+    fetch(renderUrl)
+      .then((res) => logger.info(`Self-ping complete: ${res.status}`))
+      .catch((err) => logger.error('Self-ping failed', { err }));
+  }, 7 * 60 * 1000); // 7 minutes
 });
+
 
 // ─── Graceful shutdown ─────────────────────────────────────────────────────────
 const shutdown = async (signal: string) => {

@@ -8,14 +8,12 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { Mutex } from "async-mutex";
 
-const BASE_URL = "https://api.godhouse.org/api/v1/";
-const BASE_URL_DEV = "https://godhouse.smavotex.com/api/v1/";
-const BASE_URL_LOCAL = "http://10.81.27.198:3000/api/v1/";
+const BASE_URL_RENDER = "https://church-app-monorepo.onrender.com/api/v1/";
 
 const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: BASE_URL_LOCAL,
+  baseUrl: BASE_URL_RENDER,
   prepareHeaders: async (headers) => {
     const token = storage.getString("AuthProvider.authToken");
     if (token) {
@@ -102,7 +100,7 @@ export const unAuthenticatedBase = createApi({
   reducerPath: "unAuth",
   baseQuery: async (args: any, api: any, extraOptions: any) => {
     const result = await fetchBaseQuery({
-      baseUrl: BASE_URL_LOCAL,
+      baseUrl: BASE_URL_RENDER,
     })(args, api, extraOptions);
     return result;
   },
