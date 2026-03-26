@@ -2,8 +2,6 @@ import { authenticatedBase } from "@/services";
 import { NotificationsResponse } from "@/services/api/notification/types";
 import * as Device from "expo-device";
 
-
-
 export const notificationEndpoints = authenticatedBase.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
@@ -33,19 +31,20 @@ export const notificationEndpoints = authenticatedBase.injectEndpoints({
       query: (arg) => ({
         url: "notifications",
         method: "GET",
-        params: { page: arg?.page ?? 1 },
+        params: { page: arg?.page ?? 1, perPage: 20 },
       }),
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
       merge: (currentCache, newItems) => {
-        const existingIds = new Set(currentCache.data.map((n) => n.id));
-
+        if (!newItems.data) return;
+        const existingIds = new Set(currentCache.data.map((n) => n._id));
         newItems.data.forEach((item) => {
-          if (!existingIds.has(item.id)) {
+          if (!existingIds.has(item._id)) {
             currentCache.data.push(item);
           }
         });
+        currentCache.meta = newItems.meta;
       },
       forceRefetch({ currentArg, previousArg }) {
         return currentArg?.page !== previousArg?.page;
@@ -53,7 +52,7 @@ export const notificationEndpoints = authenticatedBase.injectEndpoints({
       providesTags: ["notifications"],
     }),
 
-    markNotificationAsRead: builder.mutation<any, number>({
+    markNotificationAsRead: builder.mutation<any, string>({
       query: (id) => ({
         url: `notifications/${id}/read`,
         method: "PATCH",

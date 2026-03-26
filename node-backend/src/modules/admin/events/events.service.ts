@@ -1,6 +1,8 @@
 import { Event } from '../../../database/models/event.model';
 import { AppError } from '../../../shared/middleware/error.middleware';
 import { paginate, buildPaginationMeta } from '../../../shared/utils/pagination';
+import { NotificationService } from '../../../shared/services/notification.service';
+import { logger } from '../../../shared/utils/logger';
 import type { AdminEventQueryInput, CreateEventInput, UpdateEventInput } from './events.schema';
 
 export const AdminEventsService = {
@@ -25,7 +27,23 @@ export const AdminEventsService = {
   },
 
   async create(input: CreateEventInput) {
-    return Event.create(input);
+    const event = await Event.create(input);
+
+    if (event.isPublished) {
+      const date = new Date(event.eventDate).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+      NotificationService.notifyAll({
+        type: 'event',
+        title: 'New Event',
+        body: `"${event.title}" on ${date}. Don't miss it!`,
+        resourceId: String(event._id),
+      }).catch((err) => logger.error('Failed to send event notification', { err }));
+    }
+
+    return event;
   },
 
   async update(id: string, input: UpdateEventInput) {

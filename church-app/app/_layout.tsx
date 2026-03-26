@@ -54,10 +54,12 @@ export default function RootLayout() {
           <NetworkProvider>
             <AuthProvider>
               <AudioProvider>
+                <NotificationProvider>
                 <AppAlertProvider>
-                  <AppNav />
-                  <Slot />
-                </AppAlertProvider>
+                    <AppNav />
+                    <Slot />
+                  </AppAlertProvider>
+                </NotificationProvider>
               </AudioProvider>
             </AuthProvider>
           </NetworkProvider>

@@ -53,36 +53,14 @@ const formatTimeAgo = (dateString: string): string => {
 
 const ICON_MAP: Record<string, { icon: typeof Bell; color: string }> = {
   event: { icon: Calendar, color: Colors.success },
-  video: { icon: Video, color: Colors.info },
-  audio: { icon: Music, color: Colors.purple },
+  sermon: { icon: Video, color: Colors.info },
   book: { icon: BookOpen, color: Colors.primary },
+  announcement: { icon: Bell, color: Colors.purple },
 };
 
 const getNotificationIcon = (type: string) => {
   const config = ICON_MAP[type] || { icon: Bell, color: Colors.primary };
-  const Icon = config.icon;
-  return { Icon, color: config.color };
-};
-
-const getNotificationContent = (item: NotificationType) => {
-  let title = "New Notification";
-  const body = item.data?.message || "You have a new notification";
-
-  if (item.event_type === "audio" || item.event_type === "video") {
-    if ("event" in item && item.event) {
-      title = item.event.title;
-    } else {
-      title = "New Sermon";
-    }
-  } else if (item.event_type === "event") {
-    if ("event" in item && item.event) {
-      title = item.event.title;
-    } else {
-      title = "Upcoming Event";
-    }
-  }
-
-  return { title, body };
+  return { Icon: config.icon, color: config.color };
 };
 
 interface NotificationItemProps {
@@ -91,9 +69,9 @@ interface NotificationItemProps {
 }
 
 const NotificationItem = ({ item, onPress }: NotificationItemProps) => {
-  const isUnread = !item.read_status;
-  const timeAgo = formatTimeAgo(item.created_at);
-  const { Icon, color } = getNotificationIcon(item.event_type);
+  const isUnread = !item.readAt;
+  const timeAgo = formatTimeAgo(item.createdAt);
+  const { Icon, color } = getNotificationIcon(item.type);
 
   return (
     <Pressable
@@ -114,12 +92,12 @@ const NotificationItem = ({ item, onPress }: NotificationItemProps) => {
             style={[styles.notificationTitle, isUnread && styles.unreadTitle]}
             numberOfLines={1}
           >
-            {item?.event?.title}
+            {item.title}
           </AppText>
           {isUnread && <View style={styles.unreadDot} />}
         </View>
         <AppText style={styles.notificationBody} numberOfLines={2}>
-          {item?.data?.message}
+          {item.body}
         </AppText>
         <AppText style={styles.timeText}>{timeAgo}</AppText>
       </View>
@@ -155,8 +133,8 @@ const Notification = () => {
     useMarkAllNotificationsAsReadMutation();
 
   const notifications = data?.data ?? [];
-  const lastPage = data?.meta?.last_page;
-  const unreadCount = 0
+  const unreadCount = data?.meta?.unreadCount ?? 0;
+  const lastPage = data?.meta?.lastPage;
 
   const handleLoadMore = () => {
     if (lastPage && page < lastPage) {
@@ -178,60 +156,38 @@ const Notification = () => {
   const router = useRouter();
 
   const handleNotificationPress = async (item: NotificationType) => {
-    if (!item.read_status) {
+    // Mark as read
+    if (!item.readAt) {
       try {
-        await markAsRead(item.id);
+        await markAsRead(item._id);
       } catch (error) {
         console.log(error);
       }
     }
 
-    const { title, body } = getNotificationContent(item);
-
-    switch (item.event_type) {
-      case "audio":
-        if ("event" in item && item.event) {
-          router.push({
-            pathname: "/stack/audioPlay",
-            params: {
-              id: item.event.id.toString(),
-              title: item.event.title,
-              preacher: item.event.speaker,
-              audioUrl: item.event.audio_file_url ?? undefined,
-              thumbnail: item.event.thumbnail_url,
-              series: (item.event as any).seriesId?.name ?? "",
-            },
-          });
-        }
-        break;
-      case "video":
-        if ("event" in item && item.event) {
+    // Navigate based on type
+    switch (item.type) {
+      case "sermon":
+        if (item.resourceId) {
           router.push({
             pathname: "/stack/videoDetailsScreen",
-            params: {
-              videoId: item.event.id.toString(),
-              videoUrl: item.event.youtube_video_url ?? undefined,
-              title: item.event.title,
-              preacher: item.event.speaker,
-              duration: item.event.duration.toString(),
-              description: item.event.description,
-            },
+            params: { videoId: item.resourceId },
           });
         }
         break;
       case "book":
-        if ("event_id" in item) {
+        if (item.resourceId) {
           router.push({
             pathname: "/stack/bookDetails",
-            params: { bookId: item.event_id.toString() },
+            params: { bookId: item.resourceId },
           });
         }
         break;
       case "event":
-        if ("event" in item && item.event) {
+        if (item.resourceId) {
           router.push({
             pathname: "/stack/eventDetails",
-            params: { id: item.event.id.toString() },
+            params: { id: item.resourceId },
           });
         }
         break;
@@ -240,9 +196,9 @@ const Notification = () => {
         router.push({
           pathname: "/stack/notificationDetails",
           params: {
-            title,
-            body,
-            date: formatTimeAgo(item.created_at),
+            title: item.title,
+            body: item.body,
+            date: formatTimeAgo(item.createdAt),
           },
         });
         break;
@@ -300,7 +256,7 @@ const Notification = () => {
         ) : (
           <FlatList
             data={notifications}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item._id}
             renderItem={renderNotification}
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}

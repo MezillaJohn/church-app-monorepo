@@ -1,6 +1,8 @@
 import { Book } from '../../../database/models/book.model';
 import { AppError } from '../../../shared/middleware/error.middleware';
 import { paginate, buildPaginationMeta } from '../../../shared/utils/pagination';
+import { NotificationService } from '../../../shared/services/notification.service';
+import { logger } from '../../../shared/utils/logger';
 import type { AdminBookQueryInput, CreateBookInput, UpdateBookInput } from './books.schema';
 
 const populate = [{ path: 'categoryId', select: 'name slug' }];
@@ -30,7 +32,18 @@ export const AdminBooksService = {
   },
 
   async create(input: CreateBookInput) {
-    return Book.create(input);
+    const book = await Book.create(input);
+
+    if (book.isPublished) {
+      NotificationService.notifyAll({
+        type: 'book',
+        title: 'New Book Available',
+        body: `"${book.title}" by ${book.author || 'the church'} is now available.`,
+        resourceId: String(book._id),
+      }).catch((err) => logger.error('Failed to send book notification', { err }));
+    }
+
+    return book;
   },
 
   async update(id: string, input: UpdateBookInput) {

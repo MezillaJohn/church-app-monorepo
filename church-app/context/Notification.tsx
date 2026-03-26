@@ -2,6 +2,7 @@ import { useSendFCMTokenMutation } from "@/services/api/notification";
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import { router } from "expo-router";
 import React, {
   createContext,
   ReactNode,
@@ -61,6 +62,50 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     }),
   });
 
+  const handleNotificationNavigation = (
+    data: Record<string, unknown>
+  ) => {
+    const type = data?.type as string;
+    const resourceId = data?.resourceId as string;
+
+    switch (type) {
+      case "sermon":
+        if (resourceId) {
+          router.push({
+            pathname: "/stack/videoDetailsScreen",
+            params: { videoId: resourceId },
+          });
+        }
+        break;
+      case "book":
+        if (resourceId) {
+          router.push({
+            pathname: "/stack/bookDetails",
+            params: { bookId: resourceId },
+          });
+        }
+        break;
+      case "event":
+        if (resourceId) {
+          router.push({
+            pathname: "/stack/eventDetails",
+            params: { id: resourceId },
+          });
+        }
+        break;
+      case "announcement":
+      default:
+        router.push({
+          pathname: "/stack/notificationDetails",
+          params: {
+            title: (data?.title as string) || "Notification",
+            body: (data?.body as string) || "",
+          },
+        });
+        break;
+    }
+  };
+
   // 📌 Get platform (android / ios)
   const platform = Platform.OS === "ios" ? "ios" : "android";
 
@@ -101,16 +146,38 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       )
       .catch((err) => console.log(err, "token error"));
 
+    // Handle cold start — app opened from killed state via notification tap
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (response) {
+        const content = response.notification.request.content;
+        const data = {
+          ...content.data,
+          title: content.title,
+          body: content.body,
+        };
+        if (data) {
+          setTimeout(() => handleNotificationNavigation(data), 1000);
+        }
+      }
+    });
+
     // Listeners
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notif) => {
-        console.log("🔔 Notification Received:", notif);
         setNotification(notif);
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("🔔 Notification Interaction:", response);
+        const content = response.notification.request.content;
+        const data = {
+          ...content.data,
+          title: content.title,
+          body: content.body,
+        };
+        if (data) {
+          setTimeout(() => handleNotificationNavigation(data), 500);
+        }
       });
 
     return () => {

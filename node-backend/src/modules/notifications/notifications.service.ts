@@ -1,9 +1,22 @@
 import { Notification } from '../../database/models/notification.model';
 import { AppError } from '../../shared/middleware/error.middleware';
+import { paginate, buildPaginationMeta } from '../../shared/utils/pagination';
+import type { NotificationQueryInput } from './notifications.schema';
 
 export const NotificationsService = {
-  async findAll(userId: string) {
-    return Notification.find({ userId }).sort({ createdAt: -1 });
+  async findAll(userId: string, query: NotificationQueryInput) {
+    const { skip, take, page, perPage } = paginate(query);
+
+    const [data, total, unreadCount] = await Promise.all([
+      Notification.find({ userId }).sort({ createdAt: -1 }).skip(skip).limit(take),
+      Notification.countDocuments({ userId }),
+      Notification.countDocuments({ userId, readAt: null }),
+    ]);
+
+    return {
+      data,
+      meta: { ...buildPaginationMeta(total, page, perPage), unreadCount },
+    };
   },
 
   async markAsRead(userId: string, notificationId: string) {

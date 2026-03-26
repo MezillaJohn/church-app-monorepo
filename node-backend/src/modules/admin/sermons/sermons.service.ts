@@ -1,6 +1,8 @@
 import { Sermon } from '../../../database/models/sermon.model';
 import { AppError } from '../../../shared/middleware/error.middleware';
 import { paginate, buildPaginationMeta } from '../../../shared/utils/pagination';
+import { NotificationService } from '../../../shared/services/notification.service';
+import { logger } from '../../../shared/utils/logger';
 import type { AdminSermonQueryInput, CreateSermonInput, UpdateSermonInput } from './sermons.schema';
 
 const populate = [
@@ -35,7 +37,20 @@ export const AdminSermonsService = {
   },
 
   async create(input: CreateSermonInput) {
-    return Sermon.create(input);
+    const sermon = await Sermon.create(input);
+
+    // Send push notification if published
+    if (sermon.isPublished) {
+      const label = sermon.type === 'audio' ? 'Audio Sermon' : 'Video Sermon';
+      NotificationService.notifyAll({
+        type: 'sermon',
+        title: `New ${label} Available`,
+        body: `"${sermon.title}" by ${sermon.speaker || 'the church'} is now available.`,
+        resourceId: String(sermon._id),
+      }).catch((err) => logger.error('Failed to send sermon notification', { err }));
+    }
+
+    return sermon;
   },
 
   async update(id: string, input: UpdateSermonInput) {

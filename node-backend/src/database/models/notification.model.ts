@@ -1,11 +1,15 @@
 import { Schema, model, Types } from 'mongoose';
 import { baseSchemaOptions } from '../helpers';
 
+export type NotificationType = 'sermon' | 'book' | 'event' | 'announcement';
+
 export interface INotification {
   _id: Types.ObjectId;
-  type: string;
+  type: NotificationType;
   userId: Types.ObjectId;
-  data: Record<string, unknown>;
+  title: string;
+  body: string;
+  resourceId?: string;
   readAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -13,9 +17,15 @@ export interface INotification {
 
 const notificationSchema = new Schema<INotification>(
   {
-    type: { type: String, required: true },
+    type: {
+      type: String,
+      required: true,
+      enum: ['sermon', 'book', 'event', 'announcement'],
+    },
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    data: { type: Schema.Types.Mixed, required: true, default: {} },
+    title: { type: String, required: true },
+    body: { type: String, required: true },
+    resourceId: { type: String, default: null },
     readAt: { type: Date, default: null },
   },
   baseSchemaOptions,

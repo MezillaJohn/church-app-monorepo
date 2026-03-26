@@ -5,8 +5,8 @@ import { catchAsync } from '../../shared/utils/catch-async';
 
 export const NotificationsController = {
   index: catchAsync(async (req: Request, res: Response) => {
-    const notifications = await NotificationsService.findAll(req.user!.id);
-    return ApiResponse.success(res, notifications);
+    const result = await NotificationsService.findAll(req.user!.id, req.query as any);
+    ApiResponse.paginated(res, result.data, result.meta);
   }),
 
   markAsRead: catchAsync(async (req: Request, res: Response) => {
