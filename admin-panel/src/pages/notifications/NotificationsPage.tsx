@@ -24,10 +24,9 @@ import type { Notification, User } from '@/types';
 // ─── User Picker ─────────────────────────────────────────────────────────────
 
 function UserPicker({
-  value,
   onChange,
 }: {
-  value: string;
+  value?: string;
   onChange: (userId: string, user?: User) => void;
 }) {
   const [search, setSearch] = useState('');

@@ -344,7 +344,6 @@ export default function SupportTicketsPage() {
             setPage(1);
           }}
           placeholder="Search tickets..."
-          className="max-w-xs"
         />
         <Select
           value={statusFilter}
@@ -389,8 +388,8 @@ export default function SupportTicketsPage() {
 
       <ConfirmDialog
         open={!!deleteId}
+        onOpenChange={(open) => { if (!open) setDeleteId(null); }}
         onConfirm={() => deleteId && deleteMutation.mutate(deleteId)}
-        onCancel={() => setDeleteId(null)}
         title="Delete ticket?"
         description="This will permanently remove this support ticket."
         isLoading={deleteMutation.isPending}
