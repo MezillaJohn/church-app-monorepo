@@ -30,7 +30,8 @@ export default function Login() {
     try {
       setError('');
       await login(data.email, data.password);
-      navigate('/');
+      // Small delay to let React process the auth state update before navigating
+      setTimeout(() => navigate('/', { replace: true }), 0);
     } catch (e) {
       setError(getErrorMessage(e));
     }

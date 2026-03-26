@@ -14,7 +14,7 @@ const server = app.listen(env.PORT, async () => {
   );
 
   // Keep Render instance awake by pinging it every 7 minutes
-  const renderUrl = 'https://church-app-monorepo.onrender.com';
+  const renderUrl = 'https://church-app-monorepo.onrender.com/health';
   setInterval(() => {
     fetch(renderUrl)
       .then((res) => logger.info(`Self-ping complete: ${res.status}`))
